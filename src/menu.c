@@ -16,11 +16,11 @@ void menu() {
             tmp = getchar();
         } while (tmp != '\n');
 
-        if (choix == '1')
+        if (choix == '1') {
 
-            printf("\nJeu trop cool\n");
+            executePartie();
 
-        else
+        } else
 
             continuer = 0;
 
