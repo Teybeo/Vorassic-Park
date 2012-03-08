@@ -2,3 +2,4 @@
 /obj/
 *.cbp
 *.depend
+*.layout
