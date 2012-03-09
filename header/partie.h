@@ -6,7 +6,9 @@
 #include <string.h>
 
 void executePartie();
-void saisieCoup(char coup[2]);
 
+void saisieCoup(char coup[2]);
+void initPlateau(char plateau[5][5]);
+void affichePlateau(char plateau[5][5]);
 
 #endif
