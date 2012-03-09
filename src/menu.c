@@ -7,20 +7,20 @@ void menu() {
 
     do {
 
-        printf("\n1. Lancer partie\n");
-        printf("2. Quitter\n");
-        printf("Que voulez-vous faire ?\n");
+        printf("   1. Lancer partie\n");
+        printf("   2. Quitter\n");
+        printf("Que voulez-vous faire ?\n ");
         choix = getchar();
 
         do {
             tmp = getchar();
-        } while (tmp != '\n');
+        } while (tmp != '\n' && tmp != EOF);
 
         if (choix == '1') {
 
             executePartie();
 
-        } else
+        } else if (choix == '2')
 
             continuer = 0;
 
