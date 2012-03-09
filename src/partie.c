@@ -2,43 +2,57 @@
 
 void executePartie() {
 
-    printf("\nJeu trop cool\n");
-
     int continuer = 1;
     int tour = 1;
     int joueurActuel;
-    char *actionJoueur = malloc(sizeof(char) * 6);
-    //char actionJoueur[6] = ""; // => Buffer overflow
-    char tmp;
+    char coup[2];
+    char plateau[5][5];
+
+    initPlateau(plateau);
 
     do {
 
         printf("\nTour numero %d\n", tour);
 
-        if (tour % 2 == 1)
-
-            joueurActuel = 1;
-
-        else
-
-            joueurActuel = 2;
+        joueurActuel = ((tour-1) % 2) + 1;
 
         printf("C'est au tour du joueur %d\n", joueurActuel);
 
-        memset(actionJoueur, 0, 6);
-
-        scanf("%s", actionJoueur);
-
-        while (getchar() != '\n');
-
-        printf("Vous avez joue: ");
-
-        int i;
-        for (i=0;i<5;i++)
-            printf("%c |", actionJoueur[i]);
+        saisieCoup(coup);
 
         tour++;
 
     } while (continuer);
 
 }
+
+void saisieCoup(char coup[2]) {
+
+    int retour;
+    char tmp;
+    char *lettre = calloc(1, sizeof(char));
+    char *nombre = calloc(1, sizeof(char));
+
+    retour = scanf(" %1[a-f] %1[0-4]", lettre, nombre);
+
+    while ((tmp = getchar()) != '\n' && tmp != EOF);
+
+    while (retour != 2) {
+
+        printf("Reentrez votre coup car ");
+        if (retour == 1)
+            printf("seule la premiere variable a ete assignee\n");
+        if (retour == 0)
+            printf("aucune variable n'a ete assignee\n");
+
+        *lettre = *nombre = 0;
+
+        retour = scanf(" %1[a-f] %1[0-4]", lettre, nombre);
+
+        while ((tmp = getchar()) != '\n' && tmp != EOF);
+
+    }
+
+}
+
+

@@ -6,5 +6,7 @@
 #include <string.h>
 
 void executePartie();
+void saisieCoup(char coup[2]);
+
 
 #endif
