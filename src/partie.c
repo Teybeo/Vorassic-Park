@@ -70,27 +70,31 @@ int verifieCoup(char plateau[5][5], Point depart, Point arrivee) {
     int deltaY = arrivee.y - depart.y;
     int destination = plateau[arrivee.y][arrivee.x];
 
-    if (deltaX != 0 || deltaY != 0) { // S'il y a un deplacement non nul
+    if (deltaX != 0 || deltaY != 0)  // S'il y a un deplacement non nul sur au moins 1 axe
+    {
+        if (abs(deltaX) >= 1 && abs(deltaY) >= 1)
 
-        if (abs(deltaX) >= 1 && abs(deltaY) >= 1) // Si on se deplace sur les 2 axes a la fois
+            return 3; // Déplacement en diagonale
 
-            return 3;
+        else if (destination != 'J' && destination != 'R' && destination != 'j' && destination != 'r')
 
-        else if (destination != 'J' && destination != 'R') {
+            return 0; // Case libre
 
-            return 0;//printf("Coup Valide\n");
-        }
         else
-            return 2;
+            return 2; // Case occupée
     }
-    else
+    else // Sinon le depart est le meme que l'arrivee
         return 1;
 
 }
 
 void appliqueCoup(char plateau[5][5], Point *depart, Point arrivee) {
 
+    /* Le J ou R se trouvant a la case depart est copié a la case d'arrivée
+       La valeur de la case de départ est décalé de 32 pour le passer en minuscule */
     plateau[arrivee.y][arrivee.x] = plateau[depart->y][depart->x];
+    plateau[depart->y][depart->x] += 32;
+
     *depart = arrivee;
 }
 

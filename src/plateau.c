@@ -43,7 +43,7 @@ void affichePlateau(char plateau[5][5]) {
             if (j == 0)
                 printf("%d |", i);
 
-            if (plateau[i][j] == 'J' || plateau[i][j] == 'R')
+            if (plateau[i][j] == 'J' || plateau[i][j] == 'R' || plateau[i][j] == 'j' || plateau[i][j] == 'r')
                 printf("%2c ", plateau[i][j]);
             else
                 printf("%2d ", plateau[i][j]);
