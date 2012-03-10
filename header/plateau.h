@@ -3,8 +3,8 @@
 
 #include <stdio.h>
 
-void initPlateau(char plateau[5][5]);
-void affichePlateau(char plateau[5][5]);
+void initPlateau(char **plateau, int taille);
+void affichePlateau(char **plateau, int taille);
 
 #endif
 

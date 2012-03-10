@@ -5,29 +5,34 @@ void executePartie() {
     int continuer = 1;
     int tour = 1;
     int joueurActuel;
+    int taille = 5;
     Point joueur1;
     joueur1.x = 0;
     joueur1.y = 0;
     Point joueur2;
-    joueur2.x = 4;
-    joueur2.y = 4;
-    char plateau[5][5];
+    joueur2.x = taille-1;
+    joueur2.y = taille-1;
+    char **plateau;
+    int i;
 
-    initPlateau(plateau);
+    plateau = calloc(taille, sizeof(char*));
+    for (i=0;i<taille;i++)
+        plateau[i] = calloc(taille, sizeof(char));
+    initPlateau(plateau, taille);
 
     do {
 
         printf("\nTour numero %d\n", tour);
-        affichePlateau(plateau);
+        affichePlateau(plateau, taille);
 
         joueurActuel = ((tour-1) % 2) + 1;
 
         printf("C'est au tour du joueur %d\n", joueurActuel);
 
         if (joueurActuel == 1)
-            faireCoup(plateau, &joueur1);
+            faireCoup(plateau, taille, &joueur1);
         else
-            faireCoup(plateau, &joueur2);
+            faireCoup(plateau, taille, &joueur2);
 
         tour++;
 
@@ -36,17 +41,17 @@ void executePartie() {
     } while (continuer);
 
     printf("\nLa partie est finie\n");
-    score(plateau);
+    score(plateau, taille);
 
 }
 
-void score(char plateau[5][5]) {
+void score(char **plateau, int taille) {
 
     int i, j;
     int score1 = 0, score2 = 0;
 
-    for (i=0 ; i < 5 ; i++)
-        for (j=0; j < 5 ; j++) {
+    for (i=0 ; i < taille ; i++)
+        for (j=0; j < taille ; j++) {
             if (plateau[j][i] == 'J' || plateau[j][i] == 'j')
                 score1++;
             else if (plateau[j][i] == 'R' || plateau[j][i] == 'r')
@@ -70,19 +75,19 @@ int finPartie(Point joueur1, Point joueur2) {
 
 }
 
-void faireCoup(char plateau[5][5], Point *depart) {
+void faireCoup(char **plateau, int taille, Point *depart) {
 
     Point coup;
     int erreur;
 
-    Noeud *coupPossibles = listeCoup(plateau, *depart);
+    Noeud *coupPossibles = listeCoup(plateau, taille, *depart);
     erreur = verifieBlocage(plateau, *depart, coupPossibles);
 
     if (!erreur) {
 
         do {
 
-            coup = saisieCoup();
+            coup = saisieCoup(taille);
             erreur = verifieCoup(plateau, *depart, coup);
 
             switch (erreur) {
@@ -109,7 +114,7 @@ void faireCoup(char plateau[5][5], Point *depart) {
     }
 }
 
-Point saisieCoup() {
+Point saisieCoup(int taille) {
 
     Point coup;
     int retour;
@@ -117,21 +122,26 @@ Point saisieCoup() {
     char *lettre = calloc(1, sizeof(char));
     char *nombre = calloc(1, sizeof(char));
 
-    retour = scanf(" %1[a-f] %1[0-4]", lettre, nombre);
+    char filtre[16] = " %1[a- ] %1[0- ]";
+
+    filtre[6] = 'a' + taille - 1;
+    filtre[14] = '0' + taille - 1;
+
+    retour = scanf(filtre, lettre, nombre);
 
     while ((tmp = getchar()) != '\n' && tmp != EOF);
 
     while (retour != 2) {
 
-        printf("Reentrez votre coup car ");
-        if (retour == 1)
-            printf("seule la premiere variable a ete assignee\n");
+        printf("Attention, vous n'avez droit ");
         if (retour == 0)
-            printf("aucune variable n'a ete assignee\n");
+            printf("qu'aux colonnes de [a] jusqu'a [%c]\n", 'a' + taille-1);
+        if (retour == 1)
+            printf("qu'aux lignes de [0] jusqu'a [%c]\n", '0' + taille-1);
 
         *lettre = *nombre = 0;
 
-        retour = scanf(" %1[a-f] %1[0-4]", lettre, nombre);
+        retour = scanf(filtre, lettre, nombre);
 
         while ((tmp = getchar()) != '\n' && tmp != EOF);
 
@@ -143,7 +153,7 @@ Point saisieCoup() {
     return coup;
 }
 
-int verifieCoup(char plateau[5][5], Point depart, Point arrivee) {
+int verifieCoup(char **plateau, Point depart, Point arrivee) {
 
     int deltaX = arrivee.x - depart.x;
     int deltaY = arrivee.y - depart.y;
@@ -167,7 +177,7 @@ int verifieCoup(char plateau[5][5], Point depart, Point arrivee) {
 
 }
 
-int verifieBlocage(char plateau[5][5], Point depart, Noeud *coupPossibles) {
+int verifieBlocage(char **plateau, Point depart, Noeud *coupPossibles) {
 
     if (depart.x == -1 && depart.y == -1)
         return 1;
@@ -189,13 +199,13 @@ int verifieBlocage(char plateau[5][5], Point depart, Noeud *coupPossibles) {
     }
 }
 
-Noeud* listeCoup(char plateau[5][5], Point depart) {
+Noeud* listeCoup(char **plateau, int taille, Point depart) {
 
     Noeud *liste = NULL;
 
     if (depart.y > 0) // Haut
         liste = ajoutFin(liste, depart.x, depart.y - 1);
-    if (depart.y < 5-1) // Bas
+    if (depart.y < taille-1) // Bas
         liste = ajoutFin(liste, depart.x, depart.y + 1);
 
     if (depart.x > 0) {
@@ -208,7 +218,7 @@ Noeud* listeCoup(char plateau[5][5], Point depart) {
             liste = ajoutFin(liste, depart.x + 1, depart.y - 1);*/
 
     }
-    if (depart.x < 5-1) {
+    if (depart.x < taille-1) {
         // Droite
         liste = ajoutFin(liste, depart.x + 1, depart.y);
 
@@ -222,7 +232,7 @@ Noeud* listeCoup(char plateau[5][5], Point depart) {
     return liste;
 }
 
-void appliqueCoup(char plateau[5][5], Point *depart, Point arrivee) {
+void appliqueCoup(char **plateau, Point *depart, Point arrivee) {
 
     /* Le J ou R se trouvant a la case depart est copié a la case d'arrivée
        La valeur de la case de départ est décalé de 32 pour le passer en minuscule */

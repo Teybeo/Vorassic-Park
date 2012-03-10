@@ -1,47 +1,47 @@
 #include "header/plateau.h"
 
-void initPlateau(char plateau[5][5]) {
+void initPlateau(char **plateau, int taille) {
 
     int i, j;
 
-    for (i=0 ; i < 5 ; i++)
+    for (i=0 ; i < taille ; i++)
 
-        for (j=0 ; j < 5-i ; j++)
+        for (j=0 ; j < taille - i ; j++)
 
             plateau[i][j] = j + i;
 
 
-    for (i=5-1 ; i > 0 ; i--)
+    for (i=taille-1 ; i > 0 ; i--)
 
-        for (j=5-1 ; j > 5-1-i ; j--)
+        for (j=taille-1 ; j > taille-1 - i ; j--)
 
-            plateau[i][j] = (5-1)*2 - (j + i);
+            plateau[i][j] = (taille-1)*2 - (j + i);
 
     plateau[0][0] = 'J';
-    plateau[4][4] = 'R';
+    plateau[taille-1][taille-1] = 'R';
 
 }
 
-void affichePlateau(char plateau[5][5]) {
+void affichePlateau(char **plateau, int taille) {
 
     int i, j;
 
-    printf("\n  |");
+    printf("\n   |");
 
-    for (i=0 ; i < 5 ; i++)
+    for (i=0 ; i < taille ; i++)
         printf("%2c ", 'A' + i);
-    printf("\n--");
+    printf("\n---");
 
-    for (i=0 ; i < 5 ; i++)
+    for (i=0 ; i < taille ; i++)
         printf("---");
     printf("\n");
 
-    for (i=0 ; i < 5 ; i++)
+    for (i=0 ; i < taille ; i++)
     {
-        for (j=0 ; j < 5 ; j++)
+        for (j=0 ; j < taille ; j++)
         {
             if (j == 0)
-                printf("%d |", i);
+                printf("%2d |", i);
 
             if (plateau[i][j] == 'J' || plateau[i][j] == 'R' || plateau[i][j] == 'j' || plateau[i][j] == 'r')
                 printf("%2c ", plateau[i][j]);
