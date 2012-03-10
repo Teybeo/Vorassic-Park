@@ -63,6 +63,40 @@ void faireCoup(char plateau[5][5], Point *depart) {
 
 }
 
+Point saisieCoup() {
+
+    Point coup;
+    int retour;
+    char tmp;
+    char *lettre = calloc(1, sizeof(char));
+    char *nombre = calloc(1, sizeof(char));
+
+    retour = scanf(" %1[a-f] %1[0-4]", lettre, nombre);
+
+    while ((tmp = getchar()) != '\n' && tmp != EOF);
+
+    while (retour != 2) {
+
+        printf("Reentrez votre coup car ");
+        if (retour == 1)
+            printf("seule la premiere variable a ete assignee\n");
+        if (retour == 0)
+            printf("aucune variable n'a ete assignee\n");
+
+        *lettre = *nombre = 0;
+
+        retour = scanf(" %1[a-f] %1[0-4]", lettre, nombre);
+
+        while ((tmp = getchar()) != '\n' && tmp != EOF);
+
+    }
+
+    coup.x = *lettre - 'a';
+    coup.y = *nombre - '0';
+
+    return coup;
+}
+
 int verifieCoup(char plateau[5][5], Point depart, Point arrivee) {
 
 
@@ -98,38 +132,6 @@ void appliqueCoup(char plateau[5][5], Point *depart, Point arrivee) {
     *depart = arrivee;
 }
 
-Point saisieCoup() {
 
-    Point coup;
-    int retour;
-    char tmp;
-    char *lettre = calloc(1, sizeof(char));
-    char *nombre = calloc(1, sizeof(char));
-
-    retour = scanf(" %1[a-f] %1[0-4]", lettre, nombre);
-
-    while ((tmp = getchar()) != '\n' && tmp != EOF);
-
-    while (retour != 2) {
-
-        printf("Reentrez votre coup car ");
-        if (retour == 1)
-            printf("seule la premiere variable a ete assignee\n");
-        if (retour == 0)
-            printf("aucune variable n'a ete assignee\n");
-
-        *lettre = *nombre = 0;
-
-        retour = scanf(" %1[a-f] %1[0-4]", lettre, nombre);
-
-        while ((tmp = getchar()) != '\n' && tmp != EOF);
-
-    }
-
-    coup.x = *lettre - 'a';
-    coup.y = *nombre - '0';
-
-    return coup;
-}
 
 

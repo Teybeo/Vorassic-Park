@@ -13,12 +13,13 @@ typedef struct Point {
 
     int x;
     int y;
+
 } Point;
 
 void executePartie();
 
-Point saisieCoup();
 void faireCoup(char plateau[5][5], Point *depart);
+Point saisieCoup();
 int verifieCoup(char plateau[5][5], Point depart, Point arrivee);
 void appliqueCoup(char plateau[5][5], Point *depart, Point arrivee);
 
