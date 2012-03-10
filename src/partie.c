@@ -5,7 +5,7 @@ void executePartie() {
     int continuer = 1;
     int tour = 1;
     int joueurActuel;
-    int taille = 26;
+    int taille = 11;
     Point joueur1;
     joueur1.x = 0;
     joueur1.y = 0;
@@ -117,59 +117,60 @@ void faireCoup(char **plateau, int taille, Point *depart) {
 Point saisieCoup(int taille) {
 
     Point coup;
-    int retour;
+    int erreur = 0;
     char tmp;
-    char *lettre = calloc(1, sizeof(char));
-    char *unite = calloc(1, sizeof(char));
-    char *dizaine = calloc(1, sizeof(char));
-    char filtre[24] = {0};
+    char saisie[3] = {0};
+    int ligne;
 
-    /* scanf pose probleme car si il y a plus de 9 lignes, on doit pouvoir entrer 2 chiffres
-    seulement si on n'en rentre qu'un seul (a3) le format de la dizaine échoue, l'unité n'a rien a lire
-    et donc aucun nombre n'est rentré */
+    do {
 
-    if (taille > 10) {
-        strcpy(filtre, " %1[a- ] %1[1- ]%1[0- ]");
-        filtre[14] = '0' + (taille / 10);
-        filtre[21] = '0' + ((taille -1) % 10);
-    }
-    else {
-        strcpy(filtre, " %1[a- ] %1[0- ]");
-        filtre[14] = '0' + taille - 1;
-    }
+        erreur = 0;
+        fgets(saisie, 4, stdin); // fgets rajoute '\0' au dernier element
 
-    filtre[6] = 'a' + taille - 1;
+        if (saisie[0] >= 'a' && saisie[0] <= 'a' + taille-1) // Si lettre correct
+        {
+            coup.x = saisie[0] - 'a';
 
-    printf("filtre [%s]\n", filtre);
+            if (saisie[1] >= '0' && saisie[1] <= '9') // Si second carac est un chiffre
+            {
 
-    if (taille > 10)
-        retour = scanf(filtre, lettre, dizaine, unite);
-    else
-        retour = scanf(filtre, lettre, unite);
+                if (saisie[2] >= '0' && saisie[2] <= '9') { // Si troisieme carac est un chiffre
+                    ligne = atoi(&saisie[1]);
+                    getchar(); // On lit le \n parti dans le tampon
+                }
+                else if (saisie[2] == '\n')
+                    ligne = saisie[1] - '0';
+                else
+                    getchar();
 
-    while ((tmp = getchar()) != '\n' && tmp != EOF);
+                if (ligne < taille)
+                    coup.y = ligne;
+                else
+                    erreur = 2;
 
-    while (retour < 2) {
+            } else
+                erreur = 2; //Second carac incorrect
 
-        printf("Attention, vous n'avez droit ");
-        if (retour == 0)
-            printf("qu'aux colonnes de [a] jusqu'a [%c]\n", 'a' + taille-1);
-        if (retour == 1)
-            printf("qu'aux lignes de [0] jusqu'a [%c]\n", '0' + taille-1);
+        } else {
+            erreur = 1; //Premier carac incorrect
+            if (saisie[0] != '\n' && saisie[1] != '\n' && saisie[2] != '\n')
+                while ((tmp = getchar()) != '\n' && tmp != EOF);
+        }
 
-        *lettre = *unite = *dizaine = 0;
+        if (erreur) {
+            printf("Attention, vous n'avez droit ");
+            if (erreur == 1)
+                printf("qu'aux colonnes de [a] jusqu'a [%c]\n", 'a' + taille-1);
+            else if (erreur == 2)
+                printf("qu'aux lignes de [0] jusqu'a [%d]\n", taille-1);
+        }
 
-        if (taille > 10)
-            retour = scanf(filtre, lettre, dizaine, unite);
-        else
-            retour = scanf(filtre, lettre, unite);
+        //while ((tmp = getchar()) != '\n' && tmp != EOF);
 
-        while ((tmp = getchar()) != '\n' && tmp != EOF);
+    } while (erreur);
 
-    }
-
-    coup.x = *lettre - 'a';
-    coup.y = (*dizaine * 10) + *unite - '0';
+//    coup.x = *lettre - 'a';
+ //   coup.y = (*dizaine * 10) + *unite - '0';
 
     return coup;
 }
