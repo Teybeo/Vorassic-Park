@@ -18,7 +18,7 @@ typedef struct Point {
 
 } Point;
 
-void executePartie();
+void executePartie(int taille);
 int finPartie(Point joueur1, Point joueur2);
 void score(char **plateau, int taille);
 

@@ -5,5 +5,6 @@
 #include "header/partie.h"
 
 void menu();
+void options(int *taille);
 
 #endif

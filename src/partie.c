@@ -1,11 +1,10 @@
 #include "header/partie.h"
 
-void executePartie() {
+void executePartie(int taille) {
 
     int continuer = 1;
     int tour = 1;
     int joueurActuel;
-    int taille = 11;
     Point joueur1;
     joueur1.x = 0;
     joueur1.y = 0;
@@ -22,6 +21,7 @@ void executePartie() {
 
     do {
 
+        system("cls");
         printf("\nTour numero %d\n", tour);
         affichePlateau(plateau, taille);
 
@@ -63,6 +63,9 @@ void score(char **plateau, int taille) {
         printf("Le joueur 1 a gagne de %d a %d\n", score1, score2);
     else
         printf("Le joueur 2 a gagne de %d a %d\n", score2, score1);
+
+    printf("\nAppuyez sur Entree pour revenir au menu");
+    getchar();
 
 }
 
@@ -111,6 +114,7 @@ void faireCoup(char **plateau, int taille, Point *depart) {
         printf("Vous etes bloque, vous passez votre tour\n");
         depart->x = -1;
         depart->y = -1;
+        getchar();
     }
 }
 
@@ -165,12 +169,7 @@ Point saisieCoup(int taille) {
                 printf("qu'aux lignes de [0] jusqu'a [%d]\n", taille-1);
         }
 
-        //while ((tmp = getchar()) != '\n' && tmp != EOF);
-
     } while (erreur);
-
-//    coup.x = *lettre - 'a';
- //   coup.y = (*dizaine * 10) + *unite - '0';
 
     return coup;
 }
