@@ -4,7 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "header/plateau.h"
+#include "header/liste.h"
 
 #define X 0
 #define Y 1
@@ -17,10 +19,13 @@ typedef struct Point {
 } Point;
 
 void executePartie();
+int finPartie(Point joueur1, Point joueur2);
 
 void faireCoup(char plateau[5][5], Point *depart);
 Point saisieCoup();
 int verifieCoup(char plateau[5][5], Point depart, Point arrivee);
+int verifieBlocage(char plateau[5][5], Point depart, Noeud *coupPossibles);
+Noeud* listeCoup(char plateau[5][5], Point depart);
 void appliqueCoup(char plateau[5][5], Point *depart, Point arrivee);
 
 #endif

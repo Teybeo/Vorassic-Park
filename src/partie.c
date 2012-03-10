@@ -31,7 +31,20 @@ void executePartie() {
 
         tour++;
 
+        continuer = finPartie(joueur1, joueur2);
+
     } while (continuer);
+
+    printf("\nLa partie est finie\n");
+
+}
+
+int finPartie(Point joueur1, Point joueur2) {
+
+    if (joueur1.x == -1 && joueur1.y == -1 && joueur2.x == -1 && joueur2.y == -1)
+        return 0;
+    else
+        return 1;
 
 }
 
@@ -40,27 +53,38 @@ void faireCoup(char plateau[5][5], Point *depart) {
     Point coup;
     int erreur;
 
-    do {
+    Noeud *coupPossibles = listeCoup(plateau, *depart);
+    erreur = verifieBlocage(plateau, *depart, coupPossibles);
 
-        coup = saisieCoup();
-        erreur = verifieCoup(plateau, *depart, coup);
+    if (!erreur) {
 
-        switch (erreur) {
-        case 1:
-            printf("Coup interdit - Deplacement nul\n");
-            break;
-        case 2:
-            printf("Coup interdit - Occupe\n");
-            break;
-        case 3:
-            printf("Coup interdit - Diagonale\n");
-            break;
-        }
+        do {
 
-    } while (erreur);
+            coup = saisieCoup();
+            erreur = verifieCoup(plateau, *depart, coup);
 
-    appliqueCoup(plateau, depart, coup);
+            switch (erreur) {
+            case 1:
+                printf("Coup interdit - Deplacement invalide\n");
+                break;
+            case 2:
+                printf("Coup interdit - Occupe\n");
+                break;
+            case 3:
+                printf("Coup interdit - Diagonale\n");
+                break;
+            }
 
+        } while (erreur);
+
+        appliqueCoup(plateau, depart, coup);
+
+    }
+    else {
+        printf("Vous etes bloque, vous passez votre tour\n");
+        depart->x = -1;
+        depart->y = -1;
+    }
 }
 
 Point saisieCoup() {
@@ -99,12 +123,11 @@ Point saisieCoup() {
 
 int verifieCoup(char plateau[5][5], Point depart, Point arrivee) {
 
-
     int deltaX = arrivee.x - depart.x;
     int deltaY = arrivee.y - depart.y;
     int destination = plateau[arrivee.y][arrivee.x];
 
-    if (deltaX != 0 || deltaY != 0)  // S'il y a un deplacement non nul sur au moins 1 axe
+    if (abs(deltaX) == 1 || abs(deltaY) == 1)  // S'il y a un deplacement non nul sur au moins 1 axe
     {
         if (abs(deltaX) >= 1 && abs(deltaY) >= 1)
 
@@ -117,9 +140,64 @@ int verifieCoup(char plateau[5][5], Point depart, Point arrivee) {
         else
             return 2; // Case occupée
     }
-    else // Sinon le depart est le meme que l'arrivee
+    else // Sinon le deplacement est invalide
         return 1;
 
+}
+
+int verifieBlocage(char plateau[5][5], Point depart, Noeud *coupPossibles) {
+
+    if (depart.x == -1 && depart.y == -1)
+        return 1;
+    else {
+
+        Noeud *tmp = coupPossibles;
+        Point coup;
+        while (tmp != NULL) {
+
+            coup.x = tmp->x;
+            coup.y = tmp->y;
+
+            if (verifieCoup(plateau, depart, coup) == 0)
+                return 0;
+
+            tmp = tmp->suivant;
+        }
+        return 1;
+    }
+}
+
+Noeud* listeCoup(char plateau[5][5], Point depart) {
+
+    Noeud *liste = NULL;
+
+    if (depart.y > 0) // Haut
+        liste = ajoutFin(liste, depart.x, depart.y - 1);
+    if (depart.y < 5-1) // Bas
+        liste = ajoutFin(liste, depart.x, depart.y + 1);
+
+    if (depart.x > 0) {
+        // Gauche
+        liste = ajoutFin(liste, depart.x - 1, depart.y);
+
+        /*if (depart.y > 0) // Gauche / Haut
+            liste = ajoutFin(liste, depart.x - 1, depart.y - 1);
+        if (depart.y < 5-1) // Gauche / Bas
+            liste = ajoutFin(liste, depart.x + 1, depart.y - 1);*/
+
+    }
+    if (depart.x < 5-1) {
+        // Droite
+        liste = ajoutFin(liste, depart.x + 1, depart.y);
+
+        /*if (depart.y > 0) // Droite / Haut
+            liste = ajoutFin(liste, depart.x - 1, depart.y + 1);
+        if (depart.y < 5-1) // Droite / Bas
+            liste = ajoutFin(liste, depart.x + 1, depart.y + 1);*/
+
+    }
+
+    return liste;
 }
 
 void appliqueCoup(char plateau[5][5], Point *depart, Point arrivee) {
