@@ -36,6 +36,28 @@ void executePartie() {
     } while (continuer);
 
     printf("\nLa partie est finie\n");
+    score(plateau);
+
+}
+
+void score(char plateau[5][5]) {
+
+    int i, j;
+    int score1 = 0, score2 = 0;
+
+    for (i=0 ; i < 5 ; i++)
+        for (j=0; j < 5 ; j++) {
+            if (plateau[j][i] == 'J' || plateau[j][i] == 'j')
+                score1++;
+            else if (plateau[j][i] == 'R' || plateau[j][i] == 'r')
+                score2++;
+        }
+    if (score1 == score2)
+        printf("Egalite a %d points\n", score1);
+    else if (score1 > score2)
+        printf("Le joueur 1 a gagne de %d a %d\n", score1, score2);
+    else
+        printf("Le joueur 2 a gagne de %d a %d\n", score2, score1);
 
 }
 

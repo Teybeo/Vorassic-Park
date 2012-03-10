@@ -20,6 +20,7 @@ typedef struct Point {
 
 void executePartie();
 int finPartie(Point joueur1, Point joueur2);
+void score(char plateau[5][5]);
 
 void faireCoup(char plateau[5][5], Point *depart);
 Point saisieCoup();
