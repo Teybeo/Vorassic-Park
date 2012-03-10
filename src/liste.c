@@ -12,7 +12,7 @@ void affichageListe(Noeud *liste) {
 
 }
 
-Noeud* ajoutertete(Noeud *teteliste, int x, int y) {
+Noeud* ajoutTete(Noeud *teteliste, int x, int y) {
 
     Noeud *p = malloc(sizeof(Noeud));
     p->x = x;
@@ -24,7 +24,7 @@ Noeud* ajoutertete(Noeud *teteliste, int x, int y) {
 
 }
 
-Noeud* ajouterfin(Noeud *teteliste, int x, int y) {
+Noeud* ajoutFin(Noeud *teteliste, int x, int y) {
 
     Noeud *nouveau = malloc(sizeof(Noeud));
     nouveau->x = x;
@@ -47,6 +47,16 @@ Noeud* ajouterfin(Noeud *teteliste, int x, int y) {
 
 }
 
+Noeud* supprTete(Noeud* teteliste) {
+
+    if (teteliste == NULL)
+        return NULL;
+    else {
+        Noeud* tmp = teteliste->suivant;
+        free(teteliste);
+        return tmp;
+    }
+}
 
 Noeud* supprFin(Noeud* teteliste) {
 
@@ -67,15 +77,4 @@ Noeud* supprFin(Noeud* teteliste) {
     tmp->suivant = NULL;
 
     return teteliste;
-}
-
-Noeud* supprTete(Noeud* teteliste) {
-
-    if (teteliste == NULL)
-        return NULL;
-    else {
-        Noeud* tmp = teteliste->suivant;
-        free(teteliste);
-        return tmp;
-    }
 }

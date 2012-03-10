@@ -11,9 +11,9 @@ typedef struct Noeud {
 } Noeud;
 
 void affichageListe(Noeud *liste);
-Noeud* ajoutertete(Noeud *teteliste, int x, int y);
-Noeud* ajouterfin(Noeud *teteliste, int x, int y);
-Noeud* supprFin(Noeud* teteliste);
+Noeud* ajoutTete(Noeud *teteliste, int x, int y);
+Noeud* ajoutFin(Noeud *teteliste, int x, int y);
 Noeud* supprTete(Noeud* teteliste);
+Noeud* supprFin(Noeud* teteliste);
 
 #endif

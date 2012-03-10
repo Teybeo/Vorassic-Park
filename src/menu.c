@@ -7,7 +7,7 @@ void menu() {
 
     do {
 
-        printf("   1. Lancer partie\n");
+        printf("\n   1. Lancer partie\n");
         printf("   2. Quitter\n");
         printf("Que voulez-vous faire ?\n ");
         choix = getchar();
