@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "header/plateau.h"
 
 #define X 0
 #define Y 1
@@ -20,8 +21,5 @@ Point saisieCoup();
 void faireCoup(char plateau[5][5], Point *depart);
 int verifieCoup(char plateau[5][5], Point depart, Point arrivee);
 void appliqueCoup(char plateau[5][5], Point *depart, Point arrivee);
-
-void initPlateau(char plateau[5][5]);
-void affichePlateau(char plateau[5][5]);
 
 #endif
