@@ -8,10 +8,18 @@
 #define X 0
 #define Y 1
 
+typedef struct Point {
+
+    int x;
+    int y;
+} Point;
+
 void executePartie();
 
-void saisieCoup(char coup[2]);
-void verifieCoup(char plateau[5][5], char pos[2], char coup[2]);
+Point saisieCoup();
+void faireCoup(char plateau[5][5], Point *depart);
+int verifieCoup(char plateau[5][5], Point depart, Point arrivee);
+void appliqueCoup(char plateau[5][5], Point *depart, Point arrivee);
 
 void initPlateau(char plateau[5][5]);
 void affichePlateau(char plateau[5][5]);

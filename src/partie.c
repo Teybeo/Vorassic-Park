@@ -5,9 +5,12 @@ void executePartie() {
     int continuer = 1;
     int tour = 1;
     int joueurActuel;
-    char coup[2];
-    char posJoueur1[2] = "a0";
-    char posJoueur2[2] = "e4";
+    Point joueur1;
+    joueur1.x = 0;
+    joueur1.y = 0;
+    Point joueur2;
+    joueur2.x = 4;
+    joueur2.y = 4;
     char plateau[5][5];
 
     initPlateau(plateau);
@@ -21,11 +24,11 @@ void executePartie() {
 
         printf("C'est au tour du joueur %d\n", joueurActuel);
 
-        saisieCoup(coup);
+
         if (joueurActuel == 1)
-            verifieCoup(plateau, posJoueur1, coup);
+            faireCoup(plateau, &joueur1);
         else
-            verifieCoup(plateau, posJoueur2, coup);
+            faireCoup(plateau, &joueur2);
 
         tour++;
 
@@ -33,38 +36,68 @@ void executePartie() {
 
 }
 
-void verifieCoup(char plateau[5][5], char pos[2], char coup[2]) {
+void faireCoup(char plateau[5][5], Point *depart) {
+
+    Point coup;
+    int erreur;
+
+    do {
+
+        coup = saisieCoup();
+        erreur = verifieCoup(plateau, *depart, coup);
+
+        switch (erreur) {
+        case 1:
+            printf("Coup interdit - Deplacement nul\n");
+            break;
+        case 2:
+            printf("Coup interdit - Occupe\n");
+            break;
+        case 3:
+            printf("Coup interdit - Diagonale\n");
+            break;
+        }
+
+    } while (erreur);
+
+    appliqueCoup(plateau, depart, coup);
+
+}
+
+int verifieCoup(char plateau[5][5], Point depart, Point arrivee) {
 
 
-    int deltaX = coup[X] - pos[X];
-    int deltaY = coup[Y] - pos[Y];
-    int destination = plateau[(int)coup[Y]-'0'][(int)coup[X]-'a'];
+    int deltaX = arrivee.x - depart.x;
+    int deltaY = arrivee.y - depart.y;
+    int destination = plateau[arrivee.y][arrivee.x];
 
     if (deltaX != 0 || deltaY != 0) { // S'il y a un deplacement non nul
 
         if (abs(deltaX) >= 1 && abs(deltaY) >= 1) // Si on se deplace sur les 2 axes a la fois
 
-            printf("Coup interdit - Diagonale\n");
+            return 3;
 
         else if (destination != 'J' && destination != 'R') {
 
-            printf("Coup Valide\n");
-
-            plateau[(int)coup[Y]-'0'][(int)coup[X]-'a'] = plateau[(int)pos[Y]-'0'][(int)pos[X]-'a'];
-            pos[X] = coup[X];
-            pos[Y] = coup[Y];
+            return 0;//printf("Coup Valide\n");
         }
         else
-            printf("Coup interdit - Occupe\n");
+            return 2;
     }
     else
-        printf("Coup interdit - Deplacement nul\n");
-
+        return 1;
 
 }
 
-void saisieCoup(char coup[2]) {
+void appliqueCoup(char plateau[5][5], Point *depart, Point arrivee) {
 
+    plateau[arrivee.y][arrivee.x] = plateau[depart->y][depart->x];
+    *depart = arrivee;
+}
+
+Point saisieCoup() {
+
+    Point coup;
     int retour;
     char tmp;
     char *lettre = calloc(1, sizeof(char));
@@ -90,9 +123,10 @@ void saisieCoup(char coup[2]) {
 
     }
 
-    coup[X] = *lettre;
-    coup[Y] = *nombre;
+    coup.x = *lettre - 'a';
+    coup.y = *nombre - '0';
 
+    return coup;
 }
 
 
@@ -148,5 +182,7 @@ void affichePlateau(char plateau[5][5]) {
 
         printf("\n");
     }
+
+    printf("\n");
 
 }
