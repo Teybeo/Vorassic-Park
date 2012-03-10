@@ -78,3 +78,12 @@ Noeud* supprFin(Noeud* teteliste) {
 
     return teteliste;
 }
+
+void libereListe(Noeud* teteliste) {
+
+    if (teteliste != NULL) {
+
+        teteliste = supprTete(teteliste);
+    }
+
+}

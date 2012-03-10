@@ -15,5 +15,6 @@ Noeud* ajoutTete(Noeud *teteliste, int x, int y);
 Noeud* ajoutFin(Noeud *teteliste, int x, int y);
 Noeud* supprTete(Noeud* teteliste);
 Noeud* supprFin(Noeud* teteliste);
+void libereListe(Noeud* teteliste);
 
 #endif

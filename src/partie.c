@@ -43,6 +43,10 @@ void executePartie(int taille) {
     printf("\nLa partie est finie\n");
     score(plateau, taille);
 
+    for (i=0;i<taille;i++)
+        free(plateau[i]);
+    free(plateau);
+
 }
 
 void score(char **plateau, int taille) {
@@ -111,11 +115,14 @@ void faireCoup(char **plateau, int taille, Point *depart) {
 
     }
     else {
-        printf("Vous etes bloque, vous passez votre tour\n");
+        printf("Vous etes bloque, vous passez votre tour");
         depart->x = -1;
         depart->y = -1;
         getchar();
     }
+
+    libereListe(coupPossibles);
+
 }
 
 Point saisieCoup(int taille) {
