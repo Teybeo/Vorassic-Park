@@ -5,7 +5,7 @@ void executePartie() {
     int continuer = 1;
     int tour = 1;
     int joueurActuel;
-    int taille = 5;
+    int taille = 26;
     Point joueur1;
     joueur1.x = 0;
     joueur1.y = 0;
@@ -120,18 +120,36 @@ Point saisieCoup(int taille) {
     int retour;
     char tmp;
     char *lettre = calloc(1, sizeof(char));
-    char *nombre = calloc(1, sizeof(char));
+    char *unite = calloc(1, sizeof(char));
+    char *dizaine = calloc(1, sizeof(char));
+    char filtre[24] = {0};
 
-    char filtre[16] = " %1[a- ] %1[0- ]";
+    /* scanf pose probleme car si il y a plus de 9 lignes, on doit pouvoir entrer 2 chiffres
+    seulement si on n'en rentre qu'un seul (a3) le format de la dizaine échoue, l'unité n'a rien a lire
+    et donc aucun nombre n'est rentré */
+
+    if (taille > 10) {
+        strcpy(filtre, " %1[a- ] %1[1- ]%1[0- ]");
+        filtre[14] = '0' + (taille / 10);
+        filtre[21] = '0' + ((taille -1) % 10);
+    }
+    else {
+        strcpy(filtre, " %1[a- ] %1[0- ]");
+        filtre[14] = '0' + taille - 1;
+    }
 
     filtre[6] = 'a' + taille - 1;
-    filtre[14] = '0' + taille - 1;
 
-    retour = scanf(filtre, lettre, nombre);
+    printf("filtre [%s]\n", filtre);
+
+    if (taille > 10)
+        retour = scanf(filtre, lettre, dizaine, unite);
+    else
+        retour = scanf(filtre, lettre, unite);
 
     while ((tmp = getchar()) != '\n' && tmp != EOF);
 
-    while (retour != 2) {
+    while (retour < 2) {
 
         printf("Attention, vous n'avez droit ");
         if (retour == 0)
@@ -139,16 +157,19 @@ Point saisieCoup(int taille) {
         if (retour == 1)
             printf("qu'aux lignes de [0] jusqu'a [%c]\n", '0' + taille-1);
 
-        *lettre = *nombre = 0;
+        *lettre = *unite = *dizaine = 0;
 
-        retour = scanf(filtre, lettre, nombre);
+        if (taille > 10)
+            retour = scanf(filtre, lettre, dizaine, unite);
+        else
+            retour = scanf(filtre, lettre, unite);
 
         while ((tmp = getchar()) != '\n' && tmp != EOF);
 
     }
 
     coup.x = *lettre - 'a';
-    coup.y = *nombre - '0';
+    coup.y = (*dizaine * 10) + *unite - '0';
 
     return coup;
 }
