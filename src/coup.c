@@ -6,7 +6,7 @@ int faireCoup(char **plateau, int taille, int mode, Point *depart) {
     int blocage, erreur;
     int valeurCase = 0;
 
-    Noeud *coupPossibles = listeCoup(plateau, taille, mode, *depart);
+    Noeud *coupPossibles = listeCoup(taille, mode, *depart);
     blocage = verifieBlocage(plateau, mode, *depart, coupPossibles);
 
     if (!blocage) {
@@ -107,7 +107,7 @@ Point saisieCoup(int taille) {
     int erreur = 0;
     char tmp;
     char saisie[3] = {0};
-    int ligne;
+    int ligne = 0;
 
     do {
 
@@ -158,7 +158,7 @@ Point saisieCoup(int taille) {
 }
 
 
-Noeud* listeCoup(char **plateau, int taille, int mode, Point depart) {
+Noeud* listeCoup(int taille, int mode, Point depart) {
 
     Noeud *liste = NULL;
 

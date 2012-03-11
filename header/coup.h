@@ -17,7 +17,7 @@ int faireCoup(char **plateau, int taille, int mode, Point *depart);
 Point saisieCoup(int taille);
 int verifieCoup(char **plateau, int mode, Point depart, Point arrivee);
 int verifieBlocage(char **plateau, int mode, Point depart, Noeud *coupPossibles);
-Noeud* listeCoup(char **plateau, int taille, int mode, Point depart);
+Noeud* listeCoup(int taille, int mode, Point depart);
 void appliqueCoup(char **plateau, Point *depart, Point arrivee);
 
 #endif
