@@ -2,6 +2,9 @@
 #define H_MENU
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include "header/partie.h"
 
 void menu();
