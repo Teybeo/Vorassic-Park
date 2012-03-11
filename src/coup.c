@@ -1,9 +1,10 @@
 #include "header/coup.h"
 
-void faireCoup(char **plateau, int taille, int mode, Point *depart) {
+int faireCoup(char **plateau, int taille, int mode, Point *depart) {
 
     Point coup;
     int blocage, erreur;
+    int valeurCase = 0;
 
     Noeud *coupPossibles = listeCoup(plateau, taille, mode, *depart);
     blocage = verifieBlocage(plateau, mode, *depart, coupPossibles);
@@ -29,6 +30,7 @@ void faireCoup(char **plateau, int taille, int mode, Point *depart) {
 
         } while (erreur);
 
+        valeurCase = plateau[coup.y][coup.x];
         appliqueCoup(plateau, depart, coup);
 
     } else {
@@ -42,6 +44,7 @@ void faireCoup(char **plateau, int taille, int mode, Point *depart) {
 
     libereListe(coupPossibles);
 
+    return valeurCase;
 }
 
 
