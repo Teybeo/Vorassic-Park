@@ -1,6 +1,6 @@
 #include "header/partie.h"
 
-void executePartie(int taille) {
+void executePartie(int taille, int mode) {
 
     int continuer = 1;
     int tour = 1;
@@ -30,9 +30,9 @@ void executePartie(int taille) {
         printf("C'est au tour du joueur %d\n", joueurActuel);
 
         if (joueurActuel == 1)
-            faireCoup(plateau, taille, &joueur1);
+            faireCoup(plateau, taille, mode, &joueur1);
         else
-            faireCoup(plateau, taille, &joueur2);
+            faireCoup(plateau, taille, mode, &joueur2);
 
         tour++;
 
@@ -82,20 +82,20 @@ int finPartie(Point joueur1, Point joueur2) {
 
 }
 
-void faireCoup(char **plateau, int taille, Point *depart) {
+void faireCoup(char **plateau, int taille, int mode, Point *depart) {
 
     Point coup;
     int erreur;
 
-    Noeud *coupPossibles = listeCoup(plateau, taille, *depart);
-    erreur = verifieBlocage(plateau, *depart, coupPossibles);
+    Noeud *coupPossibles = listeCoup(plateau, taille, mode, *depart);
+    erreur = verifieBlocage(plateau, mode, *depart, coupPossibles);
 
     if (!erreur) {
 
         do {
 
             coup = saisieCoup(taille);
-            erreur = verifieCoup(plateau, *depart, coup);
+            erreur = verifieCoup(plateau, mode, *depart, coup);
 
             switch (erreur) {
             case 1:
@@ -181,7 +181,7 @@ Point saisieCoup(int taille) {
     return coup;
 }
 
-int verifieCoup(char **plateau, Point depart, Point arrivee) {
+int verifieCoup(char **plateau, int mode, Point depart, Point arrivee) {
 
     int deltaX = arrivee.x - depart.x;
     int deltaY = arrivee.y - depart.y;
@@ -189,7 +189,7 @@ int verifieCoup(char **plateau, Point depart, Point arrivee) {
 
     if (abs(deltaX) == 1 || abs(deltaY) == 1)  // S'il y a un deplacement non nul sur au moins 1 axe
     {
-        if (abs(deltaX) >= 1 && abs(deltaY) >= 1)
+        if (mode == 0 && abs(deltaX) == 1 && abs(deltaY) == 1)
 
             return 3; // Déplacement en diagonale
 
@@ -205,7 +205,7 @@ int verifieCoup(char **plateau, Point depart, Point arrivee) {
 
 }
 
-int verifieBlocage(char **plateau, Point depart, Noeud *coupPossibles) {
+int verifieBlocage(char **plateau, int mode, Point depart, Noeud *coupPossibles) {
 
     if (depart.x == -1 && depart.y == -1)
         return 1;
@@ -218,7 +218,7 @@ int verifieBlocage(char **plateau, Point depart, Noeud *coupPossibles) {
             coup.x = tmp->x;
             coup.y = tmp->y;
 
-            if (verifieCoup(plateau, depart, coup) == 0)
+            if (verifieCoup(plateau, mode, depart, coup) == 0)
                 return 0;
 
             tmp = tmp->suivant;
@@ -227,7 +227,7 @@ int verifieBlocage(char **plateau, Point depart, Noeud *coupPossibles) {
     }
 }
 
-Noeud* listeCoup(char **plateau, int taille, Point depart) {
+Noeud* listeCoup(char **plateau, int taille, int mode, Point depart) {
 
     Noeud *liste = NULL;
 
@@ -240,20 +240,20 @@ Noeud* listeCoup(char **plateau, int taille, Point depart) {
         // Gauche
         liste = ajoutFin(liste, depart.x - 1, depart.y);
 
-        /*if (depart.y > 0) // Gauche / Haut
+        if (mode && depart.y > 0) // Gauche / Haut
             liste = ajoutFin(liste, depart.x - 1, depart.y - 1);
-        if (depart.y < 5-1) // Gauche / Bas
-            liste = ajoutFin(liste, depart.x + 1, depart.y - 1);*/
+        if (mode && depart.y < taille-1) // Gauche / Bas
+            liste = ajoutFin(liste, depart.x - 1, depart.y + 1);
 
     }
     if (depart.x < taille-1) {
         // Droite
         liste = ajoutFin(liste, depart.x + 1, depart.y);
 
-        /*if (depart.y > 0) // Droite / Haut
-            liste = ajoutFin(liste, depart.x - 1, depart.y + 1);
-        if (depart.y < 5-1) // Droite / Bas
-            liste = ajoutFin(liste, depart.x + 1, depart.y + 1);*/
+        if (mode && depart.y > 0) // Droite / Haut
+            liste = ajoutFin(liste, depart.x + 1, depart.y - 1);
+        if (mode && depart.y < taille-1) // Droite / Bas
+            liste = ajoutFin(liste, depart.x + 1, depart.y + 1);
 
     }
 

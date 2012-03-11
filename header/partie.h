@@ -18,15 +18,15 @@ typedef struct Point {
 
 } Point;
 
-void executePartie(int taille);
+void executePartie(int taille, int mode);
 int finPartie(Point joueur1, Point joueur2);
 void score(char **plateau, int taille);
 
-void faireCoup(char **plateau, int taille, Point *depart);
+void faireCoup(char **plateau, int taille, int mode, Point *depart);
 Point saisieCoup(int taille);
-int verifieCoup(char **plateau, Point depart, Point arrivee);
-int verifieBlocage(char **plateau, Point depart, Noeud *coupPossibles);
-Noeud* listeCoup(char **plateau, int taille, Point depart);
+int verifieCoup(char **plateau, int mode, Point depart, Point arrivee);
+int verifieBlocage(char **plateau, int mode, Point depart, Noeud *coupPossibles);
+Noeud* listeCoup(char **plateau, int taille, int mode, Point depart);
 void appliqueCoup(char **plateau, Point *depart, Point arrivee);
 
 #endif

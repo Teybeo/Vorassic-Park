@@ -3,7 +3,7 @@
 void menu() {
 
     int continuer = 1;
-    int taille = 5;
+    int taille = 5, mode = 0;
     char choix, tmp;
 
     do {
@@ -22,11 +22,11 @@ void menu() {
 
         if (choix == '1')
 
-            executePartie(taille);
+            executePartie(taille, mode);
 
         else if (choix == '2')
 
-            options(&taille);
+            options(&taille, &mode);
 
         else if (choix == '3')
 
@@ -36,18 +36,26 @@ void menu() {
 
 }
 
-void options(int *taille) {
+void options(int *taille, int *mode) {
 
     int continuer = 1, retour;
     char choix, tampon;
     int temp = *taille;
+    char chaineMode[10] = {0};
+
 
     do {
+
+        if (*mode)
+            strcpy(chaineMode, "Pieuvre");
+        else
+            strcpy(chaineMode, "Serpent");
 
         system("cls");
         printf("          Configuration\n\n");
         printf("    1. Changer taille plateau = %d x %d\n", *taille, *taille);
-        printf("    2. Retour\n");
+        printf("    2. Changer mode jeu = %s\n", chaineMode);
+        printf("    3. Retour\n");
         printf("\n    Que voulez-vous faire ?\n ");
         scanf("%c", &choix);
 
@@ -78,7 +86,13 @@ void options(int *taille) {
 
             } while (retour != 1);
 
-        } else if (choix == '2')
+        }
+        else if (choix == '2') {
+
+            *mode = !*mode;
+
+        }
+        else if (choix == '3')
 
             continuer = 0;
 
