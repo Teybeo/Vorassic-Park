@@ -8,6 +8,6 @@
 #include "header/partie.h"
 
 void menu();
-void options(int *taille, int *mode);
+void options(int *taille, int *mode, int *aleatoire);
 
 #endif

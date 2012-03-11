@@ -3,7 +3,7 @@
 void menu() {
 
     int continuer = 1;
-    int taille = 5, mode = 0;
+    int taille = 5, mode = 0, aleatoire = 0;
     char choix, tmp;
 
     do {
@@ -22,11 +22,11 @@ void menu() {
 
         if (choix == '1')
 
-            executePartie(taille, mode);
+            executePartie(taille, mode, aleatoire);
 
         else if (choix == '2')
 
-            options(&taille, &mode);
+            options(&taille, &mode, &aleatoire);
 
         else if (choix == '3')
 
@@ -36,26 +36,31 @@ void menu() {
 
 }
 
-void options(int *taille, int *mode) {
+void options(int *taille, int *mode, int *aleatoire) {
 
     int continuer = 1, retour;
     char choix, tampon;
     int temp = *taille;
-    char chaineMode[10] = {0};
-
+    char modeJeu[10] = {0};
+    char plateauAleatoire[10] = {0};
 
     do {
 
         if (*mode)
-            strcpy(chaineMode, "Pieuvre");
+            strcpy(modeJeu, "Pieuvre");
         else
-            strcpy(chaineMode, "Serpent");
+            strcpy(modeJeu, "Serpent");
+        if (*aleatoire)
+            strcpy(plateauAleatoire, "Aleatoire");
+        else
+            strcpy(plateauAleatoire, "Fixe");
 
         system("cls");
         printf("          Configuration\n\n");
         printf("    1. Changer taille plateau = %d x %d\n", *taille, *taille);
-        printf("    2. Changer mode jeu = %s\n", chaineMode);
-        printf("    3. Retour\n");
+        printf("    2. Changer mode jeu = %s\n", modeJeu);
+        printf("    3. Changer generation plateau = %s\n", plateauAleatoire);
+        printf("    4. Retour\n");
         printf("\n    Que voulez-vous faire ?\n ");
         scanf("%c", &choix);
 
@@ -92,7 +97,12 @@ void options(int *taille, int *mode) {
             *mode = !*mode;
 
         }
-        else if (choix == '3')
+        else if (choix == '3') {
+
+            *aleatoire = !*aleatoire;
+
+        }
+        else if (choix == '4')
 
             continuer = 0;
 

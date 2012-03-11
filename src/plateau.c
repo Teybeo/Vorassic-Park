@@ -1,21 +1,37 @@
 #include "header/plateau.h"
 
-void initPlateau(char **plateau, int taille) {
+void initPlateau(char **plateau, int taille, int aleatoire) {
 
     int i, j;
 
-    for (i=0 ; i < taille ; i++)
+    if (aleatoire)
+    {
 
-        for (j=0 ; j < taille - i ; j++)
+        srand(time(NULL));
 
-            plateau[i][j] = j + i;
+        for (i=0 ; i < taille ; i++)
+
+            for (j=0 ; j < taille  ; j++)
+
+                plateau[i][j] = rand() % taille;
+
+    }
+    else
+    {
+
+        for (i=0 ; i < taille ; i++)
+
+            for (j=0 ; j < taille - i ; j++)
+
+                plateau[i][j] = j + i;
 
 
-    for (i=taille-1 ; i > 0 ; i--)
+        for (i=taille-1 ; i > 0 ; i--)
 
-        for (j=taille-1 ; j > taille-1 - i ; j--)
+            for (j=taille-1 ; j > taille-1 - i ; j--)
 
-            plateau[i][j] = (taille-1)*2 - (j + i);
+                plateau[i][j] = (taille-1)*2 - (j + i);
+    }
 
     plateau[0][0] = 'J';
     plateau[taille-1][taille-1] = 'R';
@@ -46,8 +62,8 @@ void affichePlateau(char **plateau, int taille) {
             if (plateau[i][j] == 'J' || plateau[i][j] == 'R' || plateau[i][j] == 'j' || plateau[i][j] == 'r')
                 printf("%2c ", plateau[i][j]);
             else
-                //printf("%2d ", plateau[i][j]);
-                printf("   ");
+                printf("%2d ", plateau[i][j]);
+                //printf("   ");
 
         }
 

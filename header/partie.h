@@ -7,7 +7,7 @@
 #include "header/plateau.h"
 #include "header/coup.h"
 
-void executePartie(int taille, int mode);
+void executePartie(int taille, int mode, int aleatoire);
 int finPartie(Point joueur1, Point joueur2);
 void score(char **plateau, int taille);
 

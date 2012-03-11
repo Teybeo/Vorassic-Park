@@ -1,6 +1,6 @@
 #include "header/partie.h"
 
-void executePartie(int taille, int mode) {
+void executePartie(int taille, int mode, int aleatoire) {
 
     int continuer = 1;
     int tour = 1;
@@ -17,7 +17,7 @@ void executePartie(int taille, int mode) {
     plateau = calloc(taille, sizeof(char*));
     for (i=0;i<taille;i++)
         plateau[i] = calloc(taille, sizeof(char));
-    initPlateau(plateau, taille);
+    initPlateau(plateau, taille, aleatoire);
 
     do {
 
