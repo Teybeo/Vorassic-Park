@@ -96,3 +96,19 @@ void affichePlateau(char **plateau, int taille) {
 
 }
 
+void resultat(Joueur *joueur, int nbJoueurs, char **plateau) {
+
+    printf("\nLa partie est finie\n\n");
+
+    int i;
+    for (i=0;i<nbJoueurs;i++) {
+        couleurs(plateau, joueur[i]);
+        printf("    %s   = %d\n", joueur[i].nom, joueur[i].score);
+    }
+
+    textcolor(LIGHTGRAY);
+
+    printf("\nAppuyez sur Entree pour revenir au menu");
+    getchar();
+
+}

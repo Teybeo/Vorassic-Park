@@ -33,7 +33,7 @@ void executePartie(int nbJoueurs, int taille, int mode, int aleatoire, char **no
     } while (continuer);
 
 
-    resultat(joueur, nbJoueurs);
+    resultat(joueur, nbJoueurs, plateau);
 
     for (i=0;i<taille;i++)
         free(plateau[i]);
@@ -121,24 +121,6 @@ Joueur* initJoueurs(int nbJoueurs, char **noms, int taille) {
     }
 
     return tab;
-
-}
-
-void resultat(Joueur *joueur, int nbJoueurs) {
-
-    printf("\nLa partie est finie\n\n    |");
-
-    int i;
-    for (i=0;i<nbJoueurs;i++)
-        printf("    %s    |", joueur[i].nom);
-
-    printf("\n    |");
-
-    for (i=0;i<nbJoueurs;i++)
-        printf("    %d    |", joueur[i].score);
-
-    printf("\n\nAppuyez sur Entree pour revenir au menu");
-    getchar();
 
 }
 
