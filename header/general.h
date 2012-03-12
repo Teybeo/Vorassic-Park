@@ -1,7 +1,9 @@
 #ifndef H_GENERAL
 #define H_GENERAL
 
-#define TAILLE_NOM (10+1)
+/* + 1 car commence a 0
+    + 1 car \0 */
+#define TAILLE_NOM (10+1+1)
 
 typedef struct Point {
 

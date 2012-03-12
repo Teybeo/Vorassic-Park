@@ -47,10 +47,10 @@ void menu() {
 
 void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char ***noms) {
 
-    int continuer = 1, retour, longueur, i;
-    char choix, tampon;
+    int continuer = 1, retour, i;
     int tmpTaille = *taille;
-    char tmpNom[100] = {0};
+    char choix, tampon;
+    char chaine[TAILLE_NOM] = {0};
     char modeJeu[10] = {0};
     char plateauAleatoire[10] = {0};
 
@@ -153,29 +153,28 @@ void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char ***nom
         }
         else if (choix >= '5' && choix < '5' + *nbJoueurs) {
 
-            printf("Entrez un nom de %d lettres max\n", TAILLE_NOM-1);
+            printf("Entrez un nom de %d lettres max\n", TAILLE_NOM-2);
 
             do {
 
-                fgets(tmpNom, 100, stdin);
-                longueur = strlen(tmpNom); // Compte jusqu'a '\n' inclus (ou '\0')
+                fgets(chaine, TAILLE_NOM, stdin);
 
-                if (longueur <= TAILLE_NOM) {
+                char * retourChariot = strchr(chaine, '\n'); // On cherche le '\n'
 
-                    tmpNom[longueur-1] = '\0';
+                if (retourChariot != NULL) { // S'il est présent, on le vire et on valide la chaine
+                    *retourChariot = '\0';
                     break;
+                }
+                else { // Sinon c'est qu'on n'a pas lu tous les éléments du flux, on vide le tampon et on recommence
 
-                } else {
-
-                    printf("Attention, plus de %d lettres ont etes rentrees\n", TAILLE_NOM-1);
+                    printf("Attention, plus de %d lettres ont etes rentrees\n", TAILLE_NOM-2);
                     while ( (tampon = getchar()) != '\n' && tampon != EOF);
 
                 }
 
             } while (1);
 
-
-            strcpy((*noms)[choix - '5'], tmpNom);
+            strcpy((*noms)[choix - '5'], chaine);
 
         }
         else if (choix == '0')
