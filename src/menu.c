@@ -83,7 +83,7 @@ void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char ***nom
 
         if (choix == '1') {
 
-            printf("Entrez une taille entre 5 et 26\n");
+            printf("Entrez une taille entre 3 et 26\n");
 
             do {
 
@@ -92,7 +92,7 @@ void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char ***nom
                 while ( (tampon = getchar()) != '\n' && tampon != EOF);
 
                 if (retour) {
-                    if (tmpTaille >= 5 && tmpTaille <= 26)
+                    if (tmpTaille >= 3 && tmpTaille <= 26)
                         *taille = tmpTaille;
                     else {
                         printf("Valeur invalide, reesayez\n");
