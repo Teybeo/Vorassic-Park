@@ -16,23 +16,13 @@ void executePartie(int nbJoueurs, int taille, int mode, int aleatoire, char **no
     else
         strcpy(modeJeu, "Serpent");
 
-    plateau = initPlateau(taille, aleatoire);
+    plateau = initPlateau(taille, aleatoire, joueur, nbJoueurs);
 
     do {
 
-        system("cls");
-        printf("\nTour numero %d  -  Mode %s\n", tour, modeJeu);
-
-        printf("Scores:\n");
-        for (i=0;i<nbJoueurs;i++)
-            printf("    %s %d\n", joueur[i].nom, joueur[i].score);
-
-        affichePlateau(plateau, taille);
-
-
         joueurActuel = &joueur[ ((tour-1) % nbJoueurs) ];
 
-        printf("C'est au tour de %s\n", joueurActuel->nom);
+        affichage(plateau, taille, tour, modeJeu, nbJoueurs, joueur, *joueurActuel);
 
         faireCoup(plateau, taille, mode, joueurActuel);
 
@@ -48,6 +38,54 @@ void executePartie(int nbJoueurs, int taille, int mode, int aleatoire, char **no
     for (i=0;i<taille;i++)
         free(plateau[i]);
     free(plateau);
+
+}
+
+char** initPlateau(int taille, int aleatoire, Joueur *joueur, int nbJoueurs) {
+
+    int i, j;
+    char **plateau;
+
+    plateau = calloc(taille, sizeof(char*));
+
+    for (i=0;i<taille;i++)
+        plateau[i] = calloc(taille, sizeof(char));
+
+    if (aleatoire)
+    {
+
+        srand(time(NULL));
+
+        for (i=0 ; i < taille ; i++)
+
+            for (j=0 ; j < taille  ; j++)
+
+                plateau[i][j] = rand() % taille;
+
+    }
+    else
+    {
+
+        for (i=0 ; i < taille ; i++)
+
+            for (j=0 ; j < taille - i ; j++)
+
+                plateau[i][j] = j + i;
+
+
+        for (i=taille-1 ; i > 0 ; i--)
+
+            for (j=taille-1 ; j > taille-1 - i ; j--)
+
+                plateau[i][j] = (taille-1)*2 - (j + i);
+    }
+
+    plateau[0][0] = 'J';
+    plateau[taille-1][taille-1] = 'R';
+    plateau[0][taille-1] = 'V';
+    plateau[taille-1][0] = 'B';
+
+    return plateau;
 
 }
 
