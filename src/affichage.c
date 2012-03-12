@@ -28,7 +28,7 @@ void couleurs(char **plateau, Joueur joueur) {
     j = joueur.position.x;
     i = joueur.position.y;
 
-    if (plateau[i][j] == 'j' || plateau[i][j] == 'J')
+    if (plateau[i][j] == 'c' || plateau[i][j] == 'C')
         textcolor(LIGHTCYAN);
     if (plateau[i][j] == 'r' || plateau[i][j] == 'R')
         textcolor(LIGHTRED);
@@ -60,12 +60,12 @@ void affichePlateau(char **plateau, int taille) {
             if (j == 0)
                 printf("%2d |", i);
 
-            if ((plateau[i][j] == 'J' || plateau[i][j] == 'R') || plateau[i][j] == 'j' || plateau[i][j] == 'r' ||
+            if ((plateau[i][j] == 'C' || plateau[i][j] == 'R') || plateau[i][j] == 'c' || plateau[i][j] == 'r' ||
             plateau[i][j] == 'V' || plateau[i][j] == 'B' || plateau[i][j] == 'v' || plateau[i][j] == 'b') {
 
-                if (plateau[i][j] == 'j')
+                if (plateau[i][j] == 'c')
                     textcolor(CYAN);
-                if (plateau[i][j] == 'J')
+                if (plateau[i][j] == 'C')
                     textcolor(LIGHTCYAN);
                 if (plateau[i][j] == 'r')
                     textcolor(RED);

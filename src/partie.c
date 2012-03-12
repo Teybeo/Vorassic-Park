@@ -80,10 +80,11 @@ char** initPlateau(int taille, int aleatoire, Joueur *joueur, int nbJoueurs) {
                 plateau[i][j] = (taille-1)*2 - (j + i);
     }
 
-    plateau[0][0] = 'J';
-    plateau[taille-1][taille-1] = 'R';
-    plateau[0][taille-1] = 'V';
-    plateau[taille-1][0] = 'B';
+    char symbole[4] = {'C', 'R', 'V', 'B'};
+
+    for (i=0;i<nbJoueurs;i++)
+        plateau[joueur[i].position.y][joueur[i].position.x] = symbole[i];
+
 
     return plateau;
 
@@ -107,11 +108,17 @@ Joueur* initJoueurs(int nbJoueurs, char **noms, int taille) {
     tab[1].position.x = taille-1;
     tab[1].position.y = taille-1;
 
-    tab[2].position.x = taille-1;
-    tab[2].position.y = 0;
+    if (nbJoueurs == 3) {
+        tab[2].position.x = taille-1;
+        tab[2].position.y = 0;
+    }
+    if (nbJoueurs == 4) {
+        tab[2].position.x = taille-1;
+        tab[2].position.y = 0;
 
-    tab[3].position.x = 0;
-    tab[3].position.y = taille-1;
+        tab[3].position.x = 0;
+        tab[3].position.y = taille-1;
+    }
 
     return tab;
 
