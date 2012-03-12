@@ -35,7 +35,7 @@ void menu() {
 
         else if (choix == '2')
 
-            options(&taille, &mode, &aleatoire, &nbJoueurs, noms);
+            options(&taille, &mode, &aleatoire, &nbJoueurs, &noms);
 
         else if (choix == '3')
 
@@ -45,7 +45,7 @@ void menu() {
 
 }
 
-void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char **noms) {
+void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char ***noms) {
 
     int continuer = 1, retour, longueur, i;
     char choix, tampon;
@@ -60,6 +60,7 @@ void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char **noms
             strcpy(modeJeu, "Pieuvre");
         else
             strcpy(modeJeu, "Serpent");
+
         if (*aleatoire)
             strcpy(plateauAleatoire, "Aleatoire");
         else
@@ -72,7 +73,7 @@ void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char **noms
         printf("    3. Changer generation plateau = %s\n", plateauAleatoire);
         printf("    4. Changer nombre de joueurs = %d\n", *nbJoueurs);
         for (i=0;i<*nbJoueurs;i++)
-            printf("    %d. Changer nom joueur %d = %s\n", 5+i, i+1, noms[i]);
+            printf("    %d. Changer nom joueur %d = %s\n", 5+i, i+1, (*noms)[i]);
         printf("\n    0. Retour\n");
         printf("\n    Que voulez-vous faire ?\n ");
         scanf("%c", &choix);
@@ -128,11 +129,11 @@ void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char **noms
                 if (retour) {
                     if (tmpTaille >= 2 && tmpTaille <= 10) {
 
-                        realloc(noms, tmpTaille);
+                        *noms = realloc(*noms, sizeof(char*) * tmpTaille);
                         if (tmpTaille > *nbJoueurs)
                             for (i=*nbJoueurs;i<tmpTaille;i++) {
-                                noms[i] = malloc(sizeof(char*) * TAILLE_NOM);
-                                strcpy(noms[i], "Inconnu");
+                                (*noms)[i] = malloc(sizeof(char*) * TAILLE_NOM);
+                                strcpy((*noms)[i], "Inconnu");
                             }
 
                         *nbJoueurs = tmpTaille;
@@ -174,7 +175,7 @@ void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char **noms
             } while (1);
 
 
-            strcpy(noms[choix - '5'], tmpNom);
+            strcpy((*noms)[choix - '5'], tmpNom);
 
         }
         else if (choix == '0')

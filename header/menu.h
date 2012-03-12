@@ -9,6 +9,6 @@
 #include "header/general.h"
 
 void menu();
-void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char **noms);
+void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char ***noms);
 
 #endif
