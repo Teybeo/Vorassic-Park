@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-void initPlateau(char **plateau, int taille, int aleatoire);
+char** initPlateau(int taille, int aleatoire);
 void affichePlateau(char **plateau, int taille);
 
 #endif
