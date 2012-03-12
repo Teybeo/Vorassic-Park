@@ -6,20 +6,21 @@ void affichage(char **plateau, int taille, int tour, char *modeJeu, int nbJoueur
     system("cls");
     printf("\nTour numero %d  -  Mode %s\n", tour, modeJeu);
 
-    printf("Scores:\n");
+    printf("Scores:");
 
     for (i=0;i<nbJoueurs;i++) {
         couleurs(plateau, joueur[i]);
-        printf("    %s %d\n", joueur[i].nom, joueur[i].score);
+        printf("\n    %s %d", joueur[i].nom, joueur[i].score);
+        if (strcmp(joueurActuel.nom, joueur[i].nom) == 0)
+            printf(" <- A ton tour");
     }
     textcolor(LIGHTGRAY);
 
     affichePlateau(plateau, taille);
 
-    printf("C'est au tour de ");
-    couleurs(plateau, joueurActuel);
-    printf("%s\n", joueurActuel.nom);
     textcolor(LIGHTGRAY);
+
+    printf("Entrez un coup : ");
 
 }
 
@@ -43,7 +44,7 @@ void affichePlateau(char **plateau, int taille) {
 
     int i, j;
 
-    printf("\n   |");
+    printf("\n\n   |");
 
     for (i=0 ; i < taille ; i++)
         printf("%2c ", 'A' + i);
@@ -84,8 +85,8 @@ void affichePlateau(char **plateau, int taille) {
                 textcolor(LIGHTGRAY);
             }
             else
-                //printf("%2d ", plateau[i][j]);
-                printf("   ");
+                printf("%2d ", plateau[i][j]);
+                //printf("   ");
 
         }
 
