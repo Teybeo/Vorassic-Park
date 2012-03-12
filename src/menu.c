@@ -10,7 +10,7 @@ void menu() {
     for (i=0;i<nbJoueurs;i++)
         noms[i] = malloc(sizeof(char) * TAILLE_NOM);
 
-    strcpy(noms[0], "Jaune");
+    strcpy(noms[0], "Cyan");
     strcpy(noms[1], "Rouge");
     strcpy(noms[2], "Vert");
     strcpy(noms[3], "Bleu");
@@ -118,7 +118,7 @@ void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char ***nom
         }
         else if (choix == '4') {
 
-            printf("Entrez un nombre entre 2 et 10\n");
+            printf("Entrez un nombre entre 2 et 4\n");
 
             do {
 
