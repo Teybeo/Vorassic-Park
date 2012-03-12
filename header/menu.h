@@ -6,8 +6,9 @@
 #include <stdlib.h>
 
 #include "header/partie.h"
+#include "header/general.h"
 
 void menu();
-void options(int *taille, int *mode, int *aleatoire);
+void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char **noms);
 
 #endif
