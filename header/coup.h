@@ -5,19 +5,18 @@
 #include <stdlib.h>
 
 #include "header/liste.h"
+#include "header/general.h"
 
-typedef struct Point {
+void faireCoup(char **plateau, int taille, int mode, Joueur *depart);
 
-    int x;
-    int y;
-
-} Point;
-
-int faireCoup(char **plateau, int taille, int mode, Point *depart);
 Point saisieCoup(int taille);
+
 int verifieCoup(char **plateau, int mode, Point depart, Point arrivee);
-int verifieBlocage(char **plateau, int mode, Point depart, Noeud *coupPossibles);
-Noeud* listeCoup(int taille, int mode, Point depart);
-void appliqueCoup(char **plateau, Point *depart, Point arrivee);
+
+void chercheBlocage(char **plateau, int mode, Joueur *joueur, Noeud *coupPobles);
+
+Noeud* listeCases(int taille, int mode, Point depart);
+
+void appliqueCoup(char **plateau, Joueur *depart, Point arrivee);
 
 #endif
