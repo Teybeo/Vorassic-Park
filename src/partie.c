@@ -1,55 +1,49 @@
 #include "header/partie.h"
 
-void executePartie(int taille, int mode, int aleatoire) {
+void executePartie(int nbJoueurs, int taille, int mode, int aleatoire, char **noms) {
 
     int continuer = 1;
-    int tour = 1;
-    int joueurActuel;
-    int scoreJ1 = 0, scoreJ2 = 0;
-    int i;
-    Point joueur1;
-    joueur1.x = 0;
-    joueur1.y = 0;
-    Point joueur2;
-    joueur2.x = taille-1;
-    joueur2.y = taille-1;
+    int tour = 1, i;
     char **plateau;
+    Joueur *joueur;
+    Joueur *joueurActuel;
     char modeJeu[10] = {0};
+
+    joueur = initJoueurs(nbJoueurs, noms, taille);
 
     if (mode)
         strcpy(modeJeu, "Pieuvre");
     else
         strcpy(modeJeu, "Serpent");
 
-    plateau = calloc(taille, sizeof(char*));
-    for (i=0;i<taille;i++)
-        plateau[i] = calloc(taille, sizeof(char));
-    initPlateau(plateau, taille, aleatoire);
+    plateau = initPlateau(taille, aleatoire);
 
     do {
 
         system("cls");
-        printf("\nTour numero %d  -  Mode %s", tour, modeJeu);
-        printf("\nScores:\n     J1 %d\n     J2 %d\n", scoreJ1, scoreJ2);
+        printf("\nTour numero %d  -  Mode %s\n", tour, modeJeu);
+
+        printf("Scores:\n");
+        for (i=0;i<nbJoueurs;i++)
+            printf("    %s %d\n", joueur[i].nom, joueur[i].score);
+
         affichePlateau(plateau, taille);
 
-        joueurActuel = ((tour-1) % 2) + 1;
 
-        printf("C'est au tour du joueur %d\n", joueurActuel);
+        joueurActuel = &joueur[ ((tour-1) % nbJoueurs) ];
 
-        if (joueurActuel == 1)
-            scoreJ1 += faireCoup(plateau, taille, mode, &joueur1);
-        else
-            scoreJ2 += faireCoup(plateau, taille, mode, &joueur2);
+        printf("C'est au tour de %s\n", joueurActuel->nom);
+
+        faireCoup(plateau, taille, mode, joueurActuel);
 
         tour++;
 
-        continuer = finPartie(joueur1, joueur2);
+        continuer = finPartie(joueur, nbJoueurs);
 
     } while (continuer);
 
 
-    resultat(scoreJ1, scoreJ2);
+    resultat(joueur, nbJoueurs);
 
     for (i=0;i<taille;i++)
         free(plateau[i]);
@@ -57,25 +51,59 @@ void executePartie(int taille, int mode, int aleatoire) {
 
 }
 
-void resultat(int scoreJ1, int scoreJ2) {
+Joueur* initJoueurs(int nbJoueurs, char **noms, int taille) {
 
-    printf("\nLa partie est finie\n");
+    Joueur *tab;
+    tab = malloc(sizeof(Joueur) * nbJoueurs);
+    int i;
 
-    if (scoreJ1 == scoreJ2)
-        printf("Egalite a %d points\n", scoreJ1);
-    else if (scoreJ1 > scoreJ2)
-        printf("Le joueur 1 a gagne de %d a %d\n", scoreJ1, scoreJ2);
-    else
-        printf("Le joueur 2 a gagne de %d a %d\n", scoreJ2, scoreJ1);
+    for (i=0;i<nbJoueurs;i++) {
+        tab[i].score = 0;
+        tab[i].blocage = 0;
+        strcpy(tab[i].nom, noms[i]);
+    }
 
-    printf("\nAppuyez sur Entree pour revenir au menu");
+    tab[0].position.x = 0;
+    tab[0].position.y = 0;
+
+    tab[1].position.x = taille-1;
+    tab[1].position.y = taille-1;
+
+    tab[2].position.x = taille-1;
+    tab[2].position.y = 0;
+
+    tab[3].position.x = 0;
+    tab[3].position.y = taille-1;
+
+    return tab;
+
+}
+
+void resultat(Joueur *joueur, int nbJoueurs) {
+
+    printf("\nLa partie est finie\n\n    |");
+
+    int i;
+    for (i=0;i<nbJoueurs;i++)
+        printf("    %s    |", joueur[i].nom);
+
+    printf("\n    |");
+
+    for (i=0;i<nbJoueurs;i++)
+        printf("    %d    |", joueur[i].score);
+
+    printf("\n\nAppuyez sur Entree pour revenir au menu");
     getchar();
 
 }
 
-int finPartie(Point joueur1, Point joueur2) {
+int finPartie(Joueur *tab, int nbJoueurs) {
 
-    if (joueur1.x == -1 && joueur1.y == -1 && joueur2.x == -1 && joueur2.y == -1)
+    int i, nbBlocages = 0;
+    for (i=0;i<nbJoueurs;i++)
+        nbBlocages += tab[i].blocage;
+
+    if (nbBlocages == nbJoueurs)
         return 0;
     else
         return 1;
