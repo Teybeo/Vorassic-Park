@@ -1,11 +1,15 @@
 #include "header/coup.h"
 
-
-/* Effectue la saisie, l'analyse et l'application d'un coup
-    Attend :
-        Un plateau, sa taille, le mode de jeu et un point de depart
-    Retourne :
-        La valeur de la case acquise par ce coup */
+/** \fn void faireCoup(char **plateau, int taille, int mode, Joueur *joueur)
+ * \brief Effectue la saisie, l'analyse et l'application d'un coup
+ *
+ * \param plateau Le plateau de jeu
+ * \param taille La taille du plateau
+ * \param mode Le mode de jeu (Pieuvre/Serpent)
+ * \param joueur Le joueur actuellement en train de jouer
+ *
+ *
+ */
 
 void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
 
@@ -51,14 +55,19 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
 
     }
 }
+/** \fn int verifieCoup(char **plateau, int mode, Point depart, Point arrivee)
+ *\brief  VÃ©rifie la validitÃ© d'un coup
 
-/* Analyse la distance du coup joué, la disponibilité de la case et la
-    conformité avec le mode de jeu actuel
-    Attend :
-        Le plateau, le mode de jeu, le point de départ et d'arrivée
-    Retourne :
-        0 si le coup est valide, sinon un code d'erreur*/
-
+  *  Analyse la distance du coup jouÃ©, la disponibilitÃ© de la case et la
+    conformitÃ© avec le mode de jeu actuel
+ *
+ * \param Le plateau de jeu
+ * \param Le mode de jeu
+  * \param Un point de dÃ©part
+  *\param Un point d'arrivÃ©e
+ * \return 0 si le coup est valide, sinon un code d'erreur
+ *
+ */
 int verifieCoup(char **plateau, int mode, Point depart, Point arrivee) {
 
     int deltaX = arrivee.x - depart.x;
@@ -70,11 +79,11 @@ int verifieCoup(char **plateau, int mode, Point depart, Point arrivee) {
     {
         if (mode == 0 && delta == 2)
 
-            return 3; // Déplacement en diagonale
+            return 3; // DÃ©placement en diagonale
 
         else if (delta > 1)
 
-            return 4; // Déplacement de 3 cases ou plus
+            return 4; // DÃ©placement de 3 cases ou plus
 
         else if (destination != 'C' && destination != 'R' && destination != 'c' && destination != 'r' &&
                   destination != 'V' && destination != 'v' && destination != 'B' && destination != 'b')
@@ -82,19 +91,24 @@ int verifieCoup(char **plateau, int mode, Point depart, Point arrivee) {
             return 0; // Case libre
 
         else
-            return 2; // Case occupée
+            return 2; // Case occupÃ©e
     }
-    else // Sinon il n'y a pas eu de déplacement
+    else // Sinon il n'y a pas eu de dÃ©placement
         return 1;
 
 }
 
 
-/* Cherche si un joueur est bloqué à partir de la liste des cases adjacentes
-    et met ses coordonnées a -1 s'il l'est
-    Attend :
-        Un plateau, le mode de jeu, un point de depart et une liste de coups */
+/** \fn void chercheBlocage(char **plateau, int mode, Joueur *joueur, Noeud *casesAdjacentes)
+    \brief Cherche si un joueur est bloquÃ©
 
+    Parcours la liste des cases adjacentes et si aucune case libre n'est trouvÃ©e,
+    la variable blocage du joueur est passÃ©e Ã  1
+
+    \param plateau Le plateau de jeu
+    \param mode Le mode de jeu (Pieuvre/Serpent)
+    \param joueur Le joueur concernÃ©
+    \param casesAdjacentes Une liste des cases proches*/
 void chercheBlocage(char **plateau, int mode, Joueur *joueur, Noeud *casesAdjacentes) {
 
     Noeud *tmp = casesAdjacentes;
@@ -115,7 +129,7 @@ void chercheBlocage(char **plateau, int mode, Joueur *joueur, Noeud *casesAdjace
 
 }
 
-/* Demande une saisie à l'utilisateur et l'analyse. Affiche un message indiquant
+/* Demande une saisie Ã  l'utilisateur et l'analyse. Affiche un message indiquant
     si la saisie n'a pas pu etre interprete ou si elle est hors du plateau
     Attend :
         La taille du plateau
@@ -194,9 +208,9 @@ Point saisieCoup(int taille) {
     return coup;
 }
 
-/* Crée une liste des cases adjacentes à un certain point
+/* CrÃ©e une liste des cases adjacentes Ã  un certain point
     Attend :
-        La taille du plateau, le mode de jeu et un point de départ
+        La taille du plateau, le mode de jeu et un point de dÃ©part
     Retourne :
         La liste des cases adjacentes */
 
@@ -235,14 +249,14 @@ Noeud* listeCases(int taille, int mode, Point depart) {
 
 /* Applique le coup au plateau et met a jour la position du joueur
     Attend :
-        Un plateau, un point de départ et d'arrivée */
+        Un plateau, un point de dÃ©part et d'arrivÃ©e */
 
 void appliqueCoup(char **plateau, Joueur *depart, Point arrivee) {
 
     depart->score += plateau[arrivee.y][arrivee.x];
 
-    /* Le J ou R se trouvant a la case depart est copié a la case d'arrivée
-       La valeur de la case de départ est décalé de 32 pour le passer en minuscule */
+    /* Le J ou R se trouvant a la case depart est copiÃ© a la case d'arrivÃ©e
+       La valeur de la case de dÃ©part est dÃ©calÃ© de 32 pour le passer en minuscule */
     plateau[arrivee.y][arrivee.x] = plateau[depart->position.y][depart->position.x];
     plateau[depart->position.y][depart->position.x] += 32;
 

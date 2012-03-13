@@ -7,10 +7,14 @@
 
 #include "header/affichage.h"
 #include "header/coup.h"
+#include "header/bot.h"
 
 void executePartie(int nbJoueurs, int taille, int mode, int aleatoire, char **noms);
+
 char** initPlateau(int taille, int aleatoire, Joueur *joueur, int nbJoueurs);
-Joueur* initJoueurs(int nbJoueurs, char **noms, int taille);
+
+Joueur* initJoueurs(int nbJoueurs, int nbBots, char **noms, int taille);
+
 int finPartie(Joueur *tab, int nbJoueurs);
 
 

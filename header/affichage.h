@@ -9,6 +9,13 @@
 
 #include "header/general.h"
 
+/** \file affichage.h
+ *
+ * \brief Gère l'affichage lors d'une partie
+ *
+ */
+
+
 void affichage(char **plateau, int taille, int tour, char *modeJeu, int nbJoueurs, Joueur *joueur, Joueur joueurActuel);
 void affichePlateau(char **plateau, int taille);
 void resultat(Joueur *joueur, int nbJoueurs, char **plateau);

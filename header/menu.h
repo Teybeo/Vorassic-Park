@@ -8,6 +8,12 @@
 #include "header/partie.h"
 #include "header/general.h"
 
+/** \file menu.c
+ * \brief Menus
+ *
+ */
+
+
 void menu();
 void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char ***noms);
 
