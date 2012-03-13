@@ -8,9 +8,8 @@ void executePartie(int nbJoueurs, int taille, int mode, int aleatoire, char **no
     Joueur *joueur;
     Joueur *joueurActuel;
     char modeJeu[10] = {0};
-    int nbBots = 1;
 
-    joueur = initJoueurs(nbJoueurs, nbBots, noms, taille);
+    joueur = initJoueurs(nbJoueurs, noms, taille);
 
     if (mode)
         strcpy(modeJeu, "Pieuvre");
@@ -25,10 +24,7 @@ void executePartie(int nbJoueurs, int taille, int mode, int aleatoire, char **no
 
         affichage(plateau, taille, tour, modeJeu, nbJoueurs, joueur, *joueurActuel);
 
-        if (joueurActuel->estBot)
-            botCoup(plateau, taille, mode, joueurActuel);
-        else
-            faireCoup(plateau, taille, mode, joueurActuel);
+        faireCoup(plateau, taille, mode, joueurActuel);
 
         tour++;
 
@@ -94,7 +90,7 @@ char** initPlateau(int taille, int aleatoire, Joueur *joueur, int nbJoueurs) {
 
 }
 
-Joueur* initJoueurs(int nbJoueurs, int nbBots, char **noms, int taille) {
+Joueur* initJoueurs(int nbJoueurs, char **noms, int taille) {
 
     Joueur *tab;
     tab = malloc(sizeof(Joueur) * nbJoueurs);
@@ -104,21 +100,8 @@ Joueur* initJoueurs(int nbJoueurs, int nbBots, char **noms, int taille) {
         tab[i].score = 0;
         tab[i].blocage = 0;
         strcpy(tab[i].nom, noms[i]);
-        tab[i].estBot = 0;
     }
 
-   if (nbBots == 2) {
-
-        tab[0].estBot = 1;
-        tab[1].estBot = 1;
-        strcpy(tab[0].nom,"Bot Cyan");
-        strcpy(tab[1].nom,"Bot Rouge");
-
-   } else if (nbBots == 1) {
-
-        tab[1].estBot = 1;
-        strcpy(tab[1].nom,"Bot Rouge");
-   }
 
     tab[0].position.x = 0;
     tab[0].position.y = 0;
