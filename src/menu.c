@@ -3,17 +3,17 @@
 void menu() {
 
     int continuer = 1;
-    int taille = 5, mode = 0, aleatoire = 0, nbJoueurs = 4, i;
+    int taille = 5, mode = 0, aleatoire = 0, nbJoueurs = 2, i;
     char choix, tmp;
+    char nomsDefault[4][TAILLE_NOM] = {"Cyan", "Rouge", "Vert", "Bleu"};
     char **noms;
-    noms = malloc(sizeof(char*) * nbJoueurs);
-    for (i=0;i<nbJoueurs;i++)
-        noms[i] = malloc(sizeof(char) * TAILLE_NOM);
 
-    strcpy(noms[0], "Cyan");
-    strcpy(noms[1], "Rouge");
-    strcpy(noms[2], "Vert");
-    strcpy(noms[3], "Bleu");
+    noms = malloc(sizeof(char*) * nbJoueurs);
+    for (i=0;i<nbJoueurs;i++) {
+        noms[i] = malloc(sizeof(char) * TAILLE_NOM);
+        strcpy(noms[i], nomsDefault[i]);
+    }
+
 
     do {
 
