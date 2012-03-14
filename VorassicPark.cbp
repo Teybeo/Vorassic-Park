@@ -31,7 +31,43 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="main.c">
+		<Linker>
+			<Add library="libconio" />
+		</Linker>
+		<Unit filename="header\affichage.h" />
+		<Unit filename="header\bot.h" />
+		<Unit filename="header\coup.h" />
+		<Unit filename="header\general.h" />
+		<Unit filename="header\liste.h" />
+		<Unit filename="header\listeMouvementNote.h" />
+		<Unit filename="header\listeNote.h" />
+		<Unit filename="header\menu.h" />
+		<Unit filename="header\partie.h" />
+		<Unit filename="src\affichage.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\bot.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\coup.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\liste.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\listeMouvementNote.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\listeNote.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\partie.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>

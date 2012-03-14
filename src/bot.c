@@ -2,36 +2,50 @@
 
 Point botCoup(char **plateau, int taille, int mode, Joueur *depart) {
 
-    NoeudMouvmt *coups = NULL;
-    NoeudMouvmtNote *coupsNotes = NULL;
+    int i, j;
+    Point coup;
+    Noeud *coups = NULL;
+    NoeudCoupNote *coupsNotes = NULL;
+    char **plateauTemp = malloc(sizeof(char*) * taille);
+    for (i=0;i<taille;i++) {
+        plateauTemp[i] = malloc(sizeof(char) * taille);
+        for (j=0;j<taille;j++)
+           plateauTemp[i][j] = plateau[i][j];
+    }
 
-    int prof = 3;
+    int prof = 1;
 
-    coups = listeMouvmt(coups, depart->position, taille, mode);
+    coups = listeCoups(coups, depart->position, plateauTemp, taille, mode);
 
     while (coups != NULL) {
 
-        effectueCoup(plateau, coups->depart, coups->arrivee);
+        effectueCoup(plateauTemp, depart->position, coups->pos);
 
-        coupsNotes = ajoutFinMouvmtNote(coupsNotes, coups->depart, coups->arrivee, MinMax(plateau, taille, prof, MIN));
+        coupsNotes = ajoutFinCoupNote(coupsNotes, coups->pos, MinMax(plateauTemp, taille, mode, prof, MIN));
 
-        effectueCoup(plateau, coups->arrivee, coups->depart);
+        effectueCoup(plateauTemp, coups->pos, depart->position);
 
         coups = coups->suivant;
+    }
+
+    coup = meilleurCoup(coupsNotes);
+    if (verifieCoup(plateau, mode, depart->position, coup) == 0) {
+        effectueCoup(plateau, depart->position, coup);
+        depart->position = coup;
     }
 
 }
 
 void effectueCoup(char **plateau, Point depart, Point arrivee) {
 
-    plateau[arrivee.x][arrivee.y] =  plateau[depart.y][depart.x];
-    plateau[depart.y][depart.x] -= 32;
+    plateau[arrivee.y][arrivee.x] = plateau[depart.y][depart.x];
+    plateau[depart.y][depart.x] += 32;
 }
 
 
-int MinMax(char **plateau, int taille, int prof, int etage) {
+int MinMax(char **plateau, int taille, int mode, int prof, int etage) {
 
-    NoeudMouvmt *coups = NULL;
+    Noeud *coups = NULL;
     NoeudNote *notes = NULL;
 
     int finPartie;
@@ -46,17 +60,17 @@ int MinMax(char **plateau, int taille, int prof, int etage) {
 
     else {
 
-        coups = listeMouvmt(coups, depart, taille, etage);
+        coups = listeCoups(coups, depart, plateau, taille, mode);
 
         while (coups != NULL) {
 
-            effectueCoup(plateau, coups->depart, coups->arrivee);
+            effectueCoup(plateau, depart, coups->pos);
 
-            notes = ajoutTeteNote(notes, MinMax(plateau, taille, prof-1, -etage));
+            notes = ajoutTeteNote(notes, MinMax(plateau, taille, mode, prof-1, !etage));
 
-            effectueCoup(plateau, coups->arrivee, coups->depart);
+            effectueCoup(plateau, coups->pos, depart);
 
-            coups = supprTeteMouvmt(coups);
+            coups = supprTete(coups);
 
         }
 
@@ -152,21 +166,24 @@ Point trouveJoueur(char** plateau, int taille, int etage) {
 
 }
 
-NoeudMouvmt* listeMouvmt(NoeudMouvmt* teteliste, Point depart, int taille, int mode) {
+/* Crée une liste des coups jouables à partir d'un point
+    Utilise une liste des cases adjacentes et la fonction verifieCoup */
+Noeud* listeCoups(Noeud* coups, Point depart, char** plateau, int taille, int mode) {
 
     Noeud *cases = NULL, *tmp = NULL;
-    Point arrivee;
+
     cases = listeCases(taille, mode, depart);
 
     tmp = cases;
     while (tmp != NULL) {
-        arrivee.x = tmp->x;
-        arrivee.y = tmp->y;
-        teteliste = ajoutFinMouvmt(teteliste, depart, arrivee);
+
+        if (verifieCoup(plateau, mode, depart, tmp->pos) == 0)
+            coups = ajoutFin(coups, tmp->pos);
         tmp = tmp->suivant;
+
     }
 
-    return teteliste;
+    return coups;
 }
 
 
@@ -203,3 +220,26 @@ int minNote(NoeudNote *liste) {
     return mini;
 
 }
+
+Point meilleurCoup(NoeudCoupNote *liste) {
+
+    NoeudCoupNote maxi;
+    maxi.note = EVAL_MIN;
+
+    NoeudCoupNote *tmp = liste;
+
+    while (tmp != NULL) {
+
+        if (tmp->note >= maxi.note) {
+            maxi.pos = tmp->pos;
+            maxi.note = tmp->note;
+
+        }
+
+        tmp = supprTeteCoupNote(tmp);
+    }
+
+    return maxi.pos;
+
+}
+

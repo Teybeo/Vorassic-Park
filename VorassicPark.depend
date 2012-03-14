@@ -1,0 +1,88 @@
+# depslib dependency file v1.0
+1331765874 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\bot.c
+	"header/bot.h"
+
+1331761755 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\bot.h
+	"header/general.h"
+	"header/liste.h"
+	"header/listeNote.h"
+	"header/listeCoupNote.h"
+	"header/partie.h"
+
+1331676870 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\general.h
+
+1331741937 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\liste.h
+	<stdio.h>
+	<stdlib.h>
+	"header/general.h"
+
+1331673595 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\listenote.h
+	<stdio.h>
+	<stdlib.h>
+
+1331673595 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\listemouvementnote.h
+	<stdio.h>
+	<stdlib.h>
+	"header/general.h"
+
+1331676894 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\partie.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"header/affichage.h"
+	"header/coup.h"
+	"header/bot.h"
+
+1331601167 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\affichage.h
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<conio2.h>
+	"header/general.h"
+
+1331601167 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\coup.h
+	<stdio.h>
+	<stdlib.h>
+	"header/liste.h"
+	"header/general.h"
+
+1331574573 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\affichage.c
+	"header/affichage.h"
+
+1331676924 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\partie.c
+	"header/partie.h"
+
+1331601167 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\menu.c
+	"header/menu.h"
+
+1331601167 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\menu.h
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	"header/partie.h"
+	"header/general.h"
+
+1331244254 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\main.c
+	"header/menu.h"
+
+1331673595 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\listenote.c
+	"header/listeNote.h"
+
+1331673595 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\listemouvementnote.c
+	"header/listeMouvementNote.h"
+
+1331742010 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\liste.c
+	"header/liste.h"
+
+1331742767 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\coup.c
+	"header/coup.h"
+
+1331761538 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\listecoupnote.c
+	"header/listeCoupNote.h"
+
+1331761469 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\listecoupnote.h
+	<stdio.h>
+	<stdlib.h>
+	"header/general.h"
+

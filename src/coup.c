@@ -116,8 +116,8 @@ void chercheBlocage(char **plateau, int mode, Joueur *joueur, Noeud *casesAdjace
 
     while (tmp != NULL) {
 
-        coup.x = tmp->x;
-        coup.y = tmp->y;
+        coup.x = tmp->pos.x;
+        coup.y = tmp->pos.y;
 
         if (verifieCoup(plateau, mode, joueur->position, coup) == 0)
             return;
@@ -217,30 +217,53 @@ Point saisieCoup(int taille) {
 Noeud* listeCases(int taille, int mode, Point depart) {
 
     Noeud *liste = NULL;
+    Point tmp;
+    tmp.x = tmp.y = 0;
 
-    if (depart.y > 0) // Haut
-        liste = ajoutFin(liste, depart.x, depart.y - 1);
-    if (depart.y < taille-1) // Bas
-        liste = ajoutFin(liste, depart.x, depart.y + 1);
-
+    if (depart.y > 0) { // Haut
+        tmp.x = depart.x;
+        tmp.y = depart.y - 1;
+        liste = ajoutFin(liste, tmp);
+    }
+    if (depart.y < taille-1) { // Bas
+        tmp.x = depart.x;
+        tmp.y = depart.y + 1;
+        liste = ajoutFin(liste, tmp);
+    }
     if (depart.x > 0) {
         // Gauche
-        liste = ajoutFin(liste, depart.x - 1, depart.y);
+        tmp.x = depart.x - 1;
+        tmp.y = depart.y;
+        liste = ajoutFin(liste, tmp);
 
-        if (mode && depart.y > 0) // Gauche / Haut
-            liste = ajoutFin(liste, depart.x - 1, depart.y - 1);
-        if (mode && depart.y < taille-1) // Gauche / Bas
-            liste = ajoutFin(liste, depart.x - 1, depart.y + 1);
+        if (mode && depart.y > 0) { // Gauche / Haut
+            tmp.x = depart.x - 1;
+            tmp.y = depart.y - 1;
+            liste = ajoutFin(liste, tmp);
+        }
+        if (mode && depart.y < taille-1) { // Gauche / Bas
+            tmp.x = depart.x - 1;
+            tmp.y = depart.y + 1;
+            liste = ajoutFin(liste, tmp);
+        }
 
     }
     if (depart.x < taille-1) {
         // Droite
-        liste = ajoutFin(liste, depart.x + 1, depart.y);
+        tmp.x = depart.x + 1;
+        tmp.y = depart.y;
+        liste = ajoutFin(liste, tmp);
 
-        if (mode && depart.y > 0) // Droite / Haut
-            liste = ajoutFin(liste, depart.x + 1, depart.y - 1);
-        if (mode && depart.y < taille-1) // Droite / Bas
-            liste = ajoutFin(liste, depart.x + 1, depart.y + 1);
+        if (mode && depart.y > 0) { // Droite / Haut
+            tmp.x = depart.x + 1;
+            tmp.y = depart.y - 1;
+            liste = ajoutFin(liste, tmp);
+        }
+        if (mode && depart.y < taille-1) { // Droite / Bas
+            tmp.x = depart.x + 1;
+            tmp.y = depart.y + 1;
+            liste = ajoutFin(liste, tmp);
+        }
 
     }
 
