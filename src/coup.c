@@ -86,7 +86,7 @@ int verifieCoup(char **plateau, int mode, Point depart, Point arrivee) {
             return 4; // Déplacement de 3 cases ou plus
 
         else if (destination != 'C' && destination != 'R' && destination != 'c' && destination != 'r' &&
-                  destination != 'V' && destination != 'v' && destination != 'B' && destination != 'b')
+                  destination != 'V' && destination != 'v' && destination != 'B' && destination != 'b' && destination != 'x')
 
             return 0; // Case libre
 

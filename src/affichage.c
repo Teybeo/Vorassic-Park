@@ -97,6 +97,8 @@ void affichePlateau(char **plateau, int taille) {
 
 }
 
+
+
 void resultat(Joueur *joueur, int nbJoueurs, char **plateau) {
 
     printf("\nLa partie est finie\n\n");

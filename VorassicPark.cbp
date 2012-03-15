@@ -39,7 +39,7 @@
 		<Unit filename="header\coup.h" />
 		<Unit filename="header\general.h" />
 		<Unit filename="header\liste.h" />
-		<Unit filename="header\listeMouvementNote.h" />
+		<Unit filename="header\listeCoupNote.h" />
 		<Unit filename="header\listeNote.h" />
 		<Unit filename="header\menu.h" />
 		<Unit filename="header\partie.h" />
@@ -55,7 +55,7 @@
 		<Unit filename="src\liste.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src\listeMouvementNote.c">
+		<Unit filename="src\listeCoupNote.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src\listeNote.c">

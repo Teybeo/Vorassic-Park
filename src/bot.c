@@ -13,7 +13,7 @@ Point botCoup(char **plateau, int taille, int mode, Joueur *depart) {
            plateauTemp[i][j] = plateau[i][j];
     }
 
-    int prof = 1;
+    int prof = PROF_MAX;
 
     coups = listeCoups(coups, depart->position, plateauTemp, taille, mode);
 
@@ -21,26 +21,31 @@ Point botCoup(char **plateau, int taille, int mode, Joueur *depart) {
 
         effectueCoup(plateauTemp, depart->position, coups->pos);
 
+        printf("\nCoup %d, %d", coups->pos.x, coups->pos.y);
+        //affichePlateauDebug(plateau, taille, prof);
+
         coupsNotes = ajoutFinCoupNote(coupsNotes, coups->pos, MinMax(plateauTemp, taille, mode, prof, MIN));
 
-        effectueCoup(plateauTemp, coups->pos, depart->position);
+        effaceCoup(plateauTemp, depart->position, coups->pos);
 
         coups = coups->suivant;
     }
 
-    coup = meilleurCoup(coupsNotes);
-    if (verifieCoup(plateau, mode, depart->position, coup) == 0) {
-        effectueCoup(plateau, depart->position, coup);
-        depart->position = coup;
+    if (coupsNotes != NULL) {
+        coup = meilleurCoup(coupsNotes);
+        if (verifieCoup(plateau, mode, depart->position, coup) == 0) {
+            effectueCoup(plateau, depart->position, coup);
+            depart->position = coup;
+        }
+    } else {
+        printf("\nLe bot est bloque, il passe son tour");
+
+        depart->blocage = 1;
     }
+getchar();
 
 }
 
-void effectueCoup(char **plateau, Point depart, Point arrivee) {
-
-    plateau[arrivee.y][arrivee.x] = plateau[depart.y][depart.x];
-    plateau[depart.y][depart.x] += 32;
-}
 
 
 int MinMax(char **plateau, int taille, int mode, int prof, int etage) {
@@ -48,28 +53,36 @@ int MinMax(char **plateau, int taille, int mode, int prof, int etage) {
     Noeud *coups = NULL;
     NoeudNote *notes = NULL;
 
-    int finPartie;
+    int finPartie, i;
 
     Point depart = trouveJoueur(plateau, taille, etage);
 
     finPartie = victoireDefaite(plateau, taille, etage);
 
-    if (prof == 0 || finPartie == 1 || finPartie == -1)
-
+    if (prof == 0 || finPartie == 1 || finPartie == -1) {
+            affichePlateauDebug(plateau, taille, prof);
         return evaluation(plateau, taille, etage);
+    }
 
     else {
+        printf("\n");
 
         coups = listeCoups(coups, depart, plateau, taille, mode);
 
         while (coups != NULL) {
 
+            affichePlateauDebug(plateau, taille, prof);
+            for (i=PROF_MAX;i>=prof;i--)
+                printf("   ");
+
             effectueCoup(plateau, depart, coups->pos);
+
+            printf("Coup %d, %d", coups->pos.x, coups->pos.y, prof);
 
             notes = ajoutTeteNote(notes, MinMax(plateau, taille, mode, prof-1, !etage));
 
-            effectueCoup(plateau, coups->pos, depart);
-
+            effaceCoup(plateau, depart, coups->pos);
+            affichePlateauDebug(plateau, taille, prof);
             coups = supprTete(coups);
 
         }
@@ -82,10 +95,25 @@ int MinMax(char **plateau, int taille, int mode, int prof, int etage) {
         return minNote(notes);
 }
 
+void effaceCoup(char **plateau, Point depart, Point arrivee) {
+
+
+    plateau[depart.y][depart.x] = plateau[arrivee.y][arrivee.x];
+    plateau[arrivee.y][arrivee.x] = 0;
+
+
+}
+
+void effectueCoup(char **plateau, Point depart, Point arrivee) {
+
+    plateau[arrivee.y][arrivee.x] = plateau[depart.y][depart.x];
+    plateau[depart.y][depart.x] += 32;
+}
+
 int evaluation(char **plateau, int taille, int etage) {
 
     int i, j;
-    int scoreBot, scoreAdverse;
+    int scoreBot = 0, scoreAdverse = 0;
 
     for (i=0;i<taille;i++)
 
@@ -98,6 +126,7 @@ int evaluation(char **plateau, int taille, int etage) {
                 scoreAdverse++;
         }
 
+    printf(" = %d\n", scoreAdverse - scoreBot);
     return scoreAdverse - scoreBot;
 }
 
@@ -123,10 +152,10 @@ int victoireDefaite(char **plateau, int taille, int etage) {
 
             for (j=0;j<taille;j++) {
 
-                if (plateau[i][j] == carBot || plateau[i][j] == carBot - 32)
+                if (plateau[i][j] == carBot || plateau[i][j] == carBot + 32)
                     scoreBot++;
 
-                else if (plateau[i][j] == carAdverse || plateau[i][j] == carAdverse- 32)
+                else if (plateau[i][j] == carAdverse || plateau[i][j] == carAdverse + 32)
                     scoreAdverse++;
 
             }
@@ -147,7 +176,7 @@ Point trouveJoueur(char** plateau, int taille, int etage) {
 
     int i, j, car;
     Point pos;
-    if (etage == MAX)
+    if (etage == MIN)
         car = 'R';
     else
         car = 'C';
@@ -163,7 +192,8 @@ Point trouveJoueur(char** plateau, int taille, int etage) {
                 return pos;
 
             }
-
+        printf("ERREUR joueur %c non trouve\n", car);
+        affichePlateau(plateau, taille);
 }
 
 /* Crée une liste des coups jouables à partir d'un point
@@ -243,3 +273,66 @@ Point meilleurCoup(NoeudCoupNote *liste) {
 
 }
 
+
+void affichePlateauDebug(char **plateau, int taille, int prof) {
+
+    int i, j, k;
+    printf("prof %d\n", prof);
+    for (i=PROF_MAX;i>prof;i--)
+        printf("     ");
+    printf("   |");
+
+    for (i=0 ; i < taille ; i++)
+        printf("%2c ", 'A' + i);
+    printf("\n");
+
+    for (i=PROF_MAX;i>prof;i--)
+        printf("     ");
+
+    for (i=0 ; i < taille+1 ; i++)
+        printf("---");
+    printf("\n");
+
+    for (i=0 ; i < taille ; i++)
+    {
+        for (k=PROF_MAX;k>prof;k--)
+            printf("     ");
+
+        for (j=0 ; j < taille ; j++)
+        {
+            if (j == 0)
+                printf("%2d |", i);
+
+            if ((plateau[i][j] == 'C' || plateau[i][j] == 'R') || plateau[i][j] == 'c' || plateau[i][j] == 'r' ||
+            plateau[i][j] == 'V' || plateau[i][j] == 'B' || plateau[i][j] == 'v' || plateau[i][j] == 'b') {
+
+                if (plateau[i][j] == 'c')
+                    textcolor(CYAN);
+                if (plateau[i][j] == 'C')
+                    textcolor(LIGHTCYAN);
+                if (plateau[i][j] == 'r')
+                    textcolor(RED);
+                if (plateau[i][j] == 'R')
+                    textcolor(LIGHTRED);
+                if (plateau[i][j] == 'v')
+                    textcolor(GREEN);
+                if (plateau[i][j] == 'V')
+                    textcolor(LIGHTGREEN);
+                if (plateau[i][j] == 'b')
+                    textcolor(BLUE);
+                if (plateau[i][j] == 'B')
+                    textcolor(LIGHTBLUE);
+
+                printf("%2c ", plateau[i][j]);
+                textcolor(LIGHTGRAY);
+            }
+            else
+                printf("%2d ", plateau[i][j]);
+                //printf("   ");
+
+        }
+
+        printf("\n");
+    }
+
+}

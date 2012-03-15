@@ -107,18 +107,7 @@ Joueur* initJoueurs(int nbJoueurs, int nbBots, char **noms, int taille) {
         tab[i].estBot = 0;
     }
 
-    if (nbBots == 2) {
 
-        tab[0].estBot = 1;
-        tab[1].estBot = 1;
-        strcpy(tab[0].nom,"Bot Cyan");
-        strcpy(tab[1].nom,"Bot Rouge");
-
-    } else if (nbBots == 1) {
-
-        tab[1].estBot = 1;
-        strcpy(tab[1].nom,"Bot Rouge");
-    }
 
     tab[0].position.x = 0;
     tab[0].position.y = 0;
@@ -136,6 +125,20 @@ Joueur* initJoueurs(int nbJoueurs, int nbBots, char **noms, int taille) {
 
         tab[3].position.x = 0;
         tab[3].position.y = taille-1;
+    }
+
+    if (nbBots == 2) {
+
+        tab[0].estBot = 1;
+        tab[1].estBot = 1;
+        strcpy(tab[0].nom,"Bot Cyan");
+        strcpy(tab[1].nom,"Bot Rouge");
+
+    } else if (nbBots == 1) {
+
+        tab[0].estBot = 1;
+        tab[0].position.x = 0;
+        strcpy(tab[0].nom,"Bot Rouge");
     }
 
     return tab;
