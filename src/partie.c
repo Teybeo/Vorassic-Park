@@ -136,9 +136,8 @@ Joueur* initJoueurs(int nbJoueurs, int nbBots, char **noms, int taille) {
 
     } else if (nbBots == 1) {
 
-        tab[0].estBot = 1;
-        tab[0].position.x = 0;
-        strcpy(tab[0].nom,"Bot Rouge");
+        tab[1].estBot = 1;
+        strcpy(tab[1].nom,"Bot Rouge");
     }
 
     return tab;

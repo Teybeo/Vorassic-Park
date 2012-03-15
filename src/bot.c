@@ -13,20 +13,21 @@ Point botCoup(char **plateau, int taille, int mode, Joueur *depart) {
            plateauTemp[i][j] = plateau[i][j];
     }
 
-    int prof = PROF_MAX;
-
     coups = listeCoups(coups, depart->position, plateauTemp, taille, mode);
 
     while (coups != NULL) {
 
+        printf("\nCoup %d, %d prof 0", coups->pos.x, coups->pos.y);
+
         effectueCoup(plateauTemp, depart->position, coups->pos);
 
-        printf("\nCoup %d, %d", coups->pos.x, coups->pos.y);
-        //affichePlateauDebug(plateau, taille, prof);
+        affichePlateauDebug(plateauTemp, taille, 0);
 
-        coupsNotes = ajoutFinCoupNote(coupsNotes, coups->pos, MinMax(plateauTemp, taille, mode, prof, MIN));
+        coupsNotes = ajoutFinCoupNote(coupsNotes, coups->pos, MinMax(plateauTemp, taille, mode, 1, MAX));
 
         effaceCoup(plateauTemp, depart->position, coups->pos);
+
+        printf("\nCe coup valait = %d\n", coupsNotes->note);
 
         coups = coups->suivant;
     }
@@ -59,30 +60,42 @@ int MinMax(char **plateau, int taille, int mode, int prof, int etage) {
 
     finPartie = victoireDefaite(plateau, taille, etage);
 
-    if (prof == 0 || finPartie == 1 || finPartie == -1) {
-            affichePlateauDebug(plateau, taille, prof);
-        return evaluation(plateau, taille, etage);
+    if (prof == PROF_MAX || finPartie == 1 || finPartie == -1) {
+
+        return evaluation(plateau, taille, mode, etage);
     }
 
     else {
-        printf("\n");
 
+        printf("\n");
         coups = listeCoups(coups, depart, plateau, taille, mode);
 
         while (coups != NULL) {
 
-            affichePlateauDebug(plateau, taille, prof);
-            for (i=PROF_MAX;i>=prof;i--)
-                printf("   ");
-
             effectueCoup(plateau, depart, coups->pos);
 
-            printf("Coup %d, %d", coups->pos.x, coups->pos.y, prof);
+            for (i=0;i<prof;i++)
+                printf("     ");
+            if (etage == MIN) {
+                textcolor(LIGHTRED);
+                printf("%c ", 'R');
+            }else {
+                textcolor(LIGHTCYAN);
+                printf("%C ", 'C');
+            }
+            textcolor(LIGHTGRAY);
+            printf("Coup %d, %d prof %d", coups->pos.x, coups->pos.y, prof);
 
-            notes = ajoutTeteNote(notes, MinMax(plateau, taille, mode, prof-1, !etage));
+            affichePlateauDebug(plateau, taille, prof);
+
+            notes = ajoutTeteNote(notes, MinMax(plateau, taille, mode, prof+1, !etage));
 
             effaceCoup(plateau, depart, coups->pos);
-            affichePlateauDebug(plateau, taille, prof);
+
+            for (i=0;i<prof;i++)
+                printf("     ");
+            printf("Ce coup valait = %d\n", notes->note);
+            printf("\n");
             coups = supprTete(coups);
 
         }
@@ -110,10 +123,30 @@ void effectueCoup(char **plateau, Point depart, Point arrivee) {
     plateau[depart.y][depart.x] += 32;
 }
 
-int evaluation(char **plateau, int taille, int etage) {
+int evaluation(char **plateau, int taille, int mode, int etage) {
 
     int i, j;
     int scoreBot = 0, scoreAdverse = 0;
+
+    Point bot, adversaire;
+    Noeud *coupsBot = NULL, *coupsAdversaire = NULL;
+
+    bot = trouveJoueur(plateau, taille, MIN);
+    adversaire = trouveJoueur(plateau, taille, MAX);
+
+    coupsBot = listeCoups(coupsBot, bot, plateau, taille, mode);
+    coupsAdversaire = listeCoups(coupsAdversaire, adversaire, plateau, taille, mode);
+
+    if (coupsBot == NULL) {
+
+        scoreBot -= 100;
+
+    }
+    if (coupsAdversaire == NULL) {
+
+        scoreBot += 100;
+
+    }
 
     for (i=0;i<taille;i++)
 
@@ -126,8 +159,7 @@ int evaluation(char **plateau, int taille, int etage) {
                 scoreAdverse++;
         }
 
-    printf(" = %d\n", scoreAdverse - scoreBot);
-    return scoreAdverse - scoreBot;
+    return scoreBot - scoreAdverse;
 }
 
 int victoireDefaite(char **plateau, int taille, int etage) {
@@ -213,6 +245,7 @@ Noeud* listeCoups(Noeud* coups, Point depart, char** plateau, int taille, int mo
 
     }
 
+
     return coups;
 }
 
@@ -277,8 +310,8 @@ Point meilleurCoup(NoeudCoupNote *liste) {
 void affichePlateauDebug(char **plateau, int taille, int prof) {
 
     int i, j, k;
-    printf("prof %d\n", prof);
-    for (i=PROF_MAX;i>prof;i--)
+    printf("\n");
+    for (i=0;i<prof;i++)
         printf("     ");
     printf("   |");
 
@@ -286,7 +319,7 @@ void affichePlateauDebug(char **plateau, int taille, int prof) {
         printf("%2c ", 'A' + i);
     printf("\n");
 
-    for (i=PROF_MAX;i>prof;i--)
+    for (i=0;i<prof;i++)
         printf("     ");
 
     for (i=0 ; i < taille+1 ; i++)
@@ -295,7 +328,7 @@ void affichePlateauDebug(char **plateau, int taille, int prof) {
 
     for (i=0 ; i < taille ; i++)
     {
-        for (k=PROF_MAX;k>prof;k--)
+        for (k=0;k<prof;k++)
             printf("     ");
 
         for (j=0 ; j < taille ; j++)
@@ -334,5 +367,6 @@ void affichePlateauDebug(char **plateau, int taille, int prof) {
 
         printf("\n");
     }
+            //printf("\n");
 
 }
