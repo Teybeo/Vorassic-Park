@@ -27,7 +27,7 @@ Point botCoup(char **plateau, int taille, int mode, Joueur *depart) {
 
         affichePlateauDebug(plateauTemp, taille, 0);
 
-        coupsNotes = ajoutFinCoupNote(coupsNotes, coups->pos, MinMax(plateauTemp, taille, mode, 1, MAX));
+        coupsNotes = ajoutFinCoupNote(coupsNotes, coups->pos, MinMax(plateauTemp, taille, mode, 1, MIN));
 
         effaceCoup(plateauTemp, depart->position, coups->pos);
 
@@ -63,11 +63,11 @@ int MinMax(char **plateau, int taille, int mode, int prof, int etage) {
 
     Point depart = trouveJoueur(plateau, taille, etage);
 
-    finPartie = victoireDefaite(plateau, taille, etage, mode);
+    finPartie = blocageJoueur(plateau, taille, mode);
 
     if (prof == PROF_MAX || finPartie == 1 || finPartie == -1) {
 
-        return evaluation(plateau, taille, mode, etage);
+        return evaluation(plateau, taille, mode);
     }
 
     else {
@@ -80,8 +80,8 @@ int MinMax(char **plateau, int taille, int mode, int prof, int etage) {
             effectueCoup(plateau, depart, coups->pos);
 
             for (i=0;i<prof;i++)
-                printf("      ");
-            if (etage == MIN) {
+                printf("        ");
+            if (etage == MAX) {
                 textcolor(LIGHTRED);
                 printf("%c ", 'R');
             }else {
@@ -89,7 +89,9 @@ int MinMax(char **plateau, int taille, int mode, int prof, int etage) {
                 printf("%C ", 'C');
             }
             textcolor(LIGHTGRAY);
-            printf("Coup %d, %d prof %d", coups->pos.x, coups->pos.y, prof);
+            afficheDirection(depart, coups->pos);
+            //printf("Coup %d, %d prof %d", coups->pos.x, coups->pos.y, prof);
+            printf(" prof %d", coups->pos.x, coups->pos.y, prof);
 
             affichePlateauDebug(plateau, taille, prof);
 
@@ -98,7 +100,7 @@ int MinMax(char **plateau, int taille, int mode, int prof, int etage) {
             effaceCoup(plateau, depart, coups->pos);
 
             for (i=0;i<prof;i++)
-                printf("      ");
+                printf("        ");
             printf("Ce coup valait = %d\n", notes->note);
             printf("\n");
             coups = supprTete(coups);
@@ -107,7 +109,7 @@ int MinMax(char **plateau, int taille, int mode, int prof, int etage) {
 
     }
 
-    if (etage == MIN)
+    if (etage == MAX)
         return maxNote(notes);
     else
         return minNote(notes);
@@ -128,7 +130,7 @@ void effectueCoup(char **plateau, Point depart, Point arrivee) {
     plateau[depart.y][depart.x] += 32;
 }
 
-int evaluation(char **plateau, int taille, int mode, int etage) {
+int evaluation(char **plateau, int taille, int mode) {
 
     int i, j;
     int scoreBot = 0, scoreAdverse = 0;
@@ -136,27 +138,13 @@ int evaluation(char **plateau, int taille, int mode, int etage) {
     Point bot, adversaire;
     Noeud *coupsBot = NULL, *coupsAdversaire = NULL;
 
-    bot = trouveJoueur(plateau, taille, MIN);
-    adversaire = trouveJoueur(plateau, taille, MAX);
+    bot = trouveJoueur(plateau, taille, MAX);
+    adversaire = trouveJoueur(plateau, taille, MIN);
 
     coupsBot = listeCoups(coupsBot, bot, plateau, taille, mode);
     coupsAdversaire = listeCoups(coupsAdversaire, adversaire, plateau, taille, mode);
 
-    if (victoireDefaite(plateau, taille, etage, mode) == 1)
-        scoreBot = EVAL_MAX;
-    else if (victoireDefaite(plateau, taille, etage, mode) == -1)
-        scoreBot = EVAL_MIN;
 
-    if (coupsBot == NULL) {
-
-        scoreBot -= 100;
-
-    }
-    if (coupsAdversaire == NULL) {
-
-        scoreBot += 100;
-
-    }
 
     for (i=0;i<taille;i++)
 
@@ -169,41 +157,48 @@ int evaluation(char **plateau, int taille, int mode, int etage) {
                 scoreAdverse++;
         }
 
+    if (coupsBot == NULL && coupsAdversaire == NULL) {
+        if (scoreBot > scoreAdverse)
+            return EVAL_MAX;
+        else if (scoreBot < scoreAdverse)
+            return EVAL_MIN;
+        else
+            return 0;
+    }
+    else if (coupsBot == NULL)
+        scoreBot += EVAL_MIN;
+
+    if (coupsAdversaire == NULL)
+        scoreAdverse += EVAL_MIN;
+
     return scoreBot - scoreAdverse;
 }
 
-int victoireDefaite(char **plateau, int taille, int etage, int mode) {
 
-    int i, j;
-    int scoreBot, scoreAdverse;
+
+int blocageJoueur(char **plateau, int taille, int mode) {
+
     Noeud *coupsBot = NULL, *coupsAdversaire = NULL;
-
-    scoreBot = scoreAdverse = 0;
 
     coupsBot = listeCoups(coupsBot, trouveJoueur(plateau, taille, MIN), plateau, taille, mode);
     coupsAdversaire = listeCoups(coupsAdversaire, trouveJoueur(plateau, taille, MAX), plateau, taille, mode);
 
-    if (coupsBot == NULL && coupsAdversaire == NULL) {
 
-        for (i=0;i<taille;i++)
-        {
-            for (j=0;j<taille;j++)
-            {
-                if (plateau[i][j] == 'R' || plateau[i][j] == 'r')
-                    scoreBot++;
-                else if (plateau[i][j] == 'C' || plateau[i][j] == 'c')
-                    scoreAdverse++;
-            }
-        }
+    if (coupsAdversaire == NULL) {
 
-        if (scoreBot > scoreAdverse)
-            return 1;
-        else
-            return -1;
+        // Si l'adversaire ne peut plus joueur et qu'il n'y a jamais une différence de plus d'1 point, logiquement le bot gagne
+        return 1;
 
-    } else
+    } else if (coupsBot == NULL) {
 
-        return 0; // Il reste des pions a placer
+        // Idem pour le bot, l'adversaire gagne
+        return -1;
+
+    }
+
+ else
+
+    return 0; // Il reste des pions a placer
 
 
 }
@@ -212,7 +207,7 @@ Point trouveJoueur(char** plateau, int taille, int etage) {
 
     int i, j, car;
     Point pos;
-    if (etage == MIN)
+    if (etage == MAX)
         car = 'R';
     else
         car = 'C';
@@ -318,7 +313,7 @@ void affichePlateauDebug(char **plateau, int taille, int prof) {
     int i, j, k;
     printf("\n");
     for (i=0;i<prof;i++)
-        printf("      ");
+        printf("        ");
     printf("   |");
 
     for (i=0 ; i < taille ; i++)
@@ -326,7 +321,7 @@ void affichePlateauDebug(char **plateau, int taille, int prof) {
     printf("\n");
 
     for (i=0;i<prof;i++)
-        printf("      ");
+        printf("        ");
 
     for (i=0 ; i < taille+1 ; i++)
         printf("---");
@@ -335,7 +330,7 @@ void affichePlateauDebug(char **plateau, int taille, int prof) {
     for (i=0 ; i < taille ; i++)
     {
         for (k=0;k<prof;k++)
-            printf("      ");
+            printf("        ");
 
         for (j=0 ; j < taille ; j++)
         {
