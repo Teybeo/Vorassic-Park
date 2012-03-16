@@ -10,7 +10,7 @@
 #define EVAL_MIN -10000
 #define EVAL_MAX 10000
 
-#define PROF_MAX 4
+#define PROF_MAX 5
 
 enum {
     MAX,
@@ -24,7 +24,7 @@ Point trouveJoueur(char** plateau, int taille, int etage);
 int evaluation(char **plateau, int taille, int mode, int etage);
 void effaceCoup(char **plateau, Point depart, Point arrivee);
 void affichePlateauDebug(char **plateau, int taille, int prof);
-int victoireDefaite(char **plateau, int taille, int etage);
+int victoireDefaite(char **plateau, int taille, int etage, int mode);
 Noeud* listeCoups(Noeud* teteliste, Point depart, char **plateau, int taille, int mode);
 int minNote(NoeudNote *liste);
 int maxNote(NoeudNote *liste);
