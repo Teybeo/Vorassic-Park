@@ -19,6 +19,7 @@
 void affichage(char **plateau, int taille, int tour, char *modeJeu, int nbJoueurs, Joueur *joueur, Joueur joueurActuel);
 void affichePlateau(char **plateau, int taille);
 void resultat(Joueur *joueur, int nbJoueurs, char **plateau);
+void afficheDirection(Point depart, Point arrivee);
 void couleurs(char **plateau, Joueur joueur);
 
 #endif
