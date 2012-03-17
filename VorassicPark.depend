@@ -1,8 +1,9 @@
 # depslib dependency file v1.0
-1331895982 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\bot.c
+1331997245 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\bot.c
 	"header/bot.h"
 
-1331895636 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\bot.h
+1331997245 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\bot.h
+	<conio2.h>
 	"header/general.h"
 	"header/liste.h"
 	"header/listeNote.h"
@@ -41,7 +42,7 @@
 	<conio2.h>
 	"header/general.h"
 
-1331601167 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\coup.h
+1331992686 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\coup.h
 	<stdio.h>
 	<stdlib.h>
 	"header/liste.h"
@@ -50,7 +51,7 @@
 1331896002 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\affichage.c
 	"header/affichage.h"
 
-1331895619 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\partie.c
+1331896793 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\partie.c
 	"header/partie.h"
 
 1331766164 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\menu.c

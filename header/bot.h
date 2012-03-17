@@ -1,6 +1,8 @@
 #ifndef H_BOT
 #define H_BOT
 
+#include <conio2.h>
+
 #include "header/general.h"
 #include "header/liste.h"
 #include "header/listeNote.h"
@@ -10,7 +12,8 @@
 #define EVAL_MIN -10000
 #define EVAL_MAX 10000
 
-#define PROF_MAX 5
+#define PROF_MAX 10
+
 
 enum {
     MAX,
@@ -23,7 +26,7 @@ int MinMax(char **plateau, int taille, int mode, int prof, int etage);
 Point trouveJoueur(char** plateau, int taille, int etage);
 int evaluation(char **plateau, int taille, int mode);
 void effaceCoup(char **plateau, Point depart, Point arrivee);
-void affichePlateauDebug(char **plateau, int taille, int prof);
+void affichePlateauDebug(char **plateau, int taille, int prof, Point depart, Point arrivee);
 int blocageJoueur(char **plateau, int taille, int mode);
 Noeud* listeCoups(Noeud* teteliste, Point depart, char **plateau, int taille, int mode);
 int minNote(NoeudNote *liste);
