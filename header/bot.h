@@ -27,6 +27,7 @@ Point trouveJoueur(char** plateau, int taille, int etage);
 int evaluation(char **plateau, int taille, int mode);
 void effaceCoup(char **plateau, Point depart, Point arrivee);
 void affichePlateauDebug(char **plateau, int taille, int prof, Point depart, Point arrivee);
+int finPartieBot(char **plateau, int taille, int mode);
 int blocageJoueur(char **plateau, int taille, int mode);
 Noeud* listeCoups(Noeud* teteliste, Point depart, char **plateau, int taille, int mode);
 int minNote(NoeudNote *liste);
