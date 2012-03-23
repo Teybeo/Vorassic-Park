@@ -3,14 +3,14 @@
 void menu() {
 
     int continuer = 1;
-    int taille = 5, mode = 0, aleatoire = 0, nbJoueurs = 2, i;
+    int taille = 3, mode = 0, aleatoire = 0, nbJoueurs = 2, i;
     char choix, tmp;
     char nomsDefault[4][TAILLE_NOM] = {"Cyan", "Rouge", "Vert", "Bleu"};
     char **noms;
 
-    noms = malloc(sizeof(char*) * nbJoueurs);
+    noms = calloc(sizeof(char*), nbJoueurs);
     for (i=0;i<nbJoueurs;i++) {
-        noms[i] = malloc(sizeof(char) * TAILLE_NOM);
+        noms[i] = calloc(sizeof(char), TAILLE_NOM);
         strcpy(noms[i], nomsDefault[i]);
     }
 

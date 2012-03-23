@@ -18,10 +18,11 @@ Point saisieCoup(int taille);
 
 int verifieCoup(char **plateau, int mode, Point depart, Point arrivee);
 
-void chercheBlocage(char **plateau, int mode, Joueur *joueur, Noeud *casesAdjacentes);
+void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur);
 
 Noeud* listeCases(int taille, int mode, Point depart);
+Noeud* listeCasesAcquises(char **plateau, int taille, int joueur);
 
-void appliqueCoup(char **plateau, Joueur *depart, Point arrivee);
+void appliqueCoup(char **plateau, int mode, Joueur *depart, Point arrivee);
 
 #endif

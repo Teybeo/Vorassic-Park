@@ -6,7 +6,7 @@ void affichageListe(Noeud *liste) {
 
     while (temp != NULL) {
 
-        printf("(%d, %d) ", temp->x, temp->y);
+        printf("(%d, %d) ", temp->pos.x, temp->pos.y);
         temp = temp->suivant;
     }
 
@@ -15,8 +15,8 @@ void affichageListe(Noeud *liste) {
 Noeud* ajoutTete(Noeud *teteliste, int x, int y) {
 
     Noeud *p = malloc(sizeof(Noeud));
-    p->x = x;
-    p->y = y;
+    p->pos.x = x;
+    p->pos.y = y;
     p->suivant = teteliste;
     teteliste = p;
 
@@ -27,8 +27,8 @@ Noeud* ajoutTete(Noeud *teteliste, int x, int y) {
 Noeud* ajoutFin(Noeud *teteliste, int x, int y) {
 
     Noeud *nouveau = malloc(sizeof(Noeud));
-    nouveau->x = x;
-    nouveau->y = y;
+    nouveau->pos.x = x;
+    nouveau->pos.y = y;
     nouveau->suivant = NULL;
 
     if (teteliste == NULL)

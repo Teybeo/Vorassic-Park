@@ -36,6 +36,7 @@ typedef struct Joueur {
     Point position; /**< Position actuelle */
     int score; /**< Score actuel */
     int blocage; /**< Permet de savoir si le joueur doit passer son tour */
+    int id;
     char nom[TAILLE_NOM]; /**< Le nom du joueur */
 
 } Joueur;

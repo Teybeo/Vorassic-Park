@@ -1,22 +1,23 @@
 #include "header/affichage.h"
 
-void affichage(char **plateau, int taille, int tour, char *modeJeu, int nbJoueurs, Joueur *joueur, Joueur joueurActuel) {
+void affichage(char **plateau, int taille, int tour, int mode, int nbJoueurs, Joueur *joueur, int joueurActuel) {
 
     int i;
-    system("cls");
-    printf("\nTour numero %d  -  Mode %s\n", tour, modeJeu);
+    char modeJeu[2][10] = {"Serpent", "Pieuvre"};
 
+    system("cls");
+    printf("\nTour numero %d  -  Mode %s\n", tour, modeJeu[mode]);
     printf("Scores:");
 
     for (i=0;i<nbJoueurs;i++) {
         couleurs(plateau, joueur[i]);
         printf("\n    %s %d", joueur[i].nom, joueur[i].score);
-        if (strcmp(joueurActuel.nom, joueur[i].nom) == 0)
+        if (joueurActuel == joueur[i].id)
             printf(" <- A ton tour");
     }
     textcolor(LIGHTGRAY);
 
-    affichePlateau(plateau, taille);
+    affichePlateau(plateau, taille, mode);
 
     textcolor(LIGHTGRAY);
 
@@ -40,7 +41,7 @@ void couleurs(char **plateau, Joueur joueur) {
 
 }
 
-void affichePlateau(char **plateau, int taille) {
+void affichePlateau(char **plateau, int taille, int mode) {
 
     int i, j;
 

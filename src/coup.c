@@ -13,20 +13,41 @@
 
 void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
 
-    Point coup;
-    int erreur;
+    Point caseDepart, coup;
+    int erreur = 0, erreurDepart = 1;
     int valeurCase = 0;
 
-    Noeud *casesAdjacentes = listeCases(taille, mode, joueur->position);
-    chercheBlocage(plateau, mode, joueur, casesAdjacentes);
-    libereListe(casesAdjacentes);
+    chercheBlocage(plateau, taille, mode, joueur);
 
     if (joueur->blocage == 0) {
 
         do {
 
-            coup = saisieCoup(taille);
-            erreur = verifieCoup(plateau, mode, joueur->position, coup);
+            if (mode == 1) {
+
+                do  {
+
+                    erreurDepart = 1;
+                    caseDepart = saisieCoup(taille);
+
+                    if ((plateau[caseDepart.y][caseDepart.x] == 'C' && joueur->id == 0) ||
+                        (plateau[caseDepart.y][caseDepart.x] == 'R' && joueur->id == 1) ||
+                        (plateau[caseDepart.y][caseDepart.x] == 'V' && joueur->id == 2) ||
+                        (plateau[caseDepart.y][caseDepart.x] == 'B' && joueur->id == 3))
+                        erreurDepart = 0;
+                    else
+                        printf("Case de depart incorrecte\n");
+
+                } while (erreurDepart);
+
+                coup = saisieCoup(taille);
+                erreur = verifieCoup(plateau, mode, caseDepart, coup);
+
+            } else {
+
+                coup = saisieCoup(taille);
+                erreur = verifieCoup(plateau, mode, joueur->position, coup);
+            }
 
             switch (erreur) {
             case 1:
@@ -46,7 +67,7 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
         } while (erreur);
 
         valeurCase = plateau[coup.y][coup.x];
-        appliqueCoup(plateau, joueur, coup);
+        appliqueCoup(plateau, mode, joueur, coup);
 
     } else {
 
@@ -81,7 +102,7 @@ int verifieCoup(char **plateau, int mode, Point depart, Point arrivee) {
 
             return 3; // Déplacement en diagonale
 
-        else if (delta > 1)
+        else if (delta > 2)
 
             return 4; // Déplacement de 3 cases ou plus
 
@@ -109,24 +130,57 @@ int verifieCoup(char **plateau, int mode, Point depart, Point arrivee) {
     \param mode Le mode de jeu (Pieuvre/Serpent)
     \param joueur Le joueur concerné
     \param casesAdjacentes Une liste des cases proches*/
-void chercheBlocage(char **plateau, int mode, Joueur *joueur, Noeud *casesAdjacentes) {
+void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur) {
 
-    Noeud *tmp = casesAdjacentes;
-    Point coup;
+    Noeud *casesAdjacentes = NULL;
+    Noeud *casesAcquises = NULL;
 
-    while (tmp != NULL) {
+    if (mode == 1)
+        casesAcquises = listeCasesAcquises(plateau, taille, joueur->id);
+    else
+        casesAcquises = ajoutTete(casesAcquises, joueur->position.x, joueur->position.y);
 
-        coup.x = tmp->x;
-        coup.y = tmp->y;
+    do {
 
-        if (verifieCoup(plateau, mode, joueur->position, coup) == 0)
-            return;
+        casesAdjacentes = listeCases(taille, mode, casesAcquises->pos);
 
-        tmp = tmp->suivant;
-    }
+        while (casesAdjacentes != NULL) {
+
+            if (verifieCoup(plateau, mode, casesAcquises->pos, casesAdjacentes->pos) == 0) {
+                libereListe(casesAdjacentes);
+                return;
+            }
+
+            casesAdjacentes = casesAdjacentes->suivant;
+        }
+
+        casesAcquises = casesAcquises->suivant;
+        libereListe(casesAdjacentes);
+
+    } while (casesAcquises != NULL);
 
     joueur->blocage = 1;
 
+}
+
+Noeud* listeCasesAcquises(char **plateau, int taille, int joueur ) {
+
+    Noeud *casesAcquises = NULL;
+    int i, j;
+    char tab[4] = {'C', 'R', 'V', 'B'};
+    char c = tab[joueur];
+
+    for (i=0;i<taille;i++) {
+
+        for (j=0;j<taille;j++) {
+
+            if (plateau[i][j] == c || plateau[i][j] == c + 32)
+                casesAcquises = ajoutTete(casesAcquises, j, i);
+        }
+    }
+
+
+    return casesAcquises;
 }
 
 /* Demande une saisie à l'utilisateur et l'analyse. Affiche un message indiquant
@@ -251,14 +305,15 @@ Noeud* listeCases(int taille, int mode, Point depart) {
     Attend :
         Un plateau, un point de départ et d'arrivée */
 
-void appliqueCoup(char **plateau, Joueur *depart, Point arrivee) {
+void appliqueCoup(char **plateau, int mode, Joueur *depart, Point arrivee) {
 
     depart->score += plateau[arrivee.y][arrivee.x];
 
     /* Le J ou R se trouvant a la case depart est copié a la case d'arrivée
        La valeur de la case de départ est décalé de 32 pour le passer en minuscule */
     plateau[arrivee.y][arrivee.x] = plateau[depart->position.y][depart->position.x];
-    plateau[depart->position.y][depart->position.x] += 32;
+    if (mode == 0)
+        plateau[depart->position.y][depart->position.x] += 32;
 
     depart->position = arrivee;
 

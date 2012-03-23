@@ -7,14 +7,8 @@ void executePartie(int nbJoueurs, int taille, int mode, int aleatoire, char **no
     char **plateau;
     Joueur *joueur;
     Joueur *joueurActuel;
-    char modeJeu[10] = {0};
 
     joueur = initJoueurs(nbJoueurs, noms, taille);
-
-    if (mode)
-        strcpy(modeJeu, "Pieuvre");
-    else
-        strcpy(modeJeu, "Serpent");
 
     plateau = initPlateau(taille, aleatoire, joueur, nbJoueurs);
 
@@ -22,7 +16,7 @@ void executePartie(int nbJoueurs, int taille, int mode, int aleatoire, char **no
 
         joueurActuel = &joueur[ ((tour-1) % nbJoueurs) ];
 
-        affichage(plateau, taille, tour, modeJeu, nbJoueurs, joueur, *joueurActuel);
+        affichage(plateau, taille, tour, mode, nbJoueurs, joueur, joueurActuel->id);
 
         faireCoup(plateau, taille, mode, joueurActuel);
 
@@ -99,6 +93,7 @@ Joueur* initJoueurs(int nbJoueurs, char **noms, int taille) {
     for (i=0;i<nbJoueurs;i++) {
         tab[i].score = 0;
         tab[i].blocage = 0;
+        tab[i].id = i;
         strcpy(tab[i].nom, noms[i]);
     }
 

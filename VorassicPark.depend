@@ -1,0 +1,54 @@
+# depslib dependency file v1.0
+1332541116 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\affichage.c
+	"header/affichage.h"
+
+1332540303 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\affichage.h
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<conio2.h>
+	"header/general.h"
+
+1332536374 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\general.h
+
+1332540299 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\partie.c
+	"header/partie.h"
+
+1332533680 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\partie.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"header/affichage.h"
+	"header/coup.h"
+
+1332539720 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\coup.h
+	<stdio.h>
+	<stdlib.h>
+	"header/liste.h"
+	"header/general.h"
+
+1332536731 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\liste.h
+	<stdio.h>
+	<stdlib.h>
+	"header/general.h"
+
+1332536374 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\menu.c
+	"header/menu.h"
+
+1331601167 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\menu.h
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	"header/partie.h"
+	"header/general.h"
+
+1331244254 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\main.c
+	"header/menu.h"
+
+1332536724 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\liste.c
+	"header/liste.h"
+
+1332540187 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\coup.c
+	"header/coup.h"
+
