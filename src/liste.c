@@ -81,7 +81,7 @@ Noeud* supprFin(Noeud* teteliste) {
 
 void libereListe(Noeud* teteliste) {
 
-    if (teteliste != NULL) {
+    while (teteliste != NULL) {
 
         teteliste = supprTete(teteliste);
     }

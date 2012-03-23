@@ -81,7 +81,7 @@ NoeudCoupNote* supprFinCoupNote(NoeudCoupNote* teteliste) {
 
 void libereListeCoupNote(NoeudCoupNote* teteliste) {
 
-    if (teteliste != NULL) {
+    while (teteliste != NULL) {
 
         teteliste = supprTeteCoupNote(teteliste);
     }

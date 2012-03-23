@@ -12,7 +12,9 @@
 #define EVAL_MIN -10000
 #define EVAL_MAX 10000
 
-#define PROF_MAX 10
+#define PROF_MAX 4
+
+#define DEBUG 1
 
 
 enum {

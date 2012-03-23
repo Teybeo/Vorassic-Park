@@ -21,10 +21,16 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-march=core2" />
+					<Add option="-fexpensive-optimizations" />
+					<Add option="-O3" />
 					<Add option="-O2" />
+					<Add option="-O1" />
+					<Add option="-O" />
+					<Add option="-pg" />
 				</Compiler>
 				<Linker>
-					<Add option="-s" />
+					<Add option="-pg -lgmon" />
 				</Linker>
 			</Target>
 		</Build>
@@ -33,6 +39,7 @@
 		</Compiler>
 		<Linker>
 			<Add library="libconio" />
+			<Add library="libgmon" />
 		</Linker>
 		<Unit filename="header\affichage.h" />
 		<Unit filename="header\bot.h" />

@@ -79,7 +79,7 @@ NoeudNote* supprFinNote(NoeudNote* teteliste) {
 
 void libereListeNote(NoeudNote* teteliste) {
 
-    if (teteliste != NULL) {
+    while (teteliste != NULL) {
 
         teteliste = supprTeteNote(teteliste);
     }
