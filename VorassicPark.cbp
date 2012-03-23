@@ -21,17 +21,60 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-march=core2" />
+					<Add option="-fexpensive-optimizations" />
+					<Add option="-O3" />
 					<Add option="-O2" />
+					<Add option="-O1" />
+					<Add option="-O" />
+					<Add option="-pg" />
 				</Compiler>
 				<Linker>
-					<Add option="-s" />
+					<Add option="-pg -lgmon" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="main.c">
+		<Linker>
+			<Add library="libconio" />
+			<Add library="libgmon" />
+		</Linker>
+		<Unit filename="header\affichage.h" />
+		<Unit filename="header\bot.h" />
+		<Unit filename="header\coup.h" />
+		<Unit filename="header\general.h" />
+		<Unit filename="header\liste.h" />
+		<Unit filename="header\listeCoupNote.h" />
+		<Unit filename="header\listeNote.h" />
+		<Unit filename="header\menu.h" />
+		<Unit filename="header\partie.h" />
+		<Unit filename="src\affichage.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\bot.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\coup.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\liste.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\listeCoupNote.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\listeNote.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\partie.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>
@@ -39,6 +82,15 @@
 			<envvars />
 			<debugger />
 			<lib_finder disable_auto="1" />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

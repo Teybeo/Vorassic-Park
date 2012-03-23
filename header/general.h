@@ -37,6 +37,7 @@ typedef struct Joueur {
     int score; /**< Score actuel */
     int blocage; /**< Permet de savoir si le joueur doit passer son tour */
     int id;
+    int estBot; /**< Permet de savoir si le joueur est géré par l'ia */
     char nom[TAILLE_NOM]; /**< Le nom du joueur */
 
 } Joueur;

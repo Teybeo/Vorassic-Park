@@ -1,22 +1,21 @@
-#include "header/liste.h"
+#include "header/listeNote.h"
 
-void affichageListe(Noeud *liste) {
+void affichageListeNote(NoeudNote *liste) {
 
-    Noeud *temp = liste;
+    NoeudNote *temp = liste;
 
     while (temp != NULL) {
 
-        printf("(%d, %d) ", temp->pos.x, temp->pos.y);
+        printf(" %d |", temp->note);
         temp = temp->suivant;
     }
 
 }
 
-Noeud* ajoutTete(Noeud *teteliste, Point point) {
+NoeudNote* ajoutTeteNote(NoeudNote *teteliste, int note) {
 
-    Noeud *p = malloc(sizeof(Noeud));
-    p->pos.x = point.x;
-    p->pos.y = point.y;
+    NoeudNote *p = malloc(sizeof(NoeudNote));
+    p->note = note;
     p->suivant = teteliste;
     teteliste = p;
 
@@ -24,18 +23,17 @@ Noeud* ajoutTete(Noeud *teteliste, Point point) {
 
 }
 
-Noeud* ajoutFin(Noeud *teteliste, Point point) {
+NoeudNote* ajoutFinNote(NoeudNote *teteliste, int note) {
 
-    Noeud *nouveau = malloc(sizeof(Noeud));
-    nouveau->pos.x = point.x;
-    nouveau->pos.y = point.y;
+    NoeudNote *nouveau = malloc(sizeof(NoeudNote));
+    nouveau->note = note;
     nouveau->suivant = NULL;
 
     if (teteliste == NULL)
         return nouveau;
     else {
 
-        Noeud *tmp = teteliste;
+        NoeudNote *tmp = teteliste;
 
         while (tmp->suivant != NULL)
             tmp = tmp->suivant;
@@ -47,18 +45,18 @@ Noeud* ajoutFin(Noeud *teteliste, Point point) {
 
 }
 
-Noeud* supprTete(Noeud* teteliste) {
+NoeudNote* supprTeteNote(NoeudNote* teteliste) {
 
     if (teteliste == NULL)
         return NULL;
     else {
-        Noeud* tmp = teteliste->suivant;
+        NoeudNote* tmp = teteliste->suivant;
         free(teteliste);
         return tmp;
     }
 }
 
-Noeud* supprFin(Noeud* teteliste) {
+NoeudNote* supprFinNote(NoeudNote* teteliste) {
 
     if (teteliste == NULL)
         return NULL;
@@ -67,7 +65,7 @@ Noeud* supprFin(Noeud* teteliste) {
         return NULL;
     }
 
-    Noeud* tmp = teteliste;
+    NoeudNote* tmp = teteliste;
 
     while (tmp->suivant->suivant != NULL)
         tmp = tmp->suivant;
@@ -79,11 +77,12 @@ Noeud* supprFin(Noeud* teteliste) {
     return teteliste;
 }
 
-void libereListe(Noeud* teteliste) {
+void libereListeNote(NoeudNote* teteliste) {
 
     while (teteliste != NULL) {
 
-        teteliste = supprTete(teteliste);
+        teteliste = supprTeteNote(teteliste);
     }
 
 }
+
