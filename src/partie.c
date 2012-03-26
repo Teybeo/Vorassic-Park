@@ -1,13 +1,12 @@
 #include "header/partie.h"
 
-void executePartie(int nbJoueurs, int taille, int mode, int aleatoire, char **noms) {
+void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int aleatoire, char **noms) {
 
     int continuer = 1;
     int tour = 1, i;
     char **plateau;
     Joueur *joueur;
     Joueur *joueurActuel;
-    int nbBots = 1;
 
     joueur = initJoueurs(nbJoueurs, nbBots, noms, taille);
 

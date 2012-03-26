@@ -3,7 +3,7 @@
 void menu() {
 
     int continuer = 1;
-    int taille = 4, mode = 0, aleatoire = 0, nbJoueurs = 2, i;
+    int taille = 4, mode = 0, aleatoire = 0, nbJoueurs = 2, nbBots = 0, i;
     char choix, tmp;
     char nomsDefault[4][TAILLE_NOM] = {"Cyan", "Rouge", "Vert", "Bleu"};
     char **noms;
@@ -31,11 +31,11 @@ void menu() {
 
         if (choix == '1')
 
-            executePartie(nbJoueurs, taille, mode, aleatoire, noms);
+            executePartie(nbJoueurs, nbBots, taille, mode, aleatoire, noms);
 
         else if (choix == '2')
 
-            options(&taille, &mode, &aleatoire, &nbJoueurs, &noms);
+            options(&taille, &mode, &aleatoire, &nbJoueurs, &nbBots, &noms);
 
         else if (choix == '3')
 
@@ -45,13 +45,13 @@ void menu() {
 
 }
 
-void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char ***noms) {
+void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, int *nbBots, char ***noms) {
 
     int continuer = 1, retour, i;
-    int tmpTaille = *taille;
+    int tmp = *taille;
     char choix, tampon;
     char chaine[TAILLE_NOM] = {0};
-    char modeJeu[10] = {0};
+    char modeJeu[10] = {0}, chaineIA[4] = {0};
     char plateauAleatoire[10] = {0};
 
     do {
@@ -66,14 +66,24 @@ void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char ***nom
         else
             strcpy(plateauAleatoire, "Fixe");
 
+        if (*nbBots)
+            strcpy(chaineIA, "Oui");
+        else
+            strcpy(chaineIA, "Non");
+
         system("cls");
         printf("          Configuration\n\n");
         printf("    1. Changer taille plateau = %d x %d\n", *taille, *taille);
-        printf("    2. Changer mode jeu = %s\n", modeJeu);
-        printf("    3. Changer generation plateau = %s\n", plateauAleatoire);
-        printf("    4. Changer nombre de joueurs = %d\n", *nbJoueurs);
+        printf("    2. Mode de jeu = %s\n", modeJeu);
+        printf("    3. Generation plateau = %s\n", plateauAleatoire);
+        printf("    4. IA active = %s\n", chaineIA);
+        if (*nbBots > 0)
+            printf("    5. Changer nombre de bots = %d\n", *nbBots);
+        else
+            printf("    5. Changer nombre de joueurs = %d\n", *nbJoueurs);
+
         for (i=0;i<*nbJoueurs;i++)
-            printf("    %d. Changer nom joueur %d = %s\n", 5+i, i+1, (*noms)[i]);
+            printf("    %d. Changer nom joueur %d = %s\n", 6+i, i+1, (*noms)[i]);
         printf("\n    0. Retour\n");
         printf("\n    Que voulez-vous faire ?\n ");
         scanf("%c", &choix);
@@ -87,13 +97,13 @@ void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char ***nom
 
             do {
 
-                retour = scanf("%d", &tmpTaille);
+                retour = scanf("%d", &tmp);
 
                 while ( (tampon = getchar()) != '\n' && tampon != EOF);
 
                 if (retour) {
-                    if (tmpTaille >= 3 && tmpTaille <= 26)
-                        *taille = tmpTaille;
+                    if (tmp >= 3 && tmp <= 26)
+                        *taille = tmp;
                     else {
                         printf("Valeur invalide, reesayez\n");
                         retour = 0;
@@ -116,27 +126,43 @@ void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char ***nom
             *aleatoire = !*aleatoire;
 
         }
-        else if (choix == '4') {
+        else if (choix == '4')
+        {
+                *nbJoueurs = 2;
+                *nbBots = !*nbBots;
+        }
+        else if (choix == '5') {
 
-            printf("Entrez un nombre entre 2 et 4\n");
+            int nbMin, nbMax, *cible = NULL;
+            if (*nbBots) {
+                nbMin = NB_BOTS_MIN;
+                nbMax = NB_BOTS_MAX;
+                cible = nbBots;
+            }
+            else {
+                nbMin = NB_JOUEURS_MIN;
+                nbMax = NB_JOUEURS_MAX;
+                cible = nbJoueurs;
+            }
+                printf("Entrez un nombre entre %d et %d\n", nbMin, nbMax);
 
             do {
 
-                retour = scanf("%d", &tmpTaille);
+                retour = scanf("%d", &tmp);
 
                 while ( (tampon = getchar()) != '\n' && tampon != EOF);
 
                 if (retour) {
-                    if (tmpTaille >= 2 && tmpTaille <= 10) {
+                    if (tmp >= nbMin && tmp <= nbMax) {
 
-                        *noms = realloc(*noms, sizeof(char*) * tmpTaille);
-                        if (tmpTaille > *nbJoueurs)
-                            for (i=*nbJoueurs;i<tmpTaille;i++) {
+                        *noms = realloc(*noms, sizeof(char*) * tmp);
+                        if (tmp > *nbJoueurs)
+                            for (i=*nbJoueurs;i<tmp;i++) {
                                 (*noms)[i] = malloc(sizeof(char*) * TAILLE_NOM);
                                 strcpy((*noms)[i], "Inconnu");
                             }
 
-                        *nbJoueurs = tmpTaille;
+                        *cible = tmp;
 
                     }
                     else {
@@ -151,7 +177,7 @@ void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, char ***nom
             } while (retour != 1);
 
         }
-        else if (choix >= '5' && choix < '5' + *nbJoueurs) {
+        else if (choix >= '6' && choix < '6' + *nbJoueurs) {
 
             printf("Entrez un nom de %d lettres max\n", TAILLE_NOM-2);
 

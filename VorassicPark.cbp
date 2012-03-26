@@ -5,6 +5,22 @@
 		<Option title="VorassicPark" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
+		<Option show_notes="1">
+			<notes>
+				<![CDATA[Vraies valeurs des cases pour le bot
+
+Mode Pieuvre pour le bot
+
+Représentation des joueurs sur le plateau, il faut se débarasser des 'C', 'c' et autres 'R'
+	
+
+Sélection clavier ?
+	Curseur déplacable sur la grille, maintien d'une touche puis déplacement sur la case d'arrivée et relachement pour jouer un coup ?
+Ou sans maintien, activation du mode sélec par touche, désactivation par une autre
+
+Interface + souris]]>
+			</notes>
+		</Option>
 		<Build>
 			<Target title="Debug">
 				<Option output="bin\Debug\VorassicPark" prefix_auto="1" extension_auto="1" />

@@ -9,7 +9,7 @@
 #include "header/coup.h"
 #include "header/bot.h"
 
-void executePartie(int nbJoueurs, int taille, int mode, int aleatoire, char **noms);
+void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int aleatoire, char **noms);
 
 char** initPlateau(int taille, int aleatoire, Joueur *joueur, int nbJoueurs);
 
