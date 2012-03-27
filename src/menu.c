@@ -3,7 +3,7 @@
 void menu() {
 
     int continuer = 1;
-    int taille = 4, mode = 0, aleatoire = 0, nbJoueurs = 2, nbBots = 0, i;
+    int taille = 4, mode = 0, aleatoire = 0, nbJoueurs = 2, nbBots = 1, i;
     char choix, tmp;
     char nomsDefault[4][TAILLE_NOM] = {"Cyan", "Rouge", "Vert", "Bleu"};
     char **noms;
