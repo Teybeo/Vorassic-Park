@@ -277,28 +277,28 @@ Noeud* listeCases(int taille, int mode, Point depart) {
     if (depart.y > 0) { // Haut
         tmp.x = depart.x;
         tmp.y = depart.y - 1;
-        liste = ajoutFin(liste, tmp);
+        liste = ajoutTete(liste, tmp);
     }
     if (depart.y < taille-1) { // Bas
         tmp.x = depart.x;
         tmp.y = depart.y + 1;
-        liste = ajoutFin(liste, tmp);
+        liste = ajoutTete(liste, tmp);
     }
     if (depart.x > 0) {
         // Gauche
         tmp.x = depart.x - 1;
         tmp.y = depart.y;
-        liste = ajoutFin(liste, tmp);
+        liste = ajoutTete(liste, tmp);
 
         if (mode && depart.y > 0) { // Gauche / Haut
             tmp.x = depart.x - 1;
             tmp.y = depart.y - 1;
-            liste = ajoutFin(liste, tmp);
+            liste = ajoutTete(liste, tmp);
         }
         if (mode && depart.y < taille-1) { // Gauche / Bas
             tmp.x = depart.x - 1;
             tmp.y = depart.y + 1;
-            liste = ajoutFin(liste, tmp);
+            liste = ajoutTete(liste, tmp);
         }
 
     }
@@ -306,17 +306,17 @@ Noeud* listeCases(int taille, int mode, Point depart) {
         // Droite
         tmp.x = depart.x + 1;
         tmp.y = depart.y;
-        liste = ajoutFin(liste, tmp);
+        liste = ajoutTete(liste, tmp);
 
         if (mode && depart.y > 0) { // Droite / Haut
             tmp.x = depart.x + 1;
             tmp.y = depart.y - 1;
-            liste = ajoutFin(liste, tmp);
+            liste = ajoutTete(liste, tmp);
         }
         if (mode && depart.y < taille-1) { // Droite / Bas
             tmp.x = depart.x + 1;
             tmp.y = depart.y + 1;
-            liste = ajoutFin(liste, tmp);
+            liste = ajoutTete(liste, tmp);
         }
 
     }

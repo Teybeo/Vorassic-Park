@@ -15,8 +15,7 @@ void affichageListe(Noeud *liste) {
 Noeud* ajoutTete(Noeud *teteliste, Point point) {
 
     Noeud *p = malloc(sizeof(Noeud));
-    p->pos.x = point.x;
-    p->pos.y = point.y;
+    p->pos = point;
     p->suivant = teteliste;
     teteliste = p;
 
@@ -27,8 +26,7 @@ Noeud* ajoutTete(Noeud *teteliste, Point point) {
 Noeud* ajoutFin(Noeud *teteliste, Point point) {
 
     Noeud *nouveau = malloc(sizeof(Noeud));
-    nouveau->pos.x = point.x;
-    nouveau->pos.y = point.y;
+    nouveau->pos = point;
     nouveau->suivant = NULL;
 
     if (teteliste == NULL)

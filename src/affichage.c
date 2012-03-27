@@ -103,14 +103,13 @@ void afficheDirection(Point depart, Point arrivee) {
     int deltaX = arrivee.x - depart.x;
     int deltaY = arrivee.y - depart.y;
 
-    if (deltaX == 0) {
 
-        if (deltaY == -1)
-            printf("Haut");
-        else if (deltaY == 1)
-            printf("Bas");
-    }
-    else if (deltaX == 1)
+    if (deltaY == -1)
+            printf("Haut ");
+    else if (deltaY == 1)
+        printf("Bas ");
+
+    if (deltaX == 1)
         printf("Droite");
     else if (deltaX == -1)
         printf("Gauche");
