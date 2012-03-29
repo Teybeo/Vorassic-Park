@@ -1,12 +1,5 @@
 #include "header/bot.h"
 
-#define CASEVIDE(x)  \
-    x != 'C' && x != 'R' && \
-    x != 'c' && x != 'r' && \
-    x != 'V' && x != 'v' && \
-    x != 'B' && x != 'b'
-
-
 void botCoup(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire) {
 
     int i, j;
@@ -250,16 +243,17 @@ Noeud* listeCasesBot(Noeud *liste,  Point depart, char **plateau, int taille, in
 
         liste = ajoutTete(liste, (Point){depart.x-1, depart.y});
 
-
-        if (mode && depart.y > 0 && CASEVIDE(plateau[depart.y-1][depart.x-1]))  // Gauche / Haut
+        if (mode)
+        {
+            if (depart.y > 0 && CASEVIDE(plateau[depart.y-1][depart.x-1]))  // Gauche / Haut
 
             liste = ajoutTete(liste, (Point){depart.x-1, depart.y-1});
 
 
-        if (mode && depart.y < taille-1 && CASEVIDE(plateau[depart.y+1][depart.x-1]))  // Gauche / Bas
+            if (mode && depart.y < taille-1 && CASEVIDE(plateau[depart.y+1][depart.x-1]))  // Gauche / Bas
 
-            liste = ajoutTete(liste, (Point){depart.x-1, depart.y+1});
-
+                liste = ajoutTete(liste, (Point){depart.x-1, depart.y+1});
+        }
     }
 
     if (depart.x < taille-1 && CASEVIDE(plateau[depart.y][depart.x+1])) // Droite
@@ -267,16 +261,17 @@ Noeud* listeCasesBot(Noeud *liste,  Point depart, char **plateau, int taille, in
 
         liste = ajoutTete(liste, (Point){depart.x+1, depart.y});
 
+        if (mode)
+        {
+            if (depart.y > 0 && CASEVIDE(plateau[depart.y-1][depart.x+1])) // Droite / Haut
 
-        if (mode && depart.y > 0 && CASEVIDE(plateau[depart.y-1][depart.x+1])) // Droite / Haut
-
-            liste = ajoutTete(liste, (Point){depart.x+1, depart.y-1});
+                liste = ajoutTete(liste, (Point){depart.x+1, depart.y-1});
 
 
-        if (mode && depart.y < taille-1 && CASEVIDE(plateau[depart.y+1][depart.x+1])) // Droite / Bas
+            if (mode && depart.y < taille-1 && CASEVIDE(plateau[depart.y+1][depart.x+1])) // Droite / Bas
 
-            liste = ajoutTete(liste, (Point){depart.x+1, depart.y+1});
-
+                liste = ajoutTete(liste, (Point){depart.x+1, depart.y+1});
+        }
     }
 
     return liste;

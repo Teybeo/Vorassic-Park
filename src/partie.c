@@ -14,7 +14,7 @@ void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int aleatoir
 
     do {
 
-        joueurActuel = &tabJoueur[ ((tour-1) % nbJoueurs) ];
+        joueurActuel = &tabJoueur[ (tour-1) % nbJoueurs ];
 
         affichage(plateau, taille, tour, mode, nbJoueurs, tabJoueur, joueurActuel->id);
 
