@@ -22,7 +22,7 @@ enum {
     MIN,
 };
 
-Point botCoup(char **plateau, int taille, int mode, Joueur *depart);
+void botCoup(char **plateau, int taille, int mode, Joueur *depart);
 void effectueCoup(char **plateau, Point depart, Point arrivee);
 int MinMax(char **plateau, int taille, int mode, int prof, int etage);
 Point trouveJoueur(char** plateau, int taille, int etage);

@@ -21,7 +21,7 @@ int verifieCoup(char **plateau, int mode, Point depart, Point arrivee);
 void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur);
 
 Noeud* listeCases(int taille, int mode, Point depart);
-Noeud* listeCasesAcquises(char **plateau, int taille, int joueur);
+Noeud* listeCasesAcquises(char **plateau, int taille, int idJjoueur);
 
 void appliqueCoup(char **plateau, int mode, Joueur *depart, Point arrivee);
 

@@ -2,7 +2,7 @@
 
 
 
-Point botCoup(char **plateau, int taille, int mode, Joueur *depart) {
+void botCoup(char **plateau, int taille, int mode, Joueur *depart) {
 
     int i, j;
     Point coup;

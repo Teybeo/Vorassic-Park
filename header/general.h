@@ -5,6 +5,10 @@
  *  \brief Constantes et structures utilisées par le programme
  */
 
+#define CASEVIDE(x)(  \
+    x != 100 && x != 101 && \
+    x != 102 && x != 103)
+
 /** \def TAILLE_NOM
  *
  * \brief Taille du tableau de caractères d'un nom de joueur
@@ -13,6 +17,11 @@
  *
 */
 #define TAILLE_NOM (10+1+1)
+
+enum {
+    FAUX,
+    VRAI
+};
 
 /** \struct Point
  *

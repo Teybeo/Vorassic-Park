@@ -30,10 +30,7 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
                     erreurDepart = 1;
                     caseDepart = saisieCoup(taille);
 
-                    if ((plateau[caseDepart.y][caseDepart.x] == 'C' && joueur->id == 0) ||
-                        (plateau[caseDepart.y][caseDepart.x] == 'R' && joueur->id == 1) ||
-                        (plateau[caseDepart.y][caseDepart.x] == 'V' && joueur->id == 2) ||
-                        (plateau[caseDepart.y][caseDepart.x] == 'B' && joueur->id == 3))
+                    if (plateau[caseDepart.y][caseDepart.x] != joueur->id)
                         erreurDepart = 0;
                     else
                         printf("Case de depart incorrecte\n");
@@ -106,8 +103,7 @@ int verifieCoup(char **plateau, int mode, Point depart, Point arrivee) {
 
             return 4; // Déplacement de 3 cases ou plus
 
-        else if (destination != 'C' && destination != 'R' && destination != 'c' && destination != 'r' &&
-                  destination != 'V' && destination != 'v' && destination != 'B' && destination != 'b' && destination != 'x')
+        else if (CASEVIDE(destination))
 
             return 0; // Case libre
 
@@ -163,18 +159,16 @@ void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur) {
 
 }
 
-Noeud* listeCasesAcquises(char **plateau, int taille, int joueur ) {
+Noeud* listeCasesAcquises(char **plateau, int taille, int idJoueur ) {
 
     Noeud *casesAcquises = NULL;
     int i, j;
-    char tab[4] = {'C', 'R', 'V', 'B'};
-    char c = tab[joueur];
 
     for (i=0;i<taille;i++) {
 
         for (j=0;j<taille;j++) {
 
-            if (plateau[i][j] == c || plateau[i][j] == c + 32)
+            if (plateau[i][j] == idJoueur)
                 casesAcquises = ajoutTete(casesAcquises, (Point){j, i});
         }
     }
@@ -335,8 +329,6 @@ void appliqueCoup(char **plateau, int mode, Joueur *depart, Point arrivee) {
     /* Le J ou R se trouvant a la case depart est copié a la case d'arrivée
        La valeur de la case de départ est décalé de 32 pour le passer en minuscule */
     plateau[arrivee.y][arrivee.x] = plateau[depart->position.y][depart->position.x];
-    if (mode == 0)
-        plateau[depart->position.y][depart->position.x] += 32;
 
     depart->position = arrivee;
 

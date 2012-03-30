@@ -77,10 +77,8 @@ char** initPlateau(int taille, int aleatoire, Joueur *joueur, int nbJoueurs) {
                 plateau[i][j] = (taille-1)*2 - (j + i);
     }
 
-    char symbole[4] = {'C', 'R', 'V', 'B'};
-
     for (i=0;i<nbJoueurs;i++)
-        plateau[joueur[i].position.y][joueur[i].position.x] = symbole[i];
+        plateau[joueur[i].position.y][joueur[i].position.x] = joueur[i].id;
 
 
     return plateau;
@@ -96,7 +94,7 @@ Joueur* initJoueurs(int nbJoueurs, int nbBots, char **noms, int taille) {
     for (i=0;i<nbJoueurs;i++) {
         tab[i].score = 0;
         tab[i].blocage = 0;
-        tab[i].id = i;
+        tab[i].id = 100 + i;
         strcpy(tab[i].nom, noms[i]);
         tab[i].estBot = 0;
     }

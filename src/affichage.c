@@ -1,6 +1,6 @@
 #include "header/affichage.h"
 
-void affichage(char **plateau, int taille, int tour, int mode, int nbJoueurs, Joueur *joueur, int joueurActuel) {
+void affichage(char **plateau, int taille, int tour, int mode, int nbJoueurs, Joueur *tabJoueur, int joueurActuel) {
 
     int i;
     char modeJeu[2][10] = {"Serpent", "Pieuvre"};
@@ -10,14 +10,15 @@ void affichage(char **plateau, int taille, int tour, int mode, int nbJoueurs, Jo
     printf("Scores:");
 
     for (i=0;i<nbJoueurs;i++) {
-        couleurs(plateau, joueur[i]);
-        printf("\n    %s %d", joueur[i].nom, joueur[i].score);
-        if (joueurActuel == joueur[i].id)
+        couleurs(plateau, tabJoueur[i].id);
+        highvideo();
+        printf("\n    %s %d", tabJoueur[i].nom, tabJoueur[i].score);
+        if (joueurActuel == tabJoueur[i].id)
             printf(" <- A ton tour");
     }
     textcolor(LIGHTGRAY);
 
-    affichePlateau(plateau, taille, mode);
+    affichePlateau(plateau, taille, mode, tabJoueur, nbJoueurs);
 
     textcolor(LIGHTGRAY);
 
@@ -25,25 +26,28 @@ void affichage(char **plateau, int taille, int tour, int mode, int nbJoueurs, Jo
 
 }
 
-void couleurs(char **plateau, Joueur joueur) {
-    int i, j;
-    j = joueur.position.x;
-    i = joueur.position.y;
+void couleurs(char **plateau, int idJoueur) {
 
-    if (plateau[i][j] == 'c' || plateau[i][j] == 'C')
-        textcolor(LIGHTCYAN);
-    if (plateau[i][j] == 'r' || plateau[i][j] == 'R')
-        textcolor(LIGHTRED);
-    if (plateau[i][j] == 'v' || plateau[i][j] == 'V')
-        textcolor(LIGHTGREEN);
-    if (plateau[i][j] == 'b' || plateau[i][j] == 'B')
-        textcolor(LIGHTBLUE);
-
+    switch (idJoueur) {
+    case 100:
+        textcolor(CYAN);
+        break;
+    case 101:
+        textcolor(RED);
+        break;
+    case 102:
+        textcolor(GREEN);
+        break;
+    case 103:
+        textcolor(BLUE);
+        break;
+    }
 }
 
-void affichePlateau(char **plateau, int taille, int mode) {
+void affichePlateau(char **plateau, int taille, int mode, Joueur *tabJoueur, int nbJoueurs) {
 
-    int i, j;
+    int i, j, k;
+    int tete;
 
     printf("\n\n   |");
 
@@ -57,35 +61,31 @@ void affichePlateau(char **plateau, int taille, int mode) {
 
     for (i=0 ; i < taille ; i++)
     {
+        printf("%2d |", i);
+
         for (j=0 ; j < taille ; j++)
         {
-            if (j == 0)
-                printf("%2d |", i);
 
-            if ((plateau[i][j] == 'C' || plateau[i][j] == 'R') || plateau[i][j] == 'c' || plateau[i][j] == 'r' ||
-            plateau[i][j] == 'V' || plateau[i][j] == 'B' || plateau[i][j] == 'v' || plateau[i][j] == 'b') {
+            if (CASEVIDE(plateau[i][j]) == FAUX) { // Si un joueur est sur la case
 
-                if (plateau[i][j] == 'c')
-                    textcolor(CYAN);
-                if (plateau[i][j] == 'C')
-                    textcolor(LIGHTCYAN);
-                if (plateau[i][j] == 'r')
-                    textcolor(RED);
-                if (plateau[i][j] == 'R')
-                    textcolor(LIGHTRED);
-                if (plateau[i][j] == 'v')
-                    textcolor(GREEN);
-                if (plateau[i][j] == 'V')
-                    textcolor(LIGHTGREEN);
-                if (plateau[i][j] == 'b')
-                    textcolor(BLUE);
-                if (plateau[i][j] == 'B')
-                    textcolor(LIGHTBLUE);
+                tete = 0;
+                for (k=0;k<nbJoueurs && tete == 0;k++)
+                    if (i == tabJoueur[k].position.y && j == tabJoueur[k].position.x)
+                        tete = 1;
 
-                printf("%2c ", plateau[i][j]);
+                couleurs(plateau, plateau[i][j]); // On active la couleur correspondante
+
+                if (tete)
+                    highvideo();
+
+                printf("%2c ", 254);
+
                 textcolor(LIGHTGRAY);
+
             }
+
             else
+
                 printf("%2d ", plateau[i][j]);
                 //printf("   ");
 
@@ -124,7 +124,7 @@ void resultat(Joueur *joueur, int nbJoueurs, char **plateau) {
 
     int i;
     for (i=0;i<nbJoueurs;i++) {
-        couleurs(plateau, joueur[i]);
+        couleurs(plateau, joueur[i].id);
         printf("    %s   = %d\n", joueur[i].nom, joueur[i].score);
     }
 
