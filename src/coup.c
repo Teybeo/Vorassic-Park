@@ -13,9 +13,8 @@
 
 void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
 
-    Point caseDepart, coup;
-    int erreur = 0, erreurDepart = 1;
-    int valeurCase = 0;
+    Point caseDepart, caseArrivee;
+    int erreurArrivee, erreurDepart;
 
     chercheBlocage(plateau, taille, mode, joueur);
 
@@ -37,16 +36,16 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
 
                 } while (erreurDepart);
 
-                coup = saisieCoup(taille);
-                erreur = verifieCoup(plateau, mode, caseDepart, coup);
+                caseArrivee = saisieCoup(taille);
+                erreurArrivee = verifieCoup(plateau, mode, caseDepart, caseArrivee);
 
             } else {
 
-                coup = saisieCoup(taille);
-                erreur = verifieCoup(plateau, mode, joueur->position, coup);
+                caseArrivee = saisieCoup(taille);
+                erreurArrivee = verifieCoup(plateau, mode, joueur->position, caseArrivee);
             }
 
-            switch (erreur) {
+            switch (erreurArrivee) {
             case 1:
                 printf("Coup interdit - Case originelle\n");
                 break;
@@ -61,10 +60,9 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
                 break;
             }
 
-        } while (erreur);
+        } while (erreurArrivee);
 
-        valeurCase = plateau[coup.y][coup.x];
-        appliqueCoup(plateau, mode, joueur, coup);
+        appliqueCoup(plateau, mode, joueur, caseArrivee);
 
     } else {
 
@@ -90,16 +88,16 @@ int verifieCoup(char **plateau, int mode, Point depart, Point arrivee) {
 
     int deltaX = arrivee.x - depart.x;
     int deltaY = arrivee.y - depart.y;
-    int delta = abs(deltaX) + abs(deltaY);
+    int distance = abs(deltaX) + abs(deltaY);
     int destination = plateau[arrivee.y][arrivee.x];
 
-    if (delta != 0)  // S'il y a un deplacement non nul sur au moins 1 axe
+    if (distance != 0)  // S'il y a un deplacement non nul sur au moins 1 axe
     {
-        if (mode == 0 && delta == 2)
+        if (mode == 0 && distance == 2)
 
             return 3; // Déplacement en diagonale
 
-        else if (delta > 2)
+        else if (distance > 2)
 
             return 4; // Déplacement de 3 cases ou plus
 
@@ -119,8 +117,10 @@ int verifieCoup(char **plateau, int mode, Point depart, Point arrivee) {
 /** \fn void chercheBlocage(char **plateau, int mode, Joueur *joueur, Noeud *casesAdjacentes)
     \brief Cherche si un joueur est bloqué
 
-    Parcours la liste des cases adjacentes et si aucune case libre n'est trouvée,
-    la variable blocage du joueur est passée à 1
+    Parcours la liste des cases adjacentes à la case du joueur.
+	Si une case libre est trouvée, la fonctionne s'achève immédiatement.
+	Si aucune case libre n'est trouvée, la variable blocage	du joueur est mise à VRAI.
+	En mode Pieuvre, on effectue ce meme traitement mais sur toutes les cases que le joueur possède.
 
     \param plateau Le plateau de jeu
     \param mode Le mode de jeu (Pieuvre/Serpent)
@@ -271,28 +271,28 @@ Noeud* listeCases(int taille, int mode, Point depart) {
     if (depart.y > 0) { // Haut
         tmp.x = depart.x;
         tmp.y = depart.y - 1;
-        liste = ajoutFin(liste, tmp);
+        liste = ajoutTete(liste, tmp);
     }
     if (depart.y < taille-1) { // Bas
         tmp.x = depart.x;
         tmp.y = depart.y + 1;
-        liste = ajoutFin(liste, tmp);
+        liste = ajoutTete(liste, tmp);
     }
     if (depart.x > 0) {
         // Gauche
         tmp.x = depart.x - 1;
         tmp.y = depart.y;
-        liste = ajoutFin(liste, tmp);
+        liste = ajoutTete(liste, tmp);
 
         if (mode && depart.y > 0) { // Gauche / Haut
             tmp.x = depart.x - 1;
             tmp.y = depart.y - 1;
-            liste = ajoutFin(liste, tmp);
+            liste = ajoutTete(liste, tmp);
         }
         if (mode && depart.y < taille-1) { // Gauche / Bas
             tmp.x = depart.x - 1;
             tmp.y = depart.y + 1;
-            liste = ajoutFin(liste, tmp);
+            liste = ajoutTete(liste, tmp);
         }
 
     }
@@ -300,17 +300,17 @@ Noeud* listeCases(int taille, int mode, Point depart) {
         // Droite
         tmp.x = depart.x + 1;
         tmp.y = depart.y;
-        liste = ajoutFin(liste, tmp);
+        liste = ajoutTete(liste, tmp);
 
         if (mode && depart.y > 0) { // Droite / Haut
             tmp.x = depart.x + 1;
             tmp.y = depart.y - 1;
-            liste = ajoutFin(liste, tmp);
+            liste = ajoutTete(liste, tmp);
         }
         if (mode && depart.y < taille-1) { // Droite / Bas
             tmp.x = depart.x + 1;
             tmp.y = depart.y + 1;
-            liste = ajoutFin(liste, tmp);
+            liste = ajoutTete(liste, tmp);
         }
 
     }

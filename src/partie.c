@@ -5,32 +5,32 @@ void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int aleatoir
     int continuer = 1;
     int tour = 1, i;
     char **plateau;
-    Joueur *joueur;
+    Joueur *tabJoueur;
     Joueur *joueurActuel;
 
-    joueur = initJoueurs(nbJoueurs, nbBots, noms, taille);
+    tabJoueur = initJoueurs(nbJoueurs, nbBots, noms, taille);
 
-    plateau = initPlateau(taille, aleatoire, joueur, nbJoueurs);
+    plateau = initPlateau(taille, aleatoire, tabJoueur, nbJoueurs);
 
     do {
 
-        joueurActuel = &joueur[ ((tour-1) % nbJoueurs) ];
+        joueurActuel = &tabJoueur[ (tour-1) % nbJoueurs ];
 
-        affichage(plateau, taille, tour, mode, nbJoueurs, joueur, joueurActuel->id);
+        affichage(plateau, taille, tour, mode, nbJoueurs, tabJoueur, joueurActuel->id);
 
         if (joueurActuel->estBot)
-            botCoup(plateau, taille, mode, joueurActuel);
+            botCoup(plateau, taille, mode, joueurActuel, &tabJoueur[0]);
         else
             faireCoup(plateau, taille, mode, joueurActuel);
 
         tour++;
 
-        continuer = finPartie(joueur, nbJoueurs);
+        continuer = finPartie(tabJoueur, nbJoueurs);
 
     } while (continuer);
 
 
-    resultat(joueur, nbJoueurs, plateau);
+    resultat(tabJoueur, nbJoueurs, plateau);
 
     for (i=0;i<taille;i++)
         free(plateau[i]);
@@ -99,37 +99,29 @@ Joueur* initJoueurs(int nbJoueurs, int nbBots, char **noms, int taille) {
         tab[i].estBot = 0;
     }
 
-
-
     tab[0].position.x = 0;
     tab[0].position.y = 0;
 
     tab[1].position.x = taille-1;
     tab[1].position.y = taille-1;
 
-    if (nbJoueurs == 3) {
+    if (nbJoueurs >= 3) {
         tab[2].position.x = taille-1;
         tab[2].position.y = 0;
     }
     if (nbJoueurs == 4) {
-        tab[2].position.x = taille-1;
-        tab[2].position.y = 0;
-
         tab[3].position.x = 0;
         tab[3].position.y = taille-1;
     }
 
+
+    if (nbBots >= 1) {
+        tab[1].estBot = 1;
+        strcpy(tab[1].nom,"Bot Rouge");
+    }
     if (nbBots == 2) {
-
         tab[0].estBot = 1;
-        tab[1].estBot = 1;
         strcpy(tab[0].nom,"Bot Cyan");
-        strcpy(tab[1].nom,"Bot Rouge");
-
-    } else if (nbBots == 1) {
-
-        tab[1].estBot = 1;
-        strcpy(tab[1].nom,"Bot Rouge");
     }
 
     return tab;

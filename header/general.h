@@ -1,6 +1,12 @@
 #ifndef H_GENERAL
 #define H_GENERAL
 
+#define CASEVIDE(x)  \
+    x != 'C' && x != 'R' && \
+    x != 'c' && x != 'r' && \
+    x != 'V' && x != 'v' && \
+    x != 'B' && x != 'b'
+
 /** \file general.h
  *  \brief Constantes et structures utilisées par le programme
  */
