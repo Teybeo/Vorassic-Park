@@ -1,12 +1,6 @@
 #ifndef H_GENERAL
 #define H_GENERAL
 
-#define CASEVIDE(x)  \
-    x != 'C' && x != 'R' && \
-    x != 'c' && x != 'r' && \
-    x != 'V' && x != 'v' && \
-    x != 'B' && x != 'b'
-
 /** \file general.h
  *  \brief Constantes et structures utilisées par le programme
  */
@@ -22,12 +16,16 @@
  *  On doit rajouter 2 au nombre de caractères car le tableau doit contenir '\0' et .. ?
  *
 */
+
 #define TAILLE_NOM (10+1+1)
 
 enum {
     FAUX,
     VRAI
 };
+
+#define SERPENT 0
+#define PIEUVRE 1
 
 /** \struct Point
  *

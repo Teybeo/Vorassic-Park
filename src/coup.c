@@ -22,14 +22,14 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
 
         do {
 
-            if (mode == 1) {
+            if (mode == PIEUVRE) {
 
                 do  {
 
                     erreurDepart = 1;
                     caseDepart = saisieCoup(taille);
 
-                    if (plateau[caseDepart.y][caseDepart.x] != joueur->id)
+                    if (plateau[caseDepart.y][caseDepart.x] == joueur->id)
                         erreurDepart = 0;
                     else
                         printf("Case de depart incorrecte\n");
@@ -93,7 +93,7 @@ int verifieCoup(char **plateau, int mode, Point depart, Point arrivee) {
 
     if (distance != 0)  // S'il y a un deplacement non nul sur au moins 1 axe
     {
-        if (mode == 0 && distance == 2)
+        if (mode == SERPENT && distance == 2)
 
             return 3; // Déplacement en diagonale
 
@@ -131,7 +131,7 @@ void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur) {
     Noeud *casesAdjacentes = NULL;
     Noeud *casesAcquises = NULL;
 
-    if (mode == 1)
+    if (mode == PIEUVRE)
         casesAcquises = listeCasesAcquises(plateau, taille, joueur->id);
     else
         casesAcquises = ajoutTete(casesAcquises, joueur->position);
@@ -164,14 +164,12 @@ Noeud* listeCasesAcquises(char **plateau, int taille, int idJoueur ) {
     Noeud *casesAcquises = NULL;
     int i, j;
 
-    for (i=0;i<taille;i++) {
+    for (i=0;i<taille;i++)
 
-        for (j=0;j<taille;j++) {
+        for (j=0;j<taille;j++)
 
             if (plateau[i][j] == idJoueur)
                 casesAcquises = ajoutTete(casesAcquises, (Point){j, i});
-        }
-    }
 
 
     return casesAcquises;

@@ -77,11 +77,13 @@ Noeud* supprFin(Noeud* teteliste) {
     return teteliste;
 }
 
-void libereListe(Noeud* teteliste) {
+void* libereListe(Noeud* teteliste) {
 
     while (teteliste != NULL) {
 
         teteliste = supprTete(teteliste);
     }
+
+    return NULL;
 
 }

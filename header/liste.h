@@ -16,6 +16,6 @@ Noeud* ajoutTete(Noeud *teteliste, Point depart);
 Noeud* ajoutFin(Noeud *teteliste, Point depart);
 Noeud* supprTete(Noeud* teteliste);
 Noeud* supprFin(Noeud* teteliste);
-void libereListe(Noeud* teteliste);
+void* libereListe(Noeud* teteliste);
 
 #endif
