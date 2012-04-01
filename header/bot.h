@@ -12,9 +12,9 @@
 #define EVAL_MIN -10000
 #define EVAL_MAX 10000
 
-#define PROF_MAX 3
+#define PROF_MAX 15
 
-#define DEBUG
+//#define DEBUG
 
 #define MAX 0
 #define MIN 1
@@ -24,7 +24,7 @@ void botCoup(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversai
 int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire, int prof, int etage);
 
 int finPartieBot(char **plateau, int taille, int mode);
-int blocageJoueur(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire);
+void chercheBlocageBot(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire);
 
 Noeud* listeCoupsPossiblesBot(Noeud *liste,  Point depart, char **plateau, int taille, int mode);
 
@@ -36,5 +36,7 @@ int maxNote(NoeudNote *liste);
 Point meilleurCoup(NoeudCoupNote *liste);
 
 void affichePlateauDebug(char **plateau, int taille, int mode, int prof, Point bot, Point adversaire, Point actuel, Point arrivee, int id);
+void debugDebut(char **plateau, int taille, int mode, int prof, Point bot, Point adversaire, Point depart, Point arrive, int id);
+void debugFin(int prof, int note) ;
 
 #endif

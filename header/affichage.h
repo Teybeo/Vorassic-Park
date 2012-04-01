@@ -20,7 +20,7 @@ void affichage(char **plateau, int taille, int tour, int mode, int nbJoueurs, Jo
 void affichePlateau(char **plateau, int taille, int mode, Joueur *tabJoueur, int nbJoueurs);
 void resultat(Joueur *joueur, int nbJoueurs, char **plateau);
 void afficheDirection(Point depart, Point arrivee);
-void couleurs(char **plateau, int idJoueur);
+void couleurs(int idJoueur);
 
 #endif
 

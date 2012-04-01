@@ -20,6 +20,8 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
 
     if (joueur->blocage == 0) {
 
+        printf("\nEntrez un coup : ");
+
         do {
 
             if (mode == PIEUVRE) {

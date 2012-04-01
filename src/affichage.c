@@ -10,8 +10,7 @@ void affichage(char **plateau, int taille, int tour, int mode, int nbJoueurs, Jo
     printf("Scores:");
 
     for (i=0;i<nbJoueurs;i++) {
-        couleurs(plateau, tabJoueur[i].id);
-        highvideo();
+        couleurs(tabJoueur[i].id);
         printf("\n    %s %d", tabJoueur[i].nom, tabJoueur[i].score);
         if (joueurActuel == tabJoueur[i].id)
             printf(" <- A ton tour");
@@ -22,24 +21,22 @@ void affichage(char **plateau, int taille, int tour, int mode, int nbJoueurs, Jo
 
     textcolor(LIGHTGRAY);
 
-    printf("Entrez un coup : ");
-
 }
 
-void couleurs(char **plateau, int idJoueur) {
+void couleurs(int idJoueur) {
 
     switch (idJoueur) {
     case 100:
-        textcolor(CYAN);
+        textcolor(LIGHTCYAN);
         break;
     case 101:
-        textcolor(RED);
+        textcolor(LIGHTRED);
         break;
     case 102:
-        textcolor(GREEN);
+        textcolor(LIGHTGREEN);
         break;
     case 103:
-        textcolor(BLUE);
+        textcolor(LIGHTBLUE);
         break;
     }
 }
@@ -76,10 +73,10 @@ void affichePlateau(char **plateau, int taille, int mode, Joueur *tabJoueur, int
                             tete = 1;
                 }
 
-                couleurs(plateau, plateau[i][j]); // On active la couleur correspondante
+                couleurs(plateau[i][j]); // On active la couleur correspondante
 
-                if (tete)
-                    highvideo();
+                if (tete == FAUX)
+                    lowvideo();
 
                 printf("%2c ", 254);
 
@@ -96,8 +93,6 @@ void affichePlateau(char **plateau, int taille, int mode, Joueur *tabJoueur, int
 
         printf("\n");
     }
-
-    printf("\n");
 
 }
 
@@ -124,7 +119,7 @@ void resultat(Joueur *joueur, int nbJoueurs, char **plateau) {
 
     int i;
     for (i=0;i<nbJoueurs;i++) {
-        couleurs(plateau, joueur[i].id);
+        couleurs(joueur[i].id);
         printf("    %s   = %d\n", joueur[i].nom, joueur[i].score);
     }
 
