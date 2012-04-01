@@ -6,8 +6,9 @@ void botCoup(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversai
     int i, j;
     float debut, temps;
     char valeurTmp;
-    Point coup, posTmp;
+    Point coup;
     Noeud *coups = NULL;
+    Noeud *pions = NULL;
     NoeudCoupNote *coupsNotes = NULL;
 
     debut = clock();
@@ -19,39 +20,52 @@ void botCoup(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversai
            plateauTemp[i][j] = plateau[i][j];
     }
 
-    coups = listeCasesBot(coups, bot->position, plateauTemp, taille, mode);
+    if (mode == PIEUVRE)
+        pions = listeCasesAcquises(plateau, taille, bot->id);
+    else
+        pions = ajoutTete(pions, bot->position);
 
-    while (coups != NULL) {
+    do {
 
-        textcolor(LIGHTRED);
-        printf("\nR ");
-        textcolor(LIGHTGRAY);
-        afficheDirection(bot->position, coups->pos);
-        printf(" prof 0");
-        affichePlateauDebug(plateauTemp, taille, mode, 0, bot->position, adversaire->position, bot->position, coups->pos, bot->id);
+    coups = listeCoupsPossiblesBot(coups, pions->pos, plateauTemp, taille, mode);
 
-        effectueCoup(plateauTemp, bot, coups->pos, &valeurTmp, &posTmp);
+        while (coups != NULL) {
 
-        coupsNotes = ajoutTeteCoupNote(coupsNotes, coups->pos, MinMax(plateauTemp, taille, mode, bot, adversaire, 1, MIN));
+            textcolor(LIGHTRED);
+            printf("\n%c ", 254);
+            textcolor(LIGHTGRAY);
+            afficheDirection(pions->pos, coups->pos);
+            printf(" prof 0");
+            affichePlateauDebug(plateauTemp, taille, mode, 0, bot->position, adversaire->position, pions->pos, coups->pos, bot->id);
 
-        annuleCoup(plateauTemp, bot, coups->pos, &valeurTmp, &posTmp);
+            effectueCoup(plateauTemp, bot, coups->pos, &valeurTmp);
 
-        printf("\nCe coup valait = %d\n", coupsNotes->note);
+            if (blocageJoueur(plateauTemp, taille, mode, bot, adversaire) == MIN)
+                coupsNotes = ajoutTeteCoupNote(coupsNotes, coups->pos, MinMax(plateauTemp, taille, mode, bot, adversaire, 1, MAX));
+            else
+                coupsNotes = ajoutTeteCoupNote(coupsNotes, coups->pos, MinMax(plateauTemp, taille, mode, bot, adversaire, 1, MIN));
 
-        coups = supprTete(coups);
-    }
+            annuleCoup(plateauTemp, bot, coups->pos, &valeurTmp, pions->pos);
+
+            coups = supprTete(coups);
+
+            printf("\nCe coup valait = %d\n", coupsNotes->note);
+
+        }
+
+        pions = supprTete(pions);
+
+    } while (pions != NULL);
 
     if (coupsNotes != NULL) {
 
         coup = meilleurCoup(coupsNotes);
-        if (verifieCoup(plateau, mode, bot->position, coup) == 0) {
-            appliqueCoup(plateau, mode, bot, coup);
-            bot->position = coup;
-        }
+        appliqueCoup(plateau, mode, bot, coup);
+        bot->position = coup;
 
     } else {
 
-        printf("\nLe bot est bloque, il passe son tour");
+        printf("\nLe bot est bloque, il passe son tour\n");
         bot->blocage = 1;
     }
 
@@ -68,10 +82,9 @@ void botCoup(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversai
 
 int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire, int prof, int etage) {
 
-    Noeud *coups = NULL, *casesAcquises = NULL;
+    Noeud *coups = NULL, *pions = NULL;
     NoeudNote *notes = NULL;
     Joueur *J_actuel = NULL;
-    Point posTmp;
     int blocage;
     char valeurTmp;
 
@@ -94,13 +107,13 @@ int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire
         #endif
 
         if (mode == PIEUVRE)
-            casesAcquises = listeCasesAcquises(plateau, taille, J_actuel->id);
+            pions = listeCasesAcquises(plateau, taille, J_actuel->id);
         else
-            casesAcquises = ajoutTete(casesAcquises, J_actuel->position);
+            pions = ajoutTete(pions, J_actuel->position);
 
         do {
 
-            coups = listeCasesBot(coups, casesAcquises->pos, plateau, taille, mode);
+            coups = listeCoupsPossiblesBot(coups, pions->pos, plateau, taille, mode);
 
             while (coups != NULL) {
 
@@ -109,16 +122,17 @@ int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire
                     for (i=0;i<prof;i++)
                         printf("        ");
                     if (etage == MAX) {
-                        textcolor(LIGHTRED);printf("%c ", 'R');
-                    }else {
-                        textcolor(LIGHTCYAN);printf("%C ", 'C');
+                        textcolor(LIGHTRED);printf("%c ", 254);
+                    } else {
+                        textcolor(LIGHTCYAN);printf("%C ", 254);
                     }
-                    textcolor(LIGHTGRAY);afficheDirection(casesAcquises->pos, coups->pos);
+                    textcolor(LIGHTGRAY);
+                    afficheDirection(pions->pos, coups->pos);
                     printf(" prof %d", prof);
-                    affichePlateauDebug(plateau, taille, mode, prof, bot->position, adversaire->position, casesAcquises->pos, coups->pos, J_actuel->id);
+                    affichePlateauDebug(plateau, taille, mode, prof, bot->position, adversaire->position, pions->pos, coups->pos, J_actuel->id);
                 #endif
 
-                effectueCoup(plateau, J_actuel, coups->pos, &valeurTmp, &posTmp);
+                effectueCoup(plateau, J_actuel, coups->pos, &valeurTmp);
 
                 //Si l'autre joueur était ou s'est fait bloquer, on continue solo
                 if (blocageJoueur(plateau, taille, mode, bot, adversaire) == !etage )
@@ -126,7 +140,7 @@ int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire
                 else
                     notes = ajoutTeteNote(notes, MinMax(plateau, taille, mode, bot, adversaire, prof+1, !etage));
 
-                annuleCoup(plateau, J_actuel, coups->pos, &valeurTmp, &posTmp);
+                annuleCoup(plateau, J_actuel, coups->pos, &valeurTmp, pions->pos);
 
                 coups = supprTete(coups);
 
@@ -138,9 +152,9 @@ int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire
 
             }
 
-            casesAcquises = supprTete(casesAcquises);
+            pions = supprTete(pions);
 
-        }while (casesAcquises != NULL);
+        } while (pions != NULL);
 
     }
 
@@ -150,16 +164,14 @@ int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire
         return minNote(notes);
 }
 
-/* Stocke la valeur de la case prise
-   Stocke la position de la tete
-   Place la tete sur la case prise
-   Passe la valeur de l'ancienne tete en minuscule
+/* Sauvegarde la valeur de la case prise
+   Place la nouvelle tete sur la case prise
    Met a jour la position du joueur, désormais égale à celle de la case prise
-   Met a jour le score du joueur en fonction de la case prise*/
-void effectueCoup(char **plateau, Joueur *joueur, Point arrivee, char *valeurTmp, Point *posTmp) {
+   Met a jour le score du joueur en fonction de la case prise
+*/
+void effectueCoup(char **plateau, Joueur *joueur, Point arrivee, char *valeurTmp) {
 
     *valeurTmp = plateau[arrivee.y][arrivee.x];
-    *posTmp = joueur->position;
 
     plateau[arrivee.y][arrivee.x] = plateau[joueur->position.y][joueur->position.x];
 
@@ -167,18 +179,19 @@ void effectueCoup(char **plateau, Joueur *joueur, Point arrivee, char *valeurTmp
     joueur->score += *valeurTmp;
 }
 
-/*  Restaure les coordonnées de la tete
+/*  Retire la valeur de la case prise au score du joueur
+    Restaure les coordonnées de la tete
     Replace la tete sur l'ancienne tete
     Restaure la valeur de la case prise
-    Restaure le score du joueur avant la prise de la case */
-void annuleCoup(char **plateau, Joueur *joueur, Point arrivee, char *valeurTmp, Point *posTmp) {
+*/
+void annuleCoup(char **plateau, Joueur *joueur, Point arrivee, char *valeurTmp, Point depart) {
 
-    joueur->position = *posTmp;
+    joueur->score -= *valeurTmp;
+    joueur->position = depart;
 
     plateau[joueur->position.y][joueur->position.x] = plateau[arrivee.y][arrivee.x];
     plateau[arrivee.y][arrivee.x] = *valeurTmp;
 
-    joueur->score -= *valeurTmp;
 }
 
 int blocageJoueur(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire) {
@@ -186,30 +199,30 @@ int blocageJoueur(char **plateau, int taille, int mode, Joueur *bot, Joueur *adv
     int i, blocage[2] = {VRAI, VRAI};
     Joueur *joueur = bot;
     Noeud *coups = NULL;
-    Noeud *casesAcquises = NULL;
+    Noeud *pions = NULL;
 
     for (i=0;i<2;i++) {
 
         if (mode == PIEUVRE)
-            casesAcquises = listeCasesAcquises(plateau, taille, joueur->id);
+            pions = listeCasesAcquises(plateau, taille, joueur->id);
         else
-            casesAcquises = ajoutTete(casesAcquises, joueur->position);
+            pions = ajoutTete(pions, joueur->position);
 
 
         do { // Pour chaque case du joueur, on cree une liste des coups possibles
 
-            coups = listeCasesBot(coups, casesAcquises->pos, plateau, taille, mode);
+            coups = listeCoupsPossiblesBot(coups, pions->pos, plateau, taille, mode);
 
             if (coups != NULL) { // Si une liste existe, alors le joueur n'est pas bloqué
                 blocage[joueur->id-100] = FAUX;
                 coups = libereListe(coups);
-                casesAcquises = libereListe(casesAcquises);
+                pions = libereListe(pions);
                 break;
             }
 
-            casesAcquises = supprTete(casesAcquises);
+            pions = supprTete(pions);
 
-        } while (casesAcquises != NULL);
+        } while (pions != NULL);
 
         joueur = adversaire;
     }
@@ -232,7 +245,7 @@ int blocageJoueur(char **plateau, int taille, int mode, Joueur *bot, Joueur *adv
 
 }
 
-Noeud* listeCasesBot(Noeud *liste,  Point depart, char **plateau, int taille, int mode) {
+Noeud* listeCoupsPossiblesBot(Noeud *liste,  Point depart, char **plateau, int taille, int mode) {
 
     if (depart.y > 0 && CASEVIDE(plateau[depart.y-1][depart.x]))  // Haut
 
