@@ -8,15 +8,14 @@
 		<Option show_notes="1">
 			<notes>
 				<![CDATA[Indispensable:
-Mode Pieuvre pour le bot
+Finir le Mode Pieuvre pour le bot
 
 Optimisations:
 Utiliser des char pour les coordonées, test rapide a montré 15% de gain avec des short. Pour être cohérent et peut-etre encore plus  efficace, passer toutes les variables qui sy'rapportent (arguments de fonctions, etc) dans le meme type.
 
 Améliorations:
 AlphaBeta
-Représentation des joueurs sur le plateau, il faut se débarasser des 'C', 'c' et autres 'R'
-	
+
 Idées:
 Sélection clavier ?
 	Curseur déplacable sur la grille, maintien d'une touche puis déplacement sur la case d'arrivée et relachement pour jouer un coup ?

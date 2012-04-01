@@ -68,10 +68,13 @@ void affichePlateau(char **plateau, int taille, int mode, Joueur *tabJoueur, int
 
             if (CASEVIDE(plateau[i][j]) == FAUX) { // Si un joueur est sur la case
 
-                tete = 0;
-                for (k=0;k<nbJoueurs && tete == 0;k++)
-                    if (i == tabJoueur[k].position.y && j == tabJoueur[k].position.x)
-                        tete = 1;
+                if (mode == SERPENT) { // En mode Serpent, on cherche la tete
+
+                    tete = 0;
+                    for (k=0;k<nbJoueurs && tete == 0;k++)
+                        if (i == tabJoueur[k].position.y && j == tabJoueur[k].position.x)
+                            tete = 1;
+                }
 
                 couleurs(plateau, plateau[i][j]); // On active la couleur correspondante
 

@@ -19,7 +19,6 @@ void botCoup(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversai
            plateauTemp[i][j] = plateau[i][j];
     }
 
-    posTmp = bot->position;
     coups = listeCasesBot(coups, bot->position, plateauTemp, taille, mode);
 
     while (coups != NULL) {
@@ -27,11 +26,11 @@ void botCoup(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversai
         textcolor(LIGHTRED);
         printf("\nR ");
         textcolor(LIGHTGRAY);
-        printf("Coup %d, %d prof 0", coups->pos.x, coups->pos.y);
+        afficheDirection(bot->position, coups->pos);
+        printf(" prof 0");
+        affichePlateauDebug(plateauTemp, taille, mode, 0, bot->position, adversaire->position, bot->position, coups->pos, bot->id);
 
         effectueCoup(plateauTemp, bot, coups->pos, &valeurTmp, &posTmp);
-
-        affichePlateauDebug(plateauTemp, taille, 0, posTmp, coups->pos);
 
         coupsNotes = ajoutTeteCoupNote(coupsNotes, coups->pos, MinMax(plateauTemp, taille, mode, bot, adversaire, 1, MIN));
 
@@ -49,32 +48,30 @@ void botCoup(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversai
             appliqueCoup(plateau, mode, bot, coup);
             bot->position = coup;
         }
-    } else {
-        printf("\nLe bot est bloque, il passe son tour");
 
+    } else {
+
+        printf("\nLe bot est bloque, il passe son tour");
         bot->blocage = 1;
     }
 
-        temps = (clock() - debut)/CLOCKS_PER_SEC;
-        printf("Temps de calcul: %f\n", temps);
+    temps = (clock() - debut)/CLOCKS_PER_SEC;
+    printf("Temps de calcul: %f\n", temps);
 
-        for (i=0;i<taille;i++)
-            free(plateauTemp[i]);
-        free(plateauTemp);
+    for (i=0;i<taille;i++)
+        free(plateauTemp[i]);
+    free(plateauTemp);
 
-        getchar();
-
+    getchar();
 
 }
 
-
-
 int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire, int prof, int etage) {
 
-    Noeud *coups = NULL;
+    Noeud *coups = NULL, *casesAcquises = NULL;
     NoeudNote *notes = NULL;
     Joueur *J_actuel = NULL;
-    Point posDepart;
+    Point posTmp;
     int blocage;
     char valeurTmp;
 
@@ -82,7 +79,7 @@ int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire
         J_actuel = adversaire;
     else
         J_actuel = bot;
-    posDepart = J_actuel->position;
+
 
     blocage = blocageJoueur(plateau, taille, mode, bot, adversaire);
 
@@ -96,43 +93,54 @@ int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire
             printf("\n");
         #endif
 
-        coups = listeCasesBot(coups, J_actuel->position, plateau, taille, mode);
+        if (mode == PIEUVRE)
+            casesAcquises = listeCasesAcquises(plateau, taille, J_actuel->id);
+        else
+            casesAcquises = ajoutTete(casesAcquises, J_actuel->position);
 
-        while (coups != NULL) {
+        do {
 
-            effectueCoup(plateau, J_actuel, coups->pos, &valeurTmp, &posDepart);
+            coups = listeCasesBot(coups, casesAcquises->pos, plateau, taille, mode);
 
-            #ifdef DEBUG
-                int i;
-                for (i=0;i<prof;i++)
-                    printf("        ");
-                if (etage == MAX) {
-                    textcolor(LIGHTRED);printf("%c ", 'R');
-                }else {
-                    textcolor(LIGHTCYAN);printf("%C ", 'C');
-                }
-                textcolor(LIGHTGRAY);afficheDirection(posDepart, coups->pos);
-                printf(" prof %d", prof);
-                affichePlateauDebug(plateau, taille, prof, posDepart, coups->pos);
-            #endif
+            while (coups != NULL) {
 
-            //Si l'autre joueur était ou s'est fait bloquer, on continue solo
-            if (blocageJoueur(plateau, taille, mode, bot, adversaire) == !etage )
-                notes = ajoutTeteNote(notes, MinMax(plateau, taille, mode, bot, adversaire, prof+1, etage));
-            else
-                notes = ajoutTeteNote(notes, MinMax(plateau, taille, mode, bot, adversaire, prof+1, !etage));
+                 #ifdef DEBUG
+                    int i;
+                    for (i=0;i<prof;i++)
+                        printf("        ");
+                    if (etage == MAX) {
+                        textcolor(LIGHTRED);printf("%c ", 'R');
+                    }else {
+                        textcolor(LIGHTCYAN);printf("%C ", 'C');
+                    }
+                    textcolor(LIGHTGRAY);afficheDirection(casesAcquises->pos, coups->pos);
+                    printf(" prof %d", prof);
+                    affichePlateauDebug(plateau, taille, mode, prof, bot->position, adversaire->position, casesAcquises->pos, coups->pos, J_actuel->id);
+                #endif
 
-            annuleCoup(plateau, J_actuel, coups->pos, &valeurTmp, &posDepart);
+                effectueCoup(plateau, J_actuel, coups->pos, &valeurTmp, &posTmp);
 
-            coups = supprTete(coups);
+                //Si l'autre joueur était ou s'est fait bloquer, on continue solo
+                if (blocageJoueur(plateau, taille, mode, bot, adversaire) == !etage )
+                    notes = ajoutTeteNote(notes, MinMax(plateau, taille, mode, bot, adversaire, prof+1, etage));
+                else
+                    notes = ajoutTeteNote(notes, MinMax(plateau, taille, mode, bot, adversaire, prof+1, !etage));
 
-            #ifdef DEBUG
-                for (i=0;i<prof;i++)
-                    printf("        ");
-                printf("Ce coup valait = %d\n\n", notes->note);
-            #endif
+                annuleCoup(plateau, J_actuel, coups->pos, &valeurTmp, &posTmp);
 
-        }
+                coups = supprTete(coups);
+
+                #ifdef DEBUG
+                    for (i=0;i<prof;i++)
+                        printf("        ");
+                    printf("Ce coup valait = %d\n\n", notes->note);
+                #endif
+
+            }
+
+            casesAcquises = supprTete(casesAcquises);
+
+        }while (casesAcquises != NULL);
 
     }
 
@@ -154,7 +162,6 @@ void effectueCoup(char **plateau, Joueur *joueur, Point arrivee, char *valeurTmp
     *posTmp = joueur->position;
 
     plateau[arrivee.y][arrivee.x] = plateau[joueur->position.y][joueur->position.x];
-    plateau[joueur->position.y][joueur->position.x] += 32;
 
     joueur->position = arrivee;
     joueur->score += *valeurTmp;
@@ -174,56 +181,54 @@ void annuleCoup(char **plateau, Joueur *joueur, Point arrivee, char *valeurTmp, 
     joueur->score -= *valeurTmp;
 }
 
-int evaluation(char **plateau, int taille, int mode) {
-
-    int i, j;
-    int scoreBot = 0, scoreAdverse = 0;
-
-    for (i=0;i<taille;i++) {
-
-        for (j=0;j<taille;j++) {
-
-            if (plateau[i][j] == 'R' || plateau[i][j] == 'r')
-                scoreBot++;
-
-            else if (plateau[i][j] == 'C' || plateau[i][j] == 'c')
-                scoreAdverse++;
-        }
-    }
-
-    return scoreBot - scoreAdverse;
-}
-
 int blocageJoueur(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire) {
 
-    int retour;
-    Noeud *coupsBot = NULL, *coupsAdversaire = NULL;
+    int i, blocage[2] = {VRAI, VRAI};
+    Joueur *joueur = bot;
+    Noeud *coups = NULL;
+    Noeud *casesAcquises = NULL;
 
-    coupsBot = listeCasesBot(coupsBot, bot->position, plateau, taille, mode);
-    coupsAdversaire = listeCasesBot(coupsAdversaire, adversaire->position, plateau, taille, mode);
+    for (i=0;i<2;i++) {
 
-    if (coupsAdversaire == NULL && coupsBot == NULL)
-
-       retour = 2; // Les 2 joueurs sont bloqués
-
-    else if (coupsAdversaire == NULL)
-
-
-        retour = MIN; // Si l'adversaire ne peut plus joueur
-
-    else if (coupsBot == NULL)
+        if (mode == PIEUVRE)
+            casesAcquises = listeCasesAcquises(plateau, taille, joueur->id);
+        else
+            casesAcquises = ajoutTete(casesAcquises, joueur->position);
 
 
-        retour = MAX; // Idem pour le bot, l'adversaire gagne
+        do { // Pour chaque case du joueur, on cree une liste des coups possibles
+
+            coups = listeCasesBot(coups, casesAcquises->pos, plateau, taille, mode);
+
+            if (coups != NULL) { // Si une liste existe, alors le joueur n'est pas bloqué
+                blocage[joueur->id-100] = FAUX;
+                coups = libereListe(coups);
+                casesAcquises = libereListe(casesAcquises);
+                break;
+            }
+
+            casesAcquises = supprTete(casesAcquises);
+
+        } while (casesAcquises != NULL);
+
+        joueur = adversaire;
+    }
+
+    if (blocage[100-100] && blocage[101-100])
+
+       return 2; // Les 2 joueurs sont bloqués
+
+    else if (blocage[101-100])
+
+        return MAX; // Si le bot ne peut plus joueur
+
+    else if (blocage[100-100])
+
+        return MIN; // Idem pour l'adversaire
 
     else
 
-        retour = -1; // Il reste des pions a placer
-
-    libereListe(coupsBot);
-    libereListe(coupsAdversaire);
-
-    return retour;
+        return -1; // Il reste des pions a placer
 
 }
 
@@ -240,40 +245,37 @@ Noeud* listeCasesBot(Noeud *liste,  Point depart, char **plateau, int taille, in
 
 
     if (depart.x > 0 && CASEVIDE(plateau[depart.y][depart.x-1]))// Gauche
-    {
 
         liste = ajoutTete(liste, (Point){depart.x-1, depart.y});
 
-        if (mode)
-        {
-            if (depart.y > 0 && CASEVIDE(plateau[depart.y-1][depart.x-1]))  // Gauche / Haut
+
+    if (depart.x < taille-1 && CASEVIDE(plateau[depart.y][depart.x+1])) // Droite
+
+        liste = ajoutTete(liste, (Point){depart.x+1, depart.y});
+
+
+    if (mode == PIEUVRE)
+    {
+        if (depart.x > 0 && depart.y > 0 && CASEVIDE(plateau[depart.y-1][depart.x-1]))  // Gauche / Haut
 
             liste = ajoutTete(liste, (Point){depart.x-1, depart.y-1});
 
 
-            if (mode && depart.y < taille-1 && CASEVIDE(plateau[depart.y+1][depart.x-1]))  // Gauche / Bas
+        if (depart.x > 0 && depart.y < taille-1 && CASEVIDE(plateau[depart.y+1][depart.x-1]))  // Gauche / Bas
 
-                liste = ajoutTete(liste, (Point){depart.x-1, depart.y+1});
-        }
+            liste = ajoutTete(liste, (Point){depart.x-1, depart.y+1});
+
+
+        if (depart.x < taille-1 && depart.y > 0 && CASEVIDE(plateau[depart.y-1][depart.x+1])) // Droite / Haut
+
+            liste = ajoutTete(liste, (Point){depart.x+1, depart.y-1});
+
+
+        if (depart.x < taille-1 && depart.y < taille-1 && CASEVIDE(plateau[depart.y+1][depart.x+1])) // Droite / Bas
+
+            liste = ajoutTete(liste, (Point){depart.x+1, depart.y+1});
     }
 
-    if (depart.x < taille-1 && CASEVIDE(plateau[depart.y][depart.x+1])) // Droite
-    {
-
-        liste = ajoutTete(liste, (Point){depart.x+1, depart.y});
-
-        if (mode)
-        {
-            if (depart.y > 0 && CASEVIDE(plateau[depart.y-1][depart.x+1])) // Droite / Haut
-
-                liste = ajoutTete(liste, (Point){depart.x+1, depart.y-1});
-
-
-            if (mode && depart.y < taille-1 && CASEVIDE(plateau[depart.y+1][depart.x+1])) // Droite / Bas
-
-                liste = ajoutTete(liste, (Point){depart.x+1, depart.y+1});
-        }
-    }
 
     return liste;
 }
@@ -335,7 +337,7 @@ Point meilleurCoup(NoeudCoupNote *liste) {
 }
 
 
-void affichePlateauDebug(char **plateau, int taille, int prof, Point depart, Point arrivee) {
+void affichePlateauDebug(char **plateau, int taille, int mode, int prof, Point bot, Point adversaire, Point actuel, Point arrivee, int id) {
 
     int i, j, k;
     printf("\n");
@@ -365,47 +367,40 @@ void affichePlateauDebug(char **plateau, int taille, int prof, Point depart, Poi
                 printf("%2d |", i);
 
 
-            if (plateau[i][j] == 'C' || plateau[i][j] == 'R' || plateau[i][j] == 'c' || plateau[i][j] == 'r') {
+            if (CASEVIDE(plateau[i][j]) == FAUX) {
 
-                if (i == depart.y && j == depart.x) {
+                if (mode == SERPENT && ((i == bot.y && j == bot.x) || (i == adversaire.y && j == adversaire.x))) { // Position des tetes des joueurs
 
-                    if (plateau[i][j] == 'r')
-                        textcolor(RED);
-                    else if (plateau[i][j] == 'c')
-                        textcolor(CYAN);
-
+                    couleurs(plateau, plateau[i][j]);
+                    highvideo();
                     printf("%2c ", 254);
 
-                } else if (i == arrivee.y && j == arrivee.x) {
+                } else if (mode == PIEUVRE && (i == actuel.y && j == actuel.x)) { // Position du pion qui s'apprete a jouer
 
-                    if (plateau[i][j] == 'c' || plateau[i][j] == 'C')
-                        textcolor(CYAN);
-                    else if (plateau[i][j] == 'r' || plateau[i][j] == 'R')
-                        textcolor(RED);
+                    couleurs(plateau, plateau[actuel.y][actuel.x]);
+                    highvideo();
+                    printf("%2c ", 254);
 
-                    printf("%2c ", 'x');
+                } else { // Anciennes positions
 
-                } else {
-
-                    if (plateau[i][j] == 'C')
-                        textcolor(CYAN);
-                    if (plateau[i][j] == 'c')
-                        textcolor(LIGHTCYAN);
-                    if (plateau[i][j] == 'R')
-                        textcolor(RED);
-                    if (plateau[i][j] == 'r')
-                        textcolor(LIGHTRED);
+                    couleurs(plateau, plateau[i][j]);
 
                     printf("%2c ", 254);
                 }
 
-                textcolor(LIGHTGRAY);
-                textbackground(BLACK);
+            } else if (i == arrivee.y && j == arrivee.x) { // Position d'arrivée
 
+                couleurs(plateau, id);
+                highvideo();
+
+                printf("%2c ", 'x');
             }
             else
                 printf("%2d ", plateau[i][j]);
                 //printf("   ");
+
+                textcolor(LIGHTGRAY);
+                textbackground(BLACK);
 
         }
 

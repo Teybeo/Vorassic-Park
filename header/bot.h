@@ -27,7 +27,6 @@ int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire
 
 int finPartieBot(char **plateau, int taille, int mode);
 int blocageJoueur(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire);
-int evaluation(char **plateau, int taille, int mode);
 
 Noeud* listeCasesBot(Noeud *liste,  Point depart, char **plateau, int taille, int mode);
 
@@ -38,6 +37,6 @@ int minNote(NoeudNote *liste);
 int maxNote(NoeudNote *liste);
 Point meilleurCoup(NoeudCoupNote *liste);
 
-void affichePlateauDebug(char **plateau, int taille, int prof, Point depart, Point arrivee);
+void affichePlateauDebug(char **plateau, int taille, int mode, int prof, Point bot, Point adversaire, Point actuel, Point arrivee, int id);
 
 #endif
