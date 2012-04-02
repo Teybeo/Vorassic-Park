@@ -7,14 +7,12 @@
 		<Option compiler="gcc" />
 		<Option show_notes="1">
 			<notes>
-				<![CDATA[Indispensable:
-Finir le Mode Pieuvre pour le bot
+				<![CDATA[Améliorations:
+Faire jouer le bot en tant que premier joueur
+AlphaBeta
 
 Optimisations:
 Utiliser des char pour les coordonées, test rapide a montré 15% de gain avec des short. Pour être cohérent et peut-etre encore plus  efficace, passer toutes les variables qui sy'rapportent (arguments de fonctions, etc) dans le meme type.
-
-Améliorations:
-AlphaBeta
 
 Idées:
 Sélection clavier ?
@@ -31,6 +29,8 @@ Interface + souris]]>
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-Wextra" />
+					<Add option="-Wall" />
 					<Add option="-pg" />
 					<Add option="-g" />
 				</Compiler>
@@ -64,11 +64,11 @@ Interface + souris]]>
 		<Unit filename="header\bot.h" />
 		<Unit filename="header\coup.h" />
 		<Unit filename="header\general.h" />
-		<Unit filename="header\liste.h" />
-		<Unit filename="header\listeCoupNote.h" />
-		<Unit filename="header\listeNote.h" />
 		<Unit filename="header\menu.h" />
 		<Unit filename="header\partie.h" />
+		<Unit filename="header\pile.h" />
+		<Unit filename="header\pileCoupNote.h" />
+		<Unit filename="header\pileNote.h" />
 		<Unit filename="src\affichage.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -78,15 +78,6 @@ Interface + souris]]>
 		<Unit filename="src\coup.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src\liste.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src\listeCoupNote.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src\listeNote.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="src\main.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -94,6 +85,15 @@ Interface + souris]]>
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src\partie.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\pile.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\pileCoupNote.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\pileNote.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>

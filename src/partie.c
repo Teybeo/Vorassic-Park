@@ -30,7 +30,7 @@ void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int aleatoir
     } while (continuer);
 
 
-    resultat(tabJoueur, nbJoueurs, plateau);
+    resultat(tabJoueur, nbJoueurs);
 
     for (i=0;i<taille;i++)
         free(plateau[i]);

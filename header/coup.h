@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "header/liste.h"
+#include "header/pile.h"
 #include "header/general.h"
 
 /** \file coup.h
@@ -14,15 +14,15 @@
 
 void faireCoup(char **plateau, int taille, int mode, Joueur *depart);
 
+void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur);
+
+Noeud* creerPileCoupsPossibles(Noeud *pile, char **plateau, int taille, int mode, Point depart);
+Noeud* creerPilePions(char **plateau, int taille, int idJjoueur);
+
 Point saisieCoup(int taille);
 
 int verifieCoup(char **plateau, int mode, Point depart, Point arrivee);
 
-void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur);
-
-Noeud* listeCases(int taille, int mode, Point depart);
-Noeud* listeCasesAcquises(char **plateau, int taille, int idJjoueur);
-
-void appliqueCoup(char **plateau, int mode, Joueur *depart, Point arrivee);
+void appliqueCoup(char **plateau, Joueur *depart, Point arrivee);
 
 #endif

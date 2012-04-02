@@ -1,13 +1,13 @@
 # depslib dependency file v1.0
-1333314299 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\bot.c
+1333405495 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\bot.c
 	"header/bot.h"
 
-1333314372 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\bot.h
+1333401393 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\bot.h
 	<conio2.h>
 	"header/general.h"
-	"header/liste.h"
-	"header/listeNote.h"
-	"header/listeCoupNote.h"
+	"header/pile.h"
+	"header/pileNote.h"
+	"header/pileCoupNote.h"
 	"header/partie.h"
 
 1333309931 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\general.h
@@ -34,7 +34,7 @@
 	"header/coup.h"
 	"header/bot.h"
 
-1333316437 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\affichage.h
+1333399382 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\affichage.h
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
@@ -42,16 +42,16 @@
 	<conio2.h>
 	"header/general.h"
 
-1333236450 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\coup.h
+1333405551 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\coup.h
 	<stdio.h>
 	<stdlib.h>
-	"header/liste.h"
+	"header/pile.h"
 	"header/general.h"
 
-1333316437 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\affichage.c
+1333399375 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\affichage.c
 	"header/affichage.h"
 
-1333293312 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\partie.c
+1333399387 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\partie.c
 	"header/partie.h"
 
 1333149421 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\menu.c
@@ -76,7 +76,7 @@
 1333309931 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\liste.c
 	"header/liste.h"
 
-1333316437 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\coup.c
+1333405651 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\coup.c
 	"header/coup.h"
 
 1332546082 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\listecoupnote.c
@@ -86,4 +86,27 @@
 	<stdio.h>
 	<stdlib.h>
 	"header/general.h"
+
+1333402032 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\pile.h
+	<stdio.h>
+	<stdlib.h>
+	"header/general.h"
+
+1333402032 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\pilecoupnote.c
+	"header/pileCoupNote.h"
+
+1333405766 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\pilecoupnote.h
+	<stdio.h>
+	<stdlib.h>
+	"header/general.h"
+
+1333405767 c:\users\thibault\prog\c\projet esgi\vorassicpark\\header\pilenote.h
+	<stdio.h>
+	<stdlib.h>
+
+1333402032 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\pile.c
+	"header/pile.h"
+
+1333402032 source:c:\users\thibault\prog\c\projet esgi\vorassicpark\src\pilenote.c
+	"header/pileNote.h"
 

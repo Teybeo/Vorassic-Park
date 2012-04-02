@@ -18,7 +18,7 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
 
     chercheBlocage(plateau, taille, mode, joueur);
 
-    if (joueur->blocage == 0) {
+    if (joueur->blocage == FAUX) {
 
         printf("\nEntrez un coup : ");
 
@@ -64,7 +64,7 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
 
         } while (erreurArrivee);
 
-        appliqueCoup(plateau, mode, joueur, caseArrivee);
+        appliqueCoup(plateau, joueur, caseArrivee);
 
     } else {
 
@@ -73,6 +73,114 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
 
     }
 }
+
+/** \fn void chercheBlocage(char **plateau, int mode, Joueur *joueur, Noeud *coupsPossibles)
+    \brief Cherche si un joueur est bloqué
+
+    Parcours la pile des cases adjacentes à la case du joueur.
+	Si la case est libre, la fonctionne s'achève immédiatement.
+	Sinon on recommence sur les suivantes jusqu'à la fin de la pile
+	Si aucune case libre n'a été trouvée, la variable blocage du joueur est mise à VRAI.
+	En mode Pieuvre, on effectue ce meme traitement mais sur toutes les cases que le joueur possède.
+
+    \param plateau Le plateau de jeu
+    \param mode Le mode de jeu (Pieuvre/Serpent)
+    \param joueur Le joueur concerné
+    \param coupsPossibles Une pile des cases proches
+*/
+void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur) {
+
+    Noeud *coupsPossibles = NULL;
+    Noeud *pions = NULL;
+
+    if (mode == PIEUVRE)
+        pions = creerPilePions(plateau, taille, joueur->id);
+    else
+        pions = empiler(pions, joueur->position);
+
+    joueur->blocage = VRAI;
+
+    do {
+
+        coupsPossibles = creerPileCoupsPossibles(coupsPossibles, plateau, taille, mode, pions->pos);
+
+        if (coupsPossibles != NULL) {// Si on trouve au moins 1 coup, on n'est pas bloqué, on s'arrete
+            joueur->blocage = FAUX;
+            liberePile(coupsPossibles);
+            liberePile(pions);
+            break;
+        }
+
+        pions = depiler(pions);
+        liberePile(coupsPossibles);
+
+    } while (pions != NULL);
+
+}
+
+Noeud* creerPileCoupsPossibles(Noeud *pile, char **plateau, int taille, int mode, Point depart) {
+
+    if (depart.y > 0 && CASEVIDE(plateau[depart.y-1][depart.x])) // Haut
+
+        pile = empiler(pile, (Point){depart.x, depart.y-1});
+
+
+    if (depart.y < taille-1 && CASEVIDE(plateau[depart.y+1][depart.x]))  // Bas
+
+        pile = empiler(pile, (Point){depart.x, depart.y+1});
+
+
+    if (depart.x > 0 && CASEVIDE(plateau[depart.y][depart.x-1])) // Gauche
+
+        pile = empiler(pile, (Point){depart.x-1, depart.y});
+
+
+    if (depart.x < taille-1 && CASEVIDE(plateau[depart.y][depart.x+1])) // Droite
+
+        pile = empiler(pile, (Point){depart.x+1, depart.y});
+
+
+    if (mode == PIEUVRE)
+    {
+        if (depart.x > 0 && depart.y > 0 && CASEVIDE(plateau[depart.y-1][depart.x-1]))  // Gauche / Haut
+
+            pile = empiler(pile, (Point){depart.x-1, depart.y-1});
+
+
+        if (depart.x > 0 && depart.y < taille-1 && CASEVIDE(plateau[depart.y+1][depart.x-1]))  // Gauche / Bas
+
+            pile = empiler(pile, (Point){depart.x-1, depart.y+1});
+
+
+        if (depart.x < taille-1 && depart.y > 0 && CASEVIDE(plateau[depart.y-1][depart.x+1])) // Droite / Haut
+
+            pile = empiler(pile, (Point){depart.x+1, depart.y-1});
+
+
+        if (depart.x < taille-1 && depart.y < taille-1 && CASEVIDE(plateau[depart.y+1][depart.x+1])) // Droite / Bas
+
+            pile = empiler(pile, (Point){depart.x+1, depart.y+1});
+    }
+
+
+    return pile;
+}
+
+Noeud* creerPilePions(char **plateau, int taille, int idJoueur) {
+
+    Noeud *pions = NULL;
+    int i, j;
+
+    for (i=0;i<taille;i++)
+
+        for (j=0;j<taille;j++)
+
+            if (plateau[i][j] == idJoueur)
+                pions = empiler(pions, (Point){j, i});
+
+    return pions;
+}
+
 /** \fn int verifieCoup(char **plateau, int mode, Point depart, Point arrivee)
  *\brief  Vérifie la validité d'un coup
 
@@ -115,66 +223,18 @@ int verifieCoup(char **plateau, int mode, Point depart, Point arrivee) {
 
 }
 
+/* Applique le coup au plateau et met a jour la position du joueur
+    Attend :
+        Un plateau, un point de départ et d'arrivée */
 
-/** \fn void chercheBlocage(char **plateau, int mode, Joueur *joueur, Noeud *casesAdjacentes)
-    \brief Cherche si un joueur est bloqué
+void appliqueCoup(char **plateau, Joueur *depart, Point arrivee) {
 
-    Parcours la liste des cases adjacentes à la case du joueur.
-	Si une case libre est trouvée, la fonctionne s'achève immédiatement.
-	Si aucune case libre n'est trouvée, la variable blocage	du joueur est mise à VRAI.
-	En mode Pieuvre, on effectue ce meme traitement mais sur toutes les cases que le joueur possède.
+    depart->score += plateau[arrivee.y][arrivee.x];
 
-    \param plateau Le plateau de jeu
-    \param mode Le mode de jeu (Pieuvre/Serpent)
-    \param joueur Le joueur concerné
-    \param casesAdjacentes Une liste des cases proches*/
-void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur) {
+    plateau[arrivee.y][arrivee.x] = plateau[depart->position.y][depart->position.x];
 
-    Noeud *casesAdjacentes = NULL;
-    Noeud *casesAcquises = NULL;
+    depart->position = arrivee;
 
-    if (mode == PIEUVRE)
-        casesAcquises = listeCasesAcquises(plateau, taille, joueur->id);
-    else
-        casesAcquises = ajoutTete(casesAcquises, joueur->position);
-
-    do {
-
-        casesAdjacentes = listeCases(taille, mode, casesAcquises->pos);
-
-        while (casesAdjacentes != NULL) {
-
-            if (verifieCoup(plateau, mode, casesAcquises->pos, casesAdjacentes->pos) == 0) {
-                libereListe(casesAdjacentes);
-                return;
-            }
-
-            casesAdjacentes = casesAdjacentes->suivant;
-        }
-
-        casesAcquises = casesAcquises->suivant;
-        libereListe(casesAdjacentes);
-
-    } while (casesAcquises != NULL);
-
-    joueur->blocage = 1;
-
-}
-
-Noeud* listeCasesAcquises(char **plateau, int taille, int idJoueur ) {
-
-    Noeud *casesAcquises = NULL;
-    int i, j;
-
-    for (i=0;i<taille;i++)
-
-        for (j=0;j<taille;j++)
-
-            if (plateau[i][j] == idJoueur)
-                casesAcquises = ajoutTete(casesAcquises, (Point){j, i});
-
-
-    return casesAcquises;
 }
 
 /* Demande une saisie à l'utilisateur et l'analyse. Affiche un message indiquant
@@ -255,82 +315,3 @@ Point saisieCoup(int taille) {
 
     return coup;
 }
-
-/* Crée une liste des cases adjacentes à un certain point
-    Attend :
-        La taille du plateau, le mode de jeu et un point de départ
-    Retourne :
-        La liste des cases adjacentes */
-
-Noeud* listeCases(int taille, int mode, Point depart) {
-
-    Noeud *liste = NULL;
-    Point tmp;
-    tmp.x = tmp.y = 0;
-
-    if (depart.y > 0) { // Haut
-        tmp.x = depart.x;
-        tmp.y = depart.y - 1;
-        liste = ajoutTete(liste, tmp);
-    }
-    if (depart.y < taille-1) { // Bas
-        tmp.x = depart.x;
-        tmp.y = depart.y + 1;
-        liste = ajoutTete(liste, tmp);
-    }
-    if (depart.x > 0) {
-        // Gauche
-        tmp.x = depart.x - 1;
-        tmp.y = depart.y;
-        liste = ajoutTete(liste, tmp);
-
-        if (mode && depart.y > 0) { // Gauche / Haut
-            tmp.x = depart.x - 1;
-            tmp.y = depart.y - 1;
-            liste = ajoutTete(liste, tmp);
-        }
-        if (mode && depart.y < taille-1) { // Gauche / Bas
-            tmp.x = depart.x - 1;
-            tmp.y = depart.y + 1;
-            liste = ajoutTete(liste, tmp);
-        }
-
-    }
-    if (depart.x < taille-1) {
-        // Droite
-        tmp.x = depart.x + 1;
-        tmp.y = depart.y;
-        liste = ajoutTete(liste, tmp);
-
-        if (mode && depart.y > 0) { // Droite / Haut
-            tmp.x = depart.x + 1;
-            tmp.y = depart.y - 1;
-            liste = ajoutTete(liste, tmp);
-        }
-        if (mode && depart.y < taille-1) { // Droite / Bas
-            tmp.x = depart.x + 1;
-            tmp.y = depart.y + 1;
-            liste = ajoutTete(liste, tmp);
-        }
-
-    }
-
-    return liste;
-}
-
-/* Applique le coup au plateau et met a jour la position du joueur
-    Attend :
-        Un plateau, un point de départ et d'arrivée */
-
-void appliqueCoup(char **plateau, int mode, Joueur *depart, Point arrivee) {
-
-    depart->score += plateau[arrivee.y][arrivee.x];
-
-    /* Le J ou R se trouvant a la case depart est copié a la case d'arrivée
-       La valeur de la case de départ est décalé de 32 pour le passer en minuscule */
-    plateau[arrivee.y][arrivee.x] = plateau[depart->position.y][depart->position.x];
-
-    depart->position = arrivee;
-
-}
-

@@ -4,9 +4,9 @@
 #include <conio2.h>
 
 #include "header/general.h"
-#include "header/liste.h"
-#include "header/listeNote.h"
-#include "header/listeCoupNote.h"
+#include "header/pile.h"
+#include "header/pileNote.h"
+#include "header/pileCoupNote.h"
 #include "header/partie.h"
 
 #define EVAL_MIN -10000
@@ -24,16 +24,13 @@ void botCoup(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversai
 int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire, int prof, int etage);
 
 int finPartieBot(char **plateau, int taille, int mode);
-void chercheBlocageBot(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire);
-
-Noeud* listeCoupsPossiblesBot(Noeud *liste,  Point depart, char **plateau, int taille, int mode);
 
 void effectueCoup(char **plateau, Joueur *joueur, Point arrivee, char *valeurTmp);
 void annuleCoup(char **plateau, Joueur *joueur, Point arrivee, char *valeurTmp, Point depart);
 
-int minNote(NoeudNote *liste);
-int maxNote(NoeudNote *liste);
-Point meilleurCoup(NoeudCoupNote *liste);
+int minNote(NoeudNote *pile);
+int maxNote(NoeudNote *pile);
+Point meilleurCoup(NoeudCoupNote *pile);
 
 void affichePlateauDebug(char **plateau, int taille, int mode, int prof, Point bot, Point adversaire, Point actuel, Point arrivee, int id);
 void debugDebut(char **plateau, int taille, int mode, int prof, Point bot, Point adversaire, Point depart, Point arrive, int id);

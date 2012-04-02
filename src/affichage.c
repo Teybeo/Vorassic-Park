@@ -113,7 +113,7 @@ void afficheDirection(Point depart, Point arrivee) {
 
 }
 
-void resultat(Joueur *joueur, int nbJoueurs, char **plateau) {
+void resultat(Joueur *joueur, int nbJoueurs) {
 
     printf("\nLa partie est finie\n\n");
 
