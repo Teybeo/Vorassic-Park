@@ -1,6 +1,6 @@
 #include "header/partie.h"
 
-void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int aleatoire, char **noms) {
+void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int prof, int aleatoire, char **noms) {
 
     int continuer = 1;
     int tour = 1, i;
@@ -19,7 +19,7 @@ void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int aleatoir
         affichage(plateau, taille, tour, mode, nbJoueurs, tabJoueur, joueurActuel->id);
 
         if (joueurActuel->estBot)
-            botCoup(plateau, taille, mode, joueurActuel, &tabJoueur[0]);
+            botCoup(plateau, taille, mode, prof, joueurActuel, &tabJoueur[!(100-joueurActuel->id)]);
         else
             faireCoup(plateau, taille, mode, joueurActuel);
 

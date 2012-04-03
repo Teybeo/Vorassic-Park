@@ -3,7 +3,7 @@
 void menu() {
 
     int continuer = 1;
-    int taille = 6, mode = 0, aleatoire = 0, nbJoueurs = 2, nbBots = 1, i;
+    int taille = 6, mode = 0, prof = 5, aleatoire = 0, nbJoueurs = 2, nbBots = 1, i;
     char choix, tmp;
     char nomsDefault[4][TAILLE_NOM] = {"Cyan", "Rouge", "Vert", "Bleu"};
     char **noms;
@@ -31,11 +31,11 @@ void menu() {
 
         if (choix == '1')
 
-            executePartie(nbJoueurs, nbBots, taille, mode, aleatoire, noms);
+            executePartie(nbJoueurs, nbBots, taille, mode, prof, aleatoire, noms);
 
         else if (choix == '2')
 
-            options(&taille, &mode, &aleatoire, &nbJoueurs, &nbBots, &noms);
+            options(&taille, &mode, &prof, &aleatoire, &nbJoueurs, &nbBots, &noms);
 
         else if (choix == '3')
 
@@ -45,7 +45,7 @@ void menu() {
 
 }
 
-void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, int *nbBots, char ***noms) {
+void options(int *taille, int *mode, int *prof, int *aleatoire, int *nbJoueurs, int *nbBots, char ***noms) {
 
     int continuer = 1, retour, i;
     int tmp = *taille;
@@ -77,13 +77,14 @@ void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, int *nbBots
         printf("    2. Mode de jeu = %s\n", modeJeu);
         printf("    3. Generation plateau = %s\n", plateauAleatoire);
         printf("    4. IA active = %s\n", chaineIA);
+        printf("    5. Changer nombre de tours cherches a l'avance = %d\n", *prof);
         if (*nbBots > 0)
-            printf("    5. Changer nombre de bots = %d\n", *nbBots);
+            printf("    6. Changer nombre de bots = %d\n", *nbBots);
         else
-            printf("    5. Changer nombre de joueurs = %d\n", *nbJoueurs);
+            printf("    6. Changer nombre de joueurs = %d\n", *nbJoueurs);
 
         for (i=0;i<*nbJoueurs;i++)
-            printf("    %d. Changer nom joueur %d = %s\n", 6+i, i+1, (*noms)[i]);
+            printf("    %d. Changer nom joueur %d = %s\n", 7+i, i+1, (*noms)[i]);
         printf("\n    0. Retour\n");
         printf("\n    Que voulez-vous faire ?\n ");
         scanf("%c", &choix);
@@ -133,6 +134,31 @@ void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, int *nbBots
         }
         else if (choix == '5') {
 
+            printf("Entrez un nombre positif\n");
+
+            do {
+
+                retour = scanf("%d", &tmp);
+
+                while ( (tampon = getchar()) != '\n' && tampon != EOF);
+
+                if (retour) {
+                    if (tmp > 0)
+                        *prof = tmp;
+                    else {
+                        printf("Valeur invalide, reesayez\n");
+                        retour = 0;
+                    }
+                }
+                else {
+                    printf("Erreur de saisie, entrez un nombre\n");
+                }
+
+            } while (retour != 1);
+
+        }
+        else if (choix == '6') {
+
             int nbMin, nbMax, *cible = NULL;
             if (*nbBots) {
                 nbMin = NB_BOTS_MIN;
@@ -177,7 +203,7 @@ void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, int *nbBots
             } while (retour != 1);
 
         }
-        else if (choix >= '6' && choix < '6' + *nbJoueurs) {
+        else if (choix >= '7' && choix < '7' + *nbJoueurs) {
 
             printf("Entrez un nom de %d lettres max\n", TAILLE_NOM-2);
 

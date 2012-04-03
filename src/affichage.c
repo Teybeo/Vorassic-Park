@@ -44,7 +44,7 @@ void couleurs(int idJoueur) {
 void affichePlateau(char **plateau, int taille, int mode, Joueur *tabJoueur, int nbJoueurs) {
 
     int i, j, k;
-    int tete;
+    int tete = 0;
 
     printf("\n\n   |");
 

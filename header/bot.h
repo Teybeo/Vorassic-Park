@@ -12,16 +12,14 @@
 #define EVAL_MIN -10000
 #define EVAL_MAX 10000
 
-#define PROF_MAX 15
-
-//#define DEBUG
+#define DEBUG 0
 
 #define MAX 0
 #define MIN 1
 
 
-void botCoup(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire);
-int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire, int prof, int etage);
+void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *bot, Joueur *adversaire);
+int MinMax(char **plateau, int taille, int mode, int prof, int profMax, Joueur *bot, Joueur *adversaire, int etage);
 
 int finPartieBot(char **plateau, int taille, int mode);
 

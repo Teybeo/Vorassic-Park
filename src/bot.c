@@ -1,7 +1,7 @@
 #include "header/bot.h"
 
 
-void botCoup(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire) {
+void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *bot, Joueur *adversaire) {
 
     float debut, temps;
     char valeurTmp;
@@ -25,7 +25,9 @@ void botCoup(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversai
 
         while (coups != NULL) {
 
-            debugDebut(plateau, taille, mode, 0, bot->position, adversaire->position, pions->pos, coups->pos, bot->id);
+            #if DEBUG >= 1
+                debugDebut(plateau, taille, mode, 0, bot->position, adversaire->position, pions->pos, coups->pos, bot->id);
+            #endif
 
             effectueCoup(plateau, bot, coups->pos, &valeurTmp);
             blocageTmpBot = bot->blocage;
@@ -35,9 +37,9 @@ void botCoup(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversai
             chercheBlocage(plateau, taille, mode, adversaire); // Si l'autre joueur était ou s'est fait bloquer, on continue solo
 
             if (bot->blocage == FAUX && (bot->blocage || adversaire->blocage))
-                coupsNotes = empilerCoupNote(coupsNotes, coups->pos, MinMax(plateau, taille, mode, bot, adversaire, 1, MAX));
+                coupsNotes = empilerCoupNote(coupsNotes, coups->pos, MinMax(plateau, taille, mode, 1, profMax, bot, adversaire, MAX));
             else
-                coupsNotes = empilerCoupNote(coupsNotes, coups->pos, MinMax(plateau, taille, mode, bot, adversaire, 1, MIN));
+                coupsNotes = empilerCoupNote(coupsNotes, coups->pos, MinMax(plateau, taille, mode, 1, profMax, bot, adversaire, MIN));
 
             annuleCoup(plateau, bot, coups->pos, &valeurTmp, pions->pos);
             bot->blocage = blocageTmpBot;
@@ -45,8 +47,9 @@ void botCoup(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversai
 
             coups = depiler(coups);
 
-            debugFin(0, coupsNotes->note);
-
+            #if DEBUG >= 1
+                debugFin(0, coupsNotes->note);
+            #endif
         }
 
         pions = depiler(pions);
@@ -72,7 +75,7 @@ void botCoup(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversai
 
 }
 
-int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire, int prof, int etage) {
+int MinMax(char **plateau, int taille, int mode, int prof, int profMax, Joueur *bot, Joueur *adversaire, int etage) {
 
     Noeud *coups = NULL, *pions = NULL;
     NoeudNote *notes = NULL;
@@ -90,13 +93,13 @@ int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire
     chercheBlocage(plateau, taille, mode, bot);
     chercheBlocage(plateau, taille, mode, adversaire);
 
-    if ((bot->blocage && adversaire->blocage) || (prof == PROF_MAX && !bot->blocage && !adversaire->blocage))  { // Si les 2 sont bloqués ou (horizon atteint et aucun joueur bloqué)
+    if ((bot->blocage && adversaire->blocage) || (prof == profMax && !bot->blocage && !adversaire->blocage))  { // Si les 2 sont bloqués ou (horizon atteint et aucun joueur bloqué)
 
         return bot->score - adversaire->score;
     }
     else {
 
-        #ifdef DEBUG
+        #if DEBUG == 2
             printf("\n");
         #endif
 
@@ -111,7 +114,7 @@ int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire
 
             while (coups != NULL) {
 
-                #ifdef DEBUG
+                #if DEBUG == 2
                     debugDebut(plateau, taille, mode, prof, bot->position, adversaire->position, pions->pos, coups->pos, J_actuel->id);
                 #endif
 
@@ -124,9 +127,9 @@ int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire
 
                 // Si le joueur actuel n'était ou ne s'est pas fait bloquer mais qu'un joueur est bloqué, il continue solo
                 if (J_actuel->blocage == FAUX && (bot->blocage || adversaire->blocage))
-                    notes = empilerNote(notes, MinMax(plateau, taille, mode, bot, adversaire, prof+1, etage));
+                    notes = empilerNote(notes, MinMax(plateau, taille, mode, prof+1, profMax, bot, adversaire, etage));
                 else
-                    notes = empilerNote(notes, MinMax(plateau, taille, mode, bot, adversaire, prof+1, !etage));
+                    notes = empilerNote(notes, MinMax(plateau, taille, mode, prof+1, profMax, bot, adversaire, !etage));
 
                 annuleCoup(plateau, J_actuel, coups->pos, &valeurTmp, pions->pos);
                 bot->blocage = blocageTmpBot;
@@ -134,7 +137,7 @@ int MinMax(char **plateau, int taille, int mode, Joueur *bot, Joueur *adversaire
 
                 coups = depiler(coups);
 
-                #ifdef DEBUG
+                #if DEBUG ==2
                     debugFin(prof, notes->note);
                 #endif
 

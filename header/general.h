@@ -6,8 +6,7 @@
  */
 
 #define CASEVIDE(x)(  \
-    x != 100 && x != 101 && \
-    x != 102 && x != 103)
+    x < 100 || x > 103)
 
 /** \def TAILLE_NOM
  *

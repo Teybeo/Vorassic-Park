@@ -19,8 +19,7 @@
  *
  */
 
-
 void menu();
-void options(int *taille, int *mode, int *aleatoire, int *nbJoueurs, int *nbBots, char ***noms);
+void options(int *taille, int *mode, int *prof, int *aleatoire, int *nbJoueurs, int *nbBots, char ***noms);
 
 #endif
