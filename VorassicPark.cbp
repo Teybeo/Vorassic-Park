@@ -7,10 +7,7 @@
 		<Option compiler="gcc" />
 		<Option show_notes="1">
 			<notes>
-				<![CDATA[Améliorations:
-AlphaBeta
-
-Optimisations:
+				<![CDATA[Optimisations: 
 Utiliser des char pour les coordonées, test rapide a montré 15% de gain avec des short. Pour être cohérent et peut-etre encore plus  efficace, passer toutes les variables qui sy'rapportent (arguments de fonctions, etc) dans le meme type.
 
 Idées:
@@ -44,7 +41,9 @@ Interface + souris]]>
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-march=core2" />
+					<Add option="-fomit-frame-pointer" />
 					<Add option="-fexpensive-optimizations" />
+					<Add option="-Os" />
 					<Add option="-O3" />
 					<Add option="-O2" />
 					<Add option="-O1" />
@@ -52,6 +51,9 @@ Interface + souris]]>
 					<Add option="-Wextra" />
 					<Add option="-Wall" />
 				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
 			</Target>
 		</Build>
 		<Compiler>

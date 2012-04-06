@@ -12,7 +12,7 @@
 #define EVAL_MIN -10000
 #define EVAL_MAX 10000
 
-#define DEBUG 2
+#define DEBUG 1
 
 #define MAX 0
 #define MIN 1
@@ -34,7 +34,7 @@ int maxNote(NoeudNote *pile);
 Point meilleurCoup(NoeudCoupNote *pile);
 
 void affichePlateauDebug(char **plateau, int taille, int mode, int prof, Point bot, Point adversaire, Point actuel, Point arrivee, int id);
-void debugDebut(char **plateau, int taille, int mode, int prof, Point bot, Point adversaire, Point depart, Point arrive, int id);
-void debugFin(int prof, int note) ;
+void debugDebut(char **plateau, int taille, int mode, int prof, int profMax, Point bot, Point adversaire, Point depart, Point arrive, int id);
+void debugFin(int prof, int note, int profAtteinte, int maxActuel, int minActuel, int etage, Noeud *coup) ;
 
 #endif
