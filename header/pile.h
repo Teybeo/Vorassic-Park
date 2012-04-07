@@ -6,14 +6,14 @@
 
 #include "header/general.h"
 
-typedef struct Noeud {
+typedef struct ElemPoint {
     Point pos;
-    struct Noeud *suivant;
-} Noeud;
+    struct ElemPoint *suivant;
+} ElemPoint;
 
-void affichagePile(Noeud *pile);
-Noeud* empiler(Noeud *tetepile, Point depart);
-Noeud* depiler(Noeud* tetepile);
-void* liberePile(Noeud* tetepile);
+void affichagePile(ElemPoint *pile);
+ElemPoint* empiler(ElemPoint *tetepile, Point depart);
+ElemPoint* depiler(ElemPoint* tetepile);
+void* liberePile(ElemPoint* tetepile);
 
 #endif

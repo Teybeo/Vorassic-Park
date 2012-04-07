@@ -1,8 +1,8 @@
 #include "header/pile.h"
 
-void affichagePile(Noeud *pile) {
+void affichagePile(ElemPoint *pile) {
 
-    Noeud *temp = pile;
+    ElemPoint *temp = pile;
 
     while (temp != NULL) {
 
@@ -12,9 +12,9 @@ void affichagePile(Noeud *pile) {
 
 }
 
-Noeud* empiler(Noeud *tetepile, Point point) {
+ElemPoint* empiler(ElemPoint *tetepile, Point point) {
 
-    Noeud *p = malloc(sizeof(Noeud));
+    ElemPoint *p = malloc(sizeof(ElemPoint));
     p->pos = point;
     p->suivant = tetepile;
     tetepile = p;
@@ -23,18 +23,18 @@ Noeud* empiler(Noeud *tetepile, Point point) {
 
 }
 
-Noeud* depiler(Noeud* tetepile) {
+ElemPoint* depiler(ElemPoint* tetepile) {
 
     if (tetepile == NULL)
         return NULL;
     else {
-        Noeud* tmp = tetepile->suivant;
+        ElemPoint* tmp = tetepile->suivant;
         free(tetepile);
         return tmp;
     }
 }
 
-void* liberePile(Noeud* tetepile) {
+void* liberePile(ElemPoint* tetepile) {
 
     while (tetepile != NULL) {
 

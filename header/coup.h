@@ -16,8 +16,8 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *depart);
 
 void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur);
 
-Noeud* creerPileCoupsPossibles(Noeud *pile, char **plateau, int taille, int mode, Point depart);
-Noeud* creerPilePions(char **plateau, int taille, int idJjoueur);
+ElemPoint* creerPileCoupsPossibles(ElemPoint *pile, char **plateau, int taille, int mode, Point depart);
+ElemPoint* creerPilePions(char **plateau, int taille, int idJjoueur);
 
 Point saisieCoup(int taille);
 

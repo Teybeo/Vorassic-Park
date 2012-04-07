@@ -71,8 +71,6 @@ Interface + souris]]>
 		<Unit filename="header\menu.h" />
 		<Unit filename="header\partie.h" />
 		<Unit filename="header\pile.h" />
-		<Unit filename="header\pileCoupNote.h" />
-		<Unit filename="header\pileNote.h" />
 		<Unit filename="src\affichage.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -92,12 +90,6 @@ Interface + souris]]>
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src\pile.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src\pileCoupNote.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="src\pileNote.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>

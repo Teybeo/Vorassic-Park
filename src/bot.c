@@ -8,8 +8,8 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *bot, Jou
     int blocageTmpBot;
     int blocageTmpAdversaire;
     PointNote maxActuel;
-    Noeud *coups = NULL;
-    Noeud *pions = NULL;
+    ElemPoint *coups = NULL;
+    ElemPoint *pions = NULL;
     PointNote coupNote = {{-1, -1}, 0};
 
     debut = clock();
@@ -83,7 +83,7 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *bot, Jou
 
 int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueur *bot, Joueur *adversaire, int etage, int maxActuel, int minActuel) {
 
-    Noeud *coups = NULL, *pions = NULL;
+    ElemPoint *coups = NULL, *pions = NULL;
     Joueur *J_actuel = NULL;
     char valeurTmp;
     int blocageTmpBot;
@@ -194,86 +194,6 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
 
 }
 
-int MinMax(char **plateau, int taille, int mode, int prof, int profMax, Joueur *bot, Joueur *adversaire, int etage) {
-
-    Noeud *coups = NULL, *pions = NULL;
-    NoeudNote *notes = NULL;
-    Joueur *J_actuel = NULL;
-    char valeurTmp;
-    int blocageTmpBot;
-    int blocageTmpAdversaire;
-
-    if (etage == MIN)
-        J_actuel = adversaire;
-    else
-        J_actuel = bot;
-
-
-    chercheBlocage(plateau, taille, mode, bot);
-    chercheBlocage(plateau, taille, mode, adversaire);
-
-    if ((bot->blocage && adversaire->blocage) || (prof == profMax && !bot->blocage && !adversaire->blocage))  { // Si les 2 sont bloqués ou (horizon atteint et aucun joueur bloqué)
-
-        return bot->score - adversaire->score;
-    }
-    else {
-
-        #if DEBUG == 2
-            printf("\n");
-        #endif
-
-        if (mode == PIEUVRE)
-            pions = creerPilePions(plateau, taille, J_actuel->id);
-        else
-            pions = empiler(pions, J_actuel->position);
-
-        do {
-
-            coups = creerPileCoupsPossibles(coups, plateau, taille, mode, pions->pos);
-
-            while (coups != NULL) {
-
-                #if DEBUG == 2
-                    //debugDebut(plateau, taille, mode, prof, bot->position, adversaire->position, pions->pos, coups->pos, J_actuel->id);
-                #endif
-
-                effectueCoup(plateau, J_actuel, coups->pos, &valeurTmp);
-                blocageTmpBot = bot->blocage;
-                blocageTmpAdversaire = adversaire->blocage;
-
-                chercheBlocage(plateau, taille, mode, bot);
-                chercheBlocage(plateau, taille, mode, adversaire);
-
-                // Si le joueur actuel n'était ou ne s'est pas fait bloquer mais qu'un joueur est bloqué, il continue solo
-                if (J_actuel->blocage == FAUX && (bot->blocage || adversaire->blocage))
-                    notes = empilerNote(notes, MinMax(plateau, taille, mode, prof+1, profMax, bot, adversaire, etage));
-                else
-                    notes = empilerNote(notes, MinMax(plateau, taille, mode, prof+1, profMax, bot, adversaire, !etage));
-
-                annuleCoup(plateau, J_actuel, coups->pos, &valeurTmp, pions->pos);
-                bot->blocage = blocageTmpBot;
-                adversaire->blocage = blocageTmpAdversaire;
-
-                coups = depiler(coups);
-
-                #if DEBUG ==2
-                    //debugFin(prof, notes->note);
-                #endif
-
-            }
-
-            pions = depiler(pions);
-
-        } while (pions != NULL);
-
-    }
-
-    if (etage == MAX)
-        return maxNote(notes);
-    else
-        return minNote(notes);
-}
-
 /* Sauvegarde la valeur de la case prise
    Place la nouvelle tete sur la case prise
    Met a jour la position du joueur, désormais égale à celle de la case prise
@@ -316,66 +236,9 @@ int min(int a, int b) {
 
 }
 
-int maxNote(NoeudNote *pile) {
-
-    int maxi = EVAL_MIN;
-    NoeudNote *tmp = pile;
-    if (pile == NULL)
-        printf("Probleme maxNote sur pile nulle");
-    while (tmp != NULL) {
-
-        if (tmp->note > maxi)
-            maxi = tmp->note;
-
-        tmp = depilerNote(tmp);
-    }
-
-    return maxi;
-
-}
-
-int minNote(NoeudNote *pile) {
-
-    int mini = EVAL_MAX;
-    NoeudNote *tmp = pile;
-    if (pile == NULL)
-        printf("Probleme minNote sur pile nulle");
-    while (tmp != NULL) {
-
-        if (tmp->note < mini)
-            mini = tmp->note;
-
-        tmp = depilerNote(tmp);
-    }
-
-    return mini;
-
-}
-
-
 inline PointNote maxPointNote(PointNote a, PointNote b) {
 
      return (a.note > b.note) ? a : b;
-}
-
-Point meilleurCoup(NoeudCoupNote *pile) {
-
-    NoeudCoupNote maxi = {{0, 0}, 0, NULL};
-    maxi.note = EVAL_MIN;
-
-    while (pile != NULL) {
-
-        if (pile->note >= maxi.note) {
-
-            maxi.pos = pile->pos;
-            maxi.note = pile->note;
-        }
-
-        pile = depilerCoupNote(pile);
-    }
-
-    return maxi.pos;
-
 }
 
 void affichePlateauDebug(char **plateau, int taille, int mode, int prof, Point bot, Point adversaire, Point actuel, Point arrivee, int id) {
@@ -465,7 +328,7 @@ void debugDebut(char **plateau, int taille, int mode, int prof, int profMax, Poi
 
 }
 
-void debugFin(int prof, int note, int profActuelle, int maxActuel, int minActuel, int etage, Noeud *coup) {
+void debugFin(int prof, int note, int profActuelle, int maxActuel, int minActuel, int etage, ElemPoint *coup) {
 
     int i;
     for (i=0;i<prof;i++)

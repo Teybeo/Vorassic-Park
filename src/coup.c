@@ -74,7 +74,7 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
     }
 }
 
-/** \fn void chercheBlocage(char **plateau, int mode, Joueur *joueur, Noeud *coupsPossibles)
+/** \fn void chercheBlocage(char **plateau, int mode, Joueur *joueur, ElemPoint *coupsPossibles)
     \brief Cherche si un joueur est bloqué
 
     Parcours la pile des cases adjacentes à la case du joueur.
@@ -90,8 +90,8 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
 */
 void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur) {
 
-    Noeud *coupsPossibles = NULL;
-    Noeud *pions = NULL;
+    ElemPoint *coupsPossibles = NULL;
+    ElemPoint *pions = NULL;
 
     if (mode == PIEUVRE)
         pions = creerPilePions(plateau, taille, joueur->id);
@@ -118,7 +118,7 @@ void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur) {
 
 }
 
-Noeud* creerPileCoupsPossibles(Noeud *pile, char **plateau, int taille, int mode, Point depart) {
+ElemPoint* creerPileCoupsPossibles(ElemPoint *pile, char **plateau, int taille, int mode, Point depart) {
 
     if (depart.y > 0 && CASEVIDE(plateau[depart.y-1][depart.x])) // Haut
 
@@ -166,9 +166,9 @@ Noeud* creerPileCoupsPossibles(Noeud *pile, char **plateau, int taille, int mode
     return pile;
 }
 
-Noeud* creerPilePions(char **plateau, int taille, int idJoueur) {
+ElemPoint* creerPilePions(char **plateau, int taille, int idJoueur) {
 
-    Noeud *pions = NULL;
+    ElemPoint *pions = NULL;
     int i, j;
 
     for (i=0;i<taille;i++)
