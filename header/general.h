@@ -38,6 +38,11 @@ typedef struct Point {
 
 } Point;
 
+typedef struct PointNote {
+    Point pos;
+    int note;
+} PointNote;
+
 /** \struct Joueur
  *
  * \brief Stocke les infos relatives à un joueur

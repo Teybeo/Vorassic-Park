@@ -7,10 +7,10 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *bot, Jou
     char valeurTmp;
     int blocageTmpBot;
     int blocageTmpAdversaire;
-    Point coup;
+    PointNote maxActuel;
     Noeud *coups = NULL;
     Noeud *pions = NULL;
-    NoeudCoupNote *coupsNotes = NULL;
+    PointNote coupNote = {{-1, -1}, 0};
 
     debut = clock();
 
@@ -18,6 +18,8 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *bot, Jou
         pions = creerPilePions(plateau, taille, bot->id);
     else
         pions = empiler(pions, bot->position);
+
+    maxActuel.note = EVAL_MIN;
 
     do {
 
@@ -36,15 +38,14 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *bot, Jou
             chercheBlocage(plateau, taille, mode, bot);
             chercheBlocage(plateau, taille, mode, adversaire); // Si l'autre joueur était ou s'est fait bloquer, on continue solo
 
-            if (bot->blocage == FAUX && (bot->blocage || adversaire->blocage))
-                coupsNotes = empilerCoupNote(coupsNotes, coups->pos, AlphaBeta(plateau, taille, mode, 1, profMax, bot, adversaire, MAX, EVAL_MIN, EVAL_MAX));
+            coupNote.pos = coups->pos;
+            // Si le joueur actuel ne s'est pas fait bloquer mais qu'un joueur est bloqué, il continue solo
+            if ((bot->blocage == FAUX && adversaire->blocage == VRAI) || (bot->blocage && adversaire->blocage))
+                coupNote.note = AlphaBeta(plateau, taille, mode, 1, profMax, bot, adversaire, MAX, maxActuel.note, EVAL_MAX);
             else
-                coupsNotes = empilerCoupNote(coupsNotes, coups->pos, AlphaBeta(plateau, taille, mode, 1, profMax, bot, adversaire, MIN, EVAL_MIN, EVAL_MAX));
+                coupNote.note = AlphaBeta(plateau, taille, mode, 1, profMax, bot, adversaire, MIN, maxActuel.note, EVAL_MAX);
 
-            /*if (bot->blocage == FAUX && (bot->blocage || adversaire->blocage))
-                coupsNotes = empilerCoupNote(coupsNotes, coups->pos, MinMax(plateau, taille, mode, 1, profMax, bot, adversaire, MAX));
-            else
-                coupsNotes = empilerCoupNote(coupsNotes, coups->pos, MinMax(plateau, taille, mode, 1, profMax, bot, adversaire, MIN));*/
+            maxActuel = maxPointNote(maxActuel, coupNote);
 
             annuleCoup(plateau, bot, coups->pos, &valeurTmp, pions->pos);
             bot->blocage = blocageTmpBot;
@@ -53,19 +54,19 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *bot, Jou
             coups = depiler(coups);
 
             #if DEBUG >= 1
-                debugFin(0, coupsNotes->note, FAUX, EVAL_MIN, EVAL_MAX, 0, NULL);
+                debugFin(0, coupNote.note, 0, EVAL_MIN, EVAL_MAX, 0, NULL);
             #endif
-        }
+
+            }
 
         pions = depiler(pions);
 
     } while (pions != NULL);
 
-    if (coupsNotes != NULL) {
+    if (coupNote.pos.x != -1 && coupNote.pos.y != -1) {
 
-        coup = meilleurCoup(coupsNotes);
-        appliqueCoup(plateau, bot, coup);
-        bot->position = coup;
+        appliqueCoup(plateau, bot, maxActuel.pos);
+        bot->position = maxActuel.pos;
 
     } else {
 
@@ -112,6 +113,7 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
             pions = creerPilePions(plateau, taille, J_actuel->id);
         else
             pions = empiler(pions, J_actuel->position);
+
         if (etage == MIN)
             minActuel = EVAL_MAX;
 
@@ -164,11 +166,17 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
                     debugFin(prof, note, profMax-prof-1, maxActuel, minActuel, etage, coups);
                 #endif
 
-                if (etage == MAX && maxActuel >= minActuel)  // Si le max actuel est déja supérieur au min actuel de l'étage supérieur, on coupe
+                if (etage == MAX && maxActuel >= minActuel) { // Si le max actuel est déja supérieur au min actuel de l'étage supérieur, on coupe
+                    liberePile(coups);
+                    liberePile(pions);
                     return maxActuel;
+                }
 
-                else if (etage == MIN && minActuel <= maxActuel)  // Si le min actuel est déja inférieur au max de l'étage supérieur, on coupe
+                else if (etage == MIN && minActuel <= maxActuel) { // Si le min actuel est déja inférieur au max de l'étage supérieur, on coupe
+                    liberePile(coups);
+                    liberePile(pions);
                     return minActuel;
+                }
 
 
             }
@@ -342,6 +350,12 @@ int minNote(NoeudNote *pile) {
 
     return mini;
 
+}
+
+
+inline PointNote maxPointNote(PointNote a, PointNote b) {
+
+     return (a.note > b.note) ? a : b;
 }
 
 Point meilleurCoup(NoeudCoupNote *pile) {

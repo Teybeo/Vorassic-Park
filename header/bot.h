@@ -29,6 +29,7 @@ void annuleCoup(char **plateau, Joueur *joueur, Point arrivee, char *valeurTmp, 
 
 int min(int a, int b);
 int max(int a, int b);
+inline PointNote maxPointNote(PointNote a, PointNote b);
 int minNote(NoeudNote *pile);
 int maxNote(NoeudNote *pile);
 Point meilleurCoup(NoeudCoupNote *pile);
