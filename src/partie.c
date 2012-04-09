@@ -2,7 +2,7 @@
 
 void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int prof, int aleatoire, char **noms) {
 
-    int continuer = 1;
+    int continuer = VRAI;
     int tour = 1, i;
     char **plateau;
     Joueur *tabJoueur;

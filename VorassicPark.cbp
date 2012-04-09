@@ -7,8 +7,9 @@
 		<Option compiler="gcc" />
 		<Option show_notes="1">
 			<notes>
-				<![CDATA[Optimisations: 
-Utiliser des char pour les coordonées, test rapide a montré 15% de gain avec des short. Pour être cohérent et peut-etre encore plus  efficace, passer toutes les variables qui sy'rapportent (arguments de fonctions, etc) dans le meme type.
+				<![CDATA[Optimisations:
+	Garder en mémoire les pions de chaque joueur pour ne pas les rechercher a chaque fois. De gros gains semblent a priori possibles. 
+	Utiliser des char pour les coordonées, test rapide a montré 15% de gain avec des short. Pour être cohérent et peut-etre encore plus  efficace, passer toutes les variables qui sy'rapportent (arguments de fonctions, etc) dans le meme type.
 
 Idées:
 Sélection clavier ?

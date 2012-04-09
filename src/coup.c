@@ -90,32 +90,49 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
 */
 void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur) {
 
-    ElemPoint *coupsPossibles = NULL;
     ElemPoint *pions = NULL;
 
-    if (mode == PIEUVRE)
-        pions = creerPilePions(plateau, taille, joueur->id);
-    else
-        pions = empiler(pions, joueur->position);
+    if (joueur->blocage == FAUX)
+    {
 
-    joueur->blocage = VRAI;
+        if (mode == PIEUVRE)
+            pions = creerPilePions(plateau, taille, joueur->id);
+        else
+            pions = empiler(pions, joueur->position);
 
-    do {
+        joueur->blocage = VRAI;
 
-        coupsPossibles = creerPileCoupsPossibles(coupsPossibles, plateau, taille, mode, pions->pos);
+        do {
 
-        if (coupsPossibles != NULL) {// Si on trouve au moins 1 coup, on n'est pas bloqué, on s'arrete
-            joueur->blocage = FAUX;
-            liberePile(coupsPossibles);
-            liberePile(pions);
-            break;
-        }
+            if (existeCoupsPossibles(plateau, taille, mode, pions->pos)) { // Si on trouve au moins 1 coup, on n'est pas bloqué, on s'arrete
+                joueur->blocage = FAUX;
+                liberePile(pions);
+                break;
+            }
 
-        pions = depiler(pions);
-        liberePile(coupsPossibles);
+            pions = depiler(pions);
 
-    } while (pions != NULL);
+        } while (pions != NULL);
 
+    }
+
+}
+
+int existeCoupsPossibles(char **plateau, int taille, int mode, Point depart) {
+
+    static Point tab[8] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+    int i;
+    Point pos;
+
+    for (i=0; i < 4 * (1+mode); i++) {
+
+        pos = (Point){depart.x + tab[i].x, depart.y + tab[i].y};
+
+        if (pos.x >= 0 && pos.x < taille && pos.y >= 0 && pos.y < taille && CASEVIDE(plateau[pos.y][pos.x]))
+            return VRAI;
+    }
+
+    return FAUX;
 }
 
 ElemPoint* creerPileCoupsPossibles(ElemPoint *pile, char **plateau, int taille, int mode, Point depart) {
