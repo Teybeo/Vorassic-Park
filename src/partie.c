@@ -6,7 +6,7 @@ void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int prof, in
     int tour = 1, i;
     char **plateau;
     Joueur *tabJoueur;
-    Joueur *joueurActuel;
+    int joueurActuel;
 
     tabJoueur = initJoueurs(nbJoueurs, nbBots, noms, taille);
 
@@ -14,14 +14,14 @@ void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int prof, in
 
     do {
 
-        joueurActuel = &tabJoueur[ (tour-1) % nbJoueurs ];
+        joueurActuel = (tour-1) % nbJoueurs;
 
-        affichage(plateau, taille, tour, mode, nbJoueurs, tabJoueur, joueurActuel->id);
+        affichage(plateau, taille, tour, mode, nbJoueurs, tabJoueur, joueurActuel);
 
-        if (joueurActuel->estBot)
-            botCoup(plateau, taille, mode, prof, joueurActuel, &tabJoueur[!(100-joueurActuel->id)]);
+        if (tabJoueur[joueurActuel].estBot)
+            botCoup(plateau, taille, mode, prof, tabJoueur, joueurActuel);
         else
-            faireCoup(plateau, taille, mode, joueurActuel);
+            faireCoup(plateau, taille, mode, &tabJoueur[joueurActuel]);
 
         tour++;
 

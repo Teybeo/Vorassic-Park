@@ -14,12 +14,11 @@ void affichagePile(ElemPoint *pile) {
 
 ElemPoint* empiler(ElemPoint *tetepile, Point point) {
 
-    ElemPoint *p = malloc(sizeof(ElemPoint));
-    p->pos = point;
-    p->suivant = tetepile;
-    tetepile = p;
+    ElemPoint *nouveau = malloc(sizeof(ElemPoint));
+    nouveau->pos = point;
+    nouveau->suivant = tetepile;
 
-    return p;
+    return nouveau;
 
 }
 
@@ -27,10 +26,11 @@ ElemPoint* depiler(ElemPoint* tetepile) {
 
     if (tetepile == NULL)
         return NULL;
+
     else {
-        ElemPoint* tmp = tetepile->suivant;
+        ElemPoint* restant = tetepile->suivant;
         free(tetepile);
-        return tmp;
+        return restant;
     }
 }
 
