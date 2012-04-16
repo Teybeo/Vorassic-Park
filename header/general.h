@@ -48,9 +48,15 @@ typedef struct PointNote {
  * \brief Stocke les infos relatives à un joueur
  *
  */
+
+ typedef struct ElemPoint {
+    Point pos;
+    struct ElemPoint *suivant;
+} ElemPoint;
+
 typedef struct Joueur {
 
-    Point position; /**< Position actuelle */
+    ElemPoint *pion; /**< Les pions du joueur */
     int score; /**< Score actuel */
     int blocage; /**< Permet de savoir si le joueur doit passer son tour */
     int id;

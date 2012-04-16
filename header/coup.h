@@ -18,12 +18,11 @@ void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur);
 int existeCoupsPossibles(char **plateau, int taille, int mode, Point depart);
 
 ElemPoint* creerPileCoupsPossibles(ElemPoint *pile, char **plateau, int taille, int mode, Point depart);
-ElemPoint* creerPilePions(char **plateau, int taille, int idJjoueur);
 
 Point saisieCoup(int taille);
 
 int verifieCoup(char **plateau, int mode, Point depart, Point arrivee);
 
-void appliqueCoup(char **plateau, Joueur *depart, Point arrivee);
+void appliqueCoup(char **plateau, Joueur *depart, Point arrivee, int mode);
 
 #endif

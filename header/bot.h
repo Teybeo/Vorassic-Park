@@ -17,7 +17,7 @@
 
 #define DEBUG_DEBUT_1(x) \
     if (x >= 1) \
-        debugDebut(plateau, taille, mode, 0, profMax, tabJoueur[bot].position, tabJoueur[!bot].position, pions->pos, coups->pos, tabJoueur[bot].id);
+        debugDebut(plateau, taille, mode, 0, profMax, tabJoueur[bot].pion->pos, tabJoueur[!bot].pion->pos, pionTemp->pos, coups->pos, tabJoueur[bot].id);
 
 #define DEBUG_FIN_1(x) \
     if (x >= 1) \
@@ -33,7 +33,7 @@
 
 #define DEBUG_DEBUT(x) \
     if (x == 2) \
-        debugDebut(plateau, taille, mode, prof, profMax, tabJoueur[bot].position, tabJoueur[!bot].position, pions->pos, coups->pos, tabJoueur[jActuel].id);
+        debugDebut(plateau, taille, mode, prof, profMax, tabJoueur[bot].pion->pos, tabJoueur[!bot].pion->pos, pionTemp->pos, coups->pos, tabJoueur[jActuel].id);
 
 
 
@@ -42,8 +42,8 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
 
 int MinMax(char **plateau, int taille, int mode, int prof, int profMax, Joueur *bot, Joueur *adversaire, int etage);
 
-void effectueCoup(char **plateau, Joueur *tabJoueur, int etage, Point coup, int *blocageBotTmp, int *blocageAdvTmp, char *valeurCoup);
-void annuleCoup(char **plateau, Joueur *tabJoueur, int etage, int blocageTmpBot, int blocageTmpAdv, Point coup, char valeurCoup, Point depart);
+void effectueCoup(char **plateau, int mode, Joueur *tabJoueur, int etage, Point coup, int *blocageBotTmp, int *blocageAdvTmp, char *valeurCoup);
+void annuleCoup(char **plateau, int mode, Joueur *tabJoueur, int etage, int blocageTmpBot, int blocageTmpAdv, Point coup, char valeurCoup, Point depart);
 
 int min(int a, int b);
 int max(int a, int b);

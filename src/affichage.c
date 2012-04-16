@@ -69,7 +69,7 @@ void affichePlateau(char **plateau, int taille, int mode, Joueur *tabJoueur, int
 
                     tete = 0;
                     for (k=0;k<nbJoueurs && tete == 0;k++)
-                        if (i == tabJoueur[k].position.y && j == tabJoueur[k].position.x)
+                        if (i == tabJoueur[k].pion->pos.y && j == tabJoueur[k].pion->pos.x)
                             tete = 1;
                 }
 

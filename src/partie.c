@@ -78,7 +78,7 @@ char** initPlateau(int taille, int aleatoire, Joueur *joueur, int nbJoueurs) {
     }
 
     for (i=0;i<nbJoueurs;i++)
-        plateau[joueur[i].position.y][joueur[i].position.x] = joueur[i].id;
+        plateau[joueur[i].pion->pos.y][joueur[i].pion->pos.x] = joueur[i].id;
 
 
     return plateau;
@@ -93,34 +93,30 @@ Joueur* initJoueurs(int nbJoueurs, int nbBots, char **noms, int taille) {
 
     for (i=0;i<nbJoueurs;i++) {
         tab[i].score = 0;
-        tab[i].blocage = 0;
+        tab[i].blocage = FAUX;
         tab[i].id = 100 + i;
         strcpy(tab[i].nom, noms[i]);
-        tab[i].estBot = 0;
+        tab[i].estBot = FAUX;
+        tab[i].pion = NULL;
     }
 
-    tab[0].position.x = 0;
-    tab[0].position.y = 0;
+    tab[0].pion = empiler(tab[0].pion, (Point) {0, 0});
 
-    tab[1].position.x = taille-1;
-    tab[1].position.y = taille-1;
+    tab[1].pion = empiler(tab[1].pion, (Point) {taille-1, taille-1});
 
-    if (nbJoueurs >= 3) {
-        tab[2].position.x = taille-1;
-        tab[2].position.y = 0;
-    }
-    if (nbJoueurs == 4) {
-        tab[3].position.x = 0;
-        tab[3].position.y = taille-1;
-    }
+    if (nbJoueurs >= 3)
+        tab[2].pion = empiler(tab[2].pion, (Point) {taille-1, 0});
+
+    if (nbJoueurs == 4)
+        tab[3].pion = empiler(tab[3].pion, (Point) {0, taille-1});
 
 
     if (nbBots >= 1) {
-        tab[1].estBot = 1;
+        tab[1].estBot = VRAI;
         strcpy(tab[1].nom,"Bot Rouge");
     }
     if (nbBots == 2) {
-        tab[0].estBot = 1;
+        tab[0].estBot = VRAI;
         strcpy(tab[0].nom,"Bot Cyan");
     }
 

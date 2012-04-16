@@ -6,11 +6,6 @@
 
 #include "header/general.h"
 
-typedef struct ElemPoint {
-    Point pos;
-    struct ElemPoint *suivant;
-} ElemPoint;
-
 void affichagePile(ElemPoint *pile);
 ElemPoint* empiler(ElemPoint *tetepile, Point depart);
 ElemPoint* depiler(ElemPoint* tetepile);

@@ -44,7 +44,7 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
             } else {
 
                 caseArrivee = saisieCoup(taille);
-                erreurArrivee = verifieCoup(plateau, mode, joueur->position, caseArrivee);
+                erreurArrivee = verifieCoup(plateau, mode, joueur->pion->pos, caseArrivee);
             }
 
             switch (erreurArrivee) {
@@ -64,7 +64,7 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
 
         } while (erreurArrivee);
 
-        appliqueCoup(plateau, joueur, caseArrivee);
+        appliqueCoup(plateau, joueur, caseArrivee, mode);
 
     } else {
 
@@ -90,29 +90,23 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
 */
 void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur) {
 
-    ElemPoint *pions = NULL;
+    ElemPoint *pionTemp = joueur->pion;
 
     if (joueur->blocage == FAUX)
     {
-
-        if (mode == PIEUVRE)
-            pions = creerPilePions(plateau, taille, joueur->id);
-        else
-            pions = empiler(pions, joueur->position);
 
         joueur->blocage = VRAI;
 
         do {
 
-            if (existeCoupsPossibles(plateau, taille, mode, pions->pos)) { // Si on trouve au moins 1 coup, on n'est pas bloqué, on s'arrete
+            if (existeCoupsPossibles(plateau, taille, mode, pionTemp->pos)) { // Si on trouve au moins 1 coup, on n'est pas bloqué, on s'arrete
                 joueur->blocage = FAUX;
-                liberePile(pions);
                 break;
             }
 
-            pions = depiler(pions);
+            pionTemp = pionTemp->suivant;
 
-        } while (pions != NULL);
+        } while (pionTemp != NULL);
 
     }
 
@@ -183,21 +177,6 @@ ElemPoint* creerPileCoupsPossibles(ElemPoint *pile, char **plateau, int taille, 
     return pile;
 }
 
-ElemPoint* creerPilePions(char **plateau, int taille, int idJoueur) {
-
-    ElemPoint *pions = NULL;
-    int i, j;
-
-    for (i=0;i<taille;i++)
-
-        for (j=0;j<taille;j++)
-
-            if (plateau[i][j] == idJoueur)
-                pions = empiler(pions, (Point){j, i});
-
-    return pions;
-}
-
 /** \fn int verifieCoup(char **plateau, int mode, Point depart, Point arrivee)
  *\brief  Vérifie la validité d'un coup
 
@@ -244,13 +223,16 @@ int verifieCoup(char **plateau, int mode, Point depart, Point arrivee) {
     Attend :
         Un plateau, un point de départ et d'arrivée */
 
-void appliqueCoup(char **plateau, Joueur *depart, Point arrivee) {
+void appliqueCoup(char **plateau, Joueur *depart, Point arrivee, int mode) {
 
     depart->score += plateau[arrivee.y][arrivee.x];
 
-    plateau[arrivee.y][arrivee.x] = plateau[depart->position.y][depart->position.x];
+    plateau[arrivee.y][arrivee.x] = plateau[depart->pion->pos.y][depart->pion->pos.x];
 
-    depart->position = arrivee;
+    if (mode == SERPENT)
+        depart->pion->pos = arrivee;
+    else
+        depart->pion = empiler(depart->pion, arrivee);
 
 }
 
