@@ -6,6 +6,12 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *tabJoueu
     char valeurCoup;
     int blocageTmpBot;
     int blocageTmpAdv;
+    int i;
+    char **plateauTemp = calloc(taille, sizeof(char*));
+    for (i=0; i< taille ;i++ ) {
+        plateauTemp[i] = malloc(taille * sizeof(char));
+        memcpy(plateauTemp[i], plateau[i], taille * sizeof(char));
+    }
     PointNote maxActuel;
     ElemPoint *coups = NULL;
     ElemPoint *pionTemp = NULL;
@@ -21,12 +27,13 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *tabJoueu
 
     do {
 
-        coups = creerPileCoupsPossibles(coups, plateau, taille, mode, pionTemp->pos);
+        coups = creerPileCoupsPossibles(coups, plateauTemp, taille, mode, pionTemp->pos);
 
         while (coups != NULL) {
 
             DEBUG_DEBUT_1(DEBUG);
 
+            plateauTemp[coups->pos.y][coups->pos.x] = plateau[tabJoueur[bot].pion->pos.y][tabJoueur[bot].pion->pos.x];
             effectueCoup(plateau, mode, tabJoueur, bot, coups->pos, &blocageTmpBot, &blocageTmpAdv, &valeurCoup);
 
             chercheBlocage(plateau, taille, mode, &tabJoueur[bot]);
@@ -63,7 +70,7 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *tabJoueu
 
     temps = (clock() - debut)/CLOCKS_PER_SEC;
     printf("Temps de calcul: %f\n", temps);
-    getchar();
+    //getchar();
 
 }
 
@@ -74,7 +81,8 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
     char valeurCoup;
     int blocageTmpBot;
     int blocageTmpAdv;
-    int note;
+    char **plateauTemp = NULL;
+    int note, i;
 
     chercheBlocage(plateau, taille, mode, &tabJoueur[0]);
     chercheBlocage(plateau, taille, mode, &tabJoueur[1]);
@@ -97,14 +105,21 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
         else if (mode == PIEUVRE)
             pionTemp = tabJoueur[jActuel].pion;
 
+        plateauTemp = malloc(taille * sizeof(char*));
+        for (i=0; i< taille ;i++ ) {
+            plateauTemp[i] = malloc(taille * sizeof(char));
+            memcpy(plateauTemp[i], plateau[i], taille * sizeof(char));
+        }
+
         do {
 
-            coups = creerPileCoupsPossibles(coups, plateau, taille, mode, pionTemp->pos);
+            coups = creerPileCoupsPossibles(coups, plateauTemp, taille, mode, pionTemp->pos);
 
             while (coups != NULL) {
 
                 DEBUG_DEBUT(DEBUG);
 
+                plateauTemp[coups->pos.y][coups->pos.x] = plateau[tabJoueur[jActuel].pion->pos.y][tabJoueur[jActuel].pion->pos.x];
                 effectueCoup(plateau, mode, tabJoueur, jActuel, coups->pos, &blocageTmpBot, &blocageTmpAdv, &valeurCoup);
 
                 chercheBlocage(plateau, taille, mode, &tabJoueur[0]);
@@ -125,6 +140,9 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
                     maxActuel = max(maxActuel, note);
                     if (maxActuel > minActuel) { // Si le max actuel est déja supérieur au min actuel de l'étage supérieur, on coupe
                         liberePile(coups);
+                        for (i=0; i< taille;i++ )
+                            free(plateauTemp[i]);
+                        free(plateauTemp);
                         if (mode == SERPENT)
                             free(pionTemp);
                         return maxActuel;
@@ -134,6 +152,9 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
                     minActuel = min(minActuel, note);
                     if (minActuel < maxActuel) { // Si le min actuel est déja inférieur au max de l'étage supérieur, on coupe
                         liberePile(coups);
+                        for (i=0; i< taille;i++ )
+                            free(plateauTemp[i]);
+                        free(plateauTemp);
                         if (mode == SERPENT)
                             free(pionTemp);
                         return minActuel;
@@ -152,7 +173,9 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
         } while (pionTemp != NULL);
 
     }
-
+    for (i=0; i< taille;i++ )
+        free(plateauTemp[i]);
+    free(plateauTemp);
     if (etage == MAX)
         return maxActuel;
     else
