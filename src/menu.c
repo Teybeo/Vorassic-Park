@@ -3,7 +3,7 @@
 void menu() {
 
     int continuer = 1;
-    int taille = 6, mode = 0, prof = 30, aleatoire = 0, nbJoueurs = 2, nbBots = 1, i;
+    int taille = 6, mode = 0, prof = 30, aleatoire = 0, nbJoueurs = 2, nbBots = 2, i;
     char choix, tmp;
     char nomsDefault[4][TAILLE_NOM] = {"Cyan", "Rouge", "Vert", "Bleu"};
     char **noms;
@@ -25,9 +25,10 @@ void menu() {
         printf("\n    Que voulez-vous faire ?\n ");
         choix = getchar();
 
-        do {
-            tmp = getchar();
-        } while (tmp != '\n' && tmp != EOF);
+        if (choix != '\n')
+            do {
+                tmp = getchar();
+            } while (tmp != '\n' && tmp != EOF);
 
         if (choix == '1')
 
@@ -226,7 +227,7 @@ void options(int *taille, int *mode, int *prof, int *aleatoire, int *nbJoueurs, 
 
             } while (1);
 
-            strcpy((*noms)[choix - '5'], chaine);
+            strcpy((*noms)[choix - '7'], chaine);
 
         }
         else if (choix == '0')

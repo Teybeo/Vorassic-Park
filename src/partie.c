@@ -11,7 +11,8 @@ void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int prof, in
     tabJoueur = initJoueurs(nbJoueurs, nbBots, noms, taille);
 
     plateau = initPlateau(taille, aleatoire, tabJoueur, nbJoueurs);
-
+    float debut, temps;
+    debut = clock();
     do {
 
         joueurActuel = (tour-1) % nbJoueurs;
@@ -29,6 +30,8 @@ void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int prof, in
 
     } while (continuer);
 
+    temps = (clock() - debut)/CLOCKS_PER_SEC;
+    printf("Temps de calcul: %f\n", temps);
 
     resultat(tabJoueur, nbJoueurs);
 
