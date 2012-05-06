@@ -42,7 +42,7 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
 
 int MinMax(char **plateau, int taille, int mode, int prof, int profMax, Joueur *bot, Joueur *adversaire, int etage);
 
-void effectueCoup(char **plateau, int mode, Joueur *tabJoueur, int etage, Point coup, char *valeurCoup);
+void effectueCoup(char **plateau, char**plateauTemp, int mode, Joueur *tabJoueur, int etage, Point coup, char *valeurCoup);
 void annuleCoup(char **plateau, int mode, Joueur *tabJoueur, int etage, int blocageTmpBot, int blocageTmpAdv, Point coup, char valeurCoup, Point depart);
 
 int min(int a, int b);

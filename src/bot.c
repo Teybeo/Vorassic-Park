@@ -7,11 +7,7 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *tabJoueu
     int blocageTmpBot;
     int blocageTmpAdv;
     int i;
-    char **plateauTemp = calloc(taille, sizeof(char*));
-    for (i=0; i< taille ;i++ ) {
-        plateauTemp[i] = malloc(taille * sizeof(char));
-        memcpy(plateauTemp[i], plateau[i], taille * sizeof(char));
-    }
+    char **plateauTemp = NULL;
     PointNote maxActuel;
     ElemPoint *coups = NULL;
     ElemPoint *pionTemp = NULL;
@@ -20,10 +16,18 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *tabJoueu
     debut = clock();
 
     maxActuel.note = EVAL_MIN;
-    if (mode == SERPENT)
+    if (mode == SERPENT) {
         pionTemp = empiler(pionTemp, tabJoueur[bot].pion->pos);
-    else if (mode == PIEUVRE)
+        plateauTemp = plateau;
+    }
+    else if (mode == PIEUVRE) {
         pionTemp = tabJoueur[bot].pion;
+        plateauTemp = malloc(taille * sizeof(char*));
+        for (i=0; i< taille ;i++ ) {
+            plateauTemp[i] = malloc(taille * sizeof(char));
+            memcpy(plateauTemp[i], plateau[i], taille * sizeof(char));
+        }
+    }
 
     blocageTmpBot = tabJoueur[MAX].blocage;
     blocageTmpAdv = tabJoueur[MIN].blocage;
@@ -36,8 +40,7 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *tabJoueu
 
             DEBUG_DEBUT_1(DEBUG);
 
-            plateauTemp[coups->pos.y][coups->pos.x] = tabJoueur[bot].id;
-            effectueCoup(plateau, mode, tabJoueur, bot, coups->pos, &valeurCoup);
+            effectueCoup(plateau, plateauTemp, mode, tabJoueur, bot, coups->pos, &valeurCoup);
 
             chercheBlocage(plateau, taille, mode, &tabJoueur[bot]);
             chercheBlocage(plateau, taille, mode, &tabJoueur[!bot]);
@@ -57,7 +60,7 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *tabJoueu
 
             coups = depiler(coups);
 
-            }
+        }
 
         pionTemp = pionTemp->suivant;
 
@@ -100,15 +103,17 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
         else if (etage == MAX)
             maxActuel = EVAL_MIN;
 
-        if (mode == SERPENT)
+        if (mode == SERPENT) {
+            plateauTemp = plateau;
             pionTemp = empiler(pionTemp, tabJoueur[jActuel].pion->pos);
-        else if (mode == PIEUVRE)
+        }
+        else if (mode == PIEUVRE) {
             pionTemp = tabJoueur[jActuel].pion;
-
-        plateauTemp = malloc(taille * sizeof(char*));
-        for (i=0; i< taille ;i++ ) {
-            plateauTemp[i] = malloc(taille * sizeof(char));
-            memcpy(plateauTemp[i], plateau[i], taille * sizeof(char));
+            plateauTemp = malloc(taille * sizeof(char*));
+            for (i=0; i< taille ;i++ ) {
+                plateauTemp[i] = malloc(taille * sizeof(char));
+                memcpy(plateauTemp[i], plateau[i], taille * sizeof(char));
+            }
         }
 
         blocageTmpBot = tabJoueur[MAX].blocage;
@@ -122,8 +127,7 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
 
                 DEBUG_DEBUT(DEBUG);
 
-                plateauTemp[coups->pos.y][coups->pos.x] = plateau[tabJoueur[jActuel].pion->pos.y][tabJoueur[jActuel].pion->pos.x];
-                effectueCoup(plateau, mode, tabJoueur, jActuel, coups->pos, &valeurCoup);
+                effectueCoup(plateau, plateauTemp, mode, tabJoueur, jActuel, coups->pos, &valeurCoup);
 
                 chercheBlocage(plateau, taille, mode, &tabJoueur[0]);
                 chercheBlocage(plateau, taille, mode, &tabJoueur[1]);
@@ -143,11 +147,13 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
                     maxActuel = max(maxActuel, note);
                     if (maxActuel > minActuel) { // Si le max actuel est déja supérieur au min actuel de l'étage supérieur, on coupe
                         liberePile(coups);
-                        for (i=0; i< taille;i++ )
-                            free(plateauTemp[i]);
-                        free(plateauTemp);
                         if (mode == SERPENT)
                             free(pionTemp);
+                        else  {
+                            for (i=0; i< taille;i++ )
+                                free(plateauTemp[i]);
+                            free(plateauTemp);
+                        }
                         return maxActuel;
                     }
                 } else if (etage == MIN) {
@@ -155,11 +161,13 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
                     minActuel = min(minActuel, note);
                     if (minActuel < maxActuel) { // Si le min actuel est déja inférieur au max de l'étage supérieur, on coupe
                         liberePile(coups);
-                        for (i=0; i< taille;i++ )
-                            free(plateauTemp[i]);
-                        free(plateauTemp);
                         if (mode == SERPENT)
                             free(pionTemp);
+                        else  {
+                            for (i=0; i< taille;i++ )
+                                free(plateauTemp[i]);
+                            free(plateauTemp);
+                        }
                         return minActuel;
                     }
                 }
@@ -176,9 +184,12 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
         } while (pionTemp != NULL);
 
     }
-    for (i=0; i< taille;i++ )
-        free(plateauTemp[i]);
-    free(plateauTemp);
+
+    if (mode == PIEUVRE) {
+        for (i=0; i< taille;i++ )
+            free(plateauTemp[i]);
+        free(plateauTemp);
+    }
 
     if (etage == MAX)
         return maxActuel;
@@ -190,16 +201,18 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
 /*  Sauvegarde les états des joueurs et la valeur de la case future
     Puis met le code du joueur sur la case et met a jour les coordoonées et le score du joueur */
 
-void effectueCoup(char **plateau, int mode, Joueur *tabJoueur, int jActuel, Point coup, char *valeurCoup) {
+void effectueCoup(char **plateau, char **plateauTemp, int mode, Joueur *tabJoueur, int jActuel, Point coup, char *valeurCoup) {
 
     *valeurCoup = plateau[coup.y][coup.x];
 
-    plateau[coup.y][coup.x] = plateau[tabJoueur[jActuel].pion->pos.y][tabJoueur[jActuel].pion->pos.x];
+    plateau[coup.y][coup.x] = jActuel + 100;
 
     if (mode == SERPENT)
         tabJoueur[jActuel].pion->pos = coup;
-    else
+    else {
         tabJoueur[jActuel].pion = empiler(tabJoueur[jActuel].pion, coup);
+        plateauTemp[coup.y][coup.x] = jActuel + 100;
+    }
 
     tabJoueur[jActuel].score += *valeurCoup;
 }
