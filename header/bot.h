@@ -10,7 +10,7 @@
 #define EVAL_MIN -10000
 #define EVAL_MAX 10000
 
-#define DEBUG 1
+#define DEBUG 0
 
 #define MAX 0
 #define MIN 1
@@ -42,7 +42,7 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
 
 int MinMax(char **plateau, int taille, int mode, int prof, int profMax, Joueur *bot, Joueur *adversaire, int etage);
 
-void effectueCoup(char **plateau, int mode, Joueur *tabJoueur, int etage, Point coup, int *blocageBotTmp, int *blocageAdvTmp, char *valeurCoup);
+void effectueCoup(char **plateau, int mode, Joueur *tabJoueur, int etage, Point coup, char *valeurCoup);
 void annuleCoup(char **plateau, int mode, Joueur *tabJoueur, int etage, int blocageTmpBot, int blocageTmpAdv, Point coup, char valeurCoup, Point depart);
 
 int min(int a, int b);

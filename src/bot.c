@@ -25,6 +25,9 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *tabJoueu
     else if (mode == PIEUVRE)
         pionTemp = tabJoueur[bot].pion;
 
+    blocageTmpBot = tabJoueur[MAX].blocage;
+    blocageTmpAdv = tabJoueur[MIN].blocage;
+
     do {
 
         coups = creerPileCoupsPossibles(coups, plateauTemp, taille, mode, pionTemp->pos);
@@ -33,8 +36,8 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *tabJoueu
 
             DEBUG_DEBUT_1(DEBUG);
 
-            plateauTemp[coups->pos.y][coups->pos.x] = plateau[tabJoueur[bot].pion->pos.y][tabJoueur[bot].pion->pos.x];
-            effectueCoup(plateau, mode, tabJoueur, bot, coups->pos, &blocageTmpBot, &blocageTmpAdv, &valeurCoup);
+            plateauTemp[coups->pos.y][coups->pos.x] = tabJoueur[bot].id;
+            effectueCoup(plateau, mode, tabJoueur, bot, coups->pos, &valeurCoup);
 
             chercheBlocage(plateau, taille, mode, &tabJoueur[bot]);
             chercheBlocage(plateau, taille, mode, &tabJoueur[!bot]);
@@ -84,9 +87,6 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
     char **plateauTemp = NULL;
     int note, i;
 
-    chercheBlocage(plateau, taille, mode, &tabJoueur[0]);
-    chercheBlocage(plateau, taille, mode, &tabJoueur[1]);
-
     if ((tabJoueur[jActuel].blocage && tabJoueur[!jActuel].blocage) || (prof == profMax && !tabJoueur[jActuel].blocage && !tabJoueur[!jActuel].blocage))  { // Si les 2 sont bloqués ou horizon atteint
 
         return tabJoueur[bot].score - tabJoueur[!bot].score;
@@ -111,6 +111,9 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
             memcpy(plateauTemp[i], plateau[i], taille * sizeof(char));
         }
 
+        blocageTmpBot = tabJoueur[MAX].blocage;
+        blocageTmpAdv = tabJoueur[MIN].blocage;
+
         do {
 
             coups = creerPileCoupsPossibles(coups, plateauTemp, taille, mode, pionTemp->pos);
@@ -120,7 +123,7 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
                 DEBUG_DEBUT(DEBUG);
 
                 plateauTemp[coups->pos.y][coups->pos.x] = plateau[tabJoueur[jActuel].pion->pos.y][tabJoueur[jActuel].pion->pos.x];
-                effectueCoup(plateau, mode, tabJoueur, jActuel, coups->pos, &blocageTmpBot, &blocageTmpAdv, &valeurCoup);
+                effectueCoup(plateau, mode, tabJoueur, jActuel, coups->pos, &valeurCoup);
 
                 chercheBlocage(plateau, taille, mode, &tabJoueur[0]);
                 chercheBlocage(plateau, taille, mode, &tabJoueur[1]);
@@ -176,6 +179,7 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
     for (i=0; i< taille;i++ )
         free(plateauTemp[i]);
     free(plateauTemp);
+
     if (etage == MAX)
         return maxActuel;
     else
@@ -186,10 +190,8 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
 /*  Sauvegarde les états des joueurs et la valeur de la case future
     Puis met le code du joueur sur la case et met a jour les coordoonées et le score du joueur */
 
-void effectueCoup(char **plateau, int mode, Joueur *tabJoueur, int jActuel, Point coup, int *blocageBotTmp, int *blocageAdvTmp, char *valeurCoup) {
+void effectueCoup(char **plateau, int mode, Joueur *tabJoueur, int jActuel, Point coup, char *valeurCoup) {
 
-    *blocageBotTmp = tabJoueur[MAX].blocage;
-    *blocageAdvTmp = tabJoueur[MIN].blocage;
     *valeurCoup = plateau[coup.y][coup.x];
 
     plateau[coup.y][coup.x] = plateau[tabJoueur[jActuel].pion->pos.y][tabJoueur[jActuel].pion->pos.x];
