@@ -35,6 +35,15 @@
     if (x == 2) \
         debugDebut(plateau, taille, mode, prof, profMax, tabJoueur[bot].pion->pos, tabJoueur[!bot].pion->pos, pionTemp->pos, coups->pos, tabJoueur[jActuel].id);
 
+#define LIBERATION  \
+    liberePile(coups);  \
+    if (mode == SERPENT)  \
+        free(pionTemp);  \
+    else  {  \
+        for (i=0; i < taille; i++ )  \
+            free(plateauTemp[i]);  \
+        free(plateauTemp);  \
+    }
 
 
 void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *tabJoueur, int bot);

@@ -1,67 +1,61 @@
 #ifndef H_GENERAL
 #define H_GENERAL
 
-/** \file general.h
- *  \brief Constantes et structures utilisées par le programme
- */
+/* --- Constantes et structures utilisées par le programme --- */
 
-#define CASEVIDE(x)(  \
-    x < 100 || x > 103)
-
-/** \def TAILLE_NOM
- *
- * \brief Taille du tableau de caractères d'un nom de joueur
- *
- *  On doit rajouter 2 au nombre de caractères car le tableau doit contenir '\0' et .. ?
- *
-*/
-
-#define TAILLE_NOM (10+1+1)
-
-enum {
-    FAUX,
-    VRAI
-};
+#define FAUX 0
+#define VRAI 1
 
 #define SERPENT 0
 #define PIEUVRE 1
 
-/** \struct Point
- *
- * \brief Stocke 2 coordonnées entières x, y
- *
- */
+#define CASEVIDE(x) \
+    (x < 100 || x > 103)
+
+/*  Taille du tableau de caractères d'un nom de joueur
+    On doit rajouter 2 au nombre de caractères car le tableau doit contenir '\0' et .. ?
+*/
+#define TAILLE_NOM (20+1+1)
+
+
+/*  Stocke 2 coordonnées entières x, y */
+
 typedef struct Point {
 
-    int x; /**< Colonne */
-    int y; /**< Ligne */
+    int x;
+    int y;
 
 } Point;
 
+/*  Stocke un point et une note associée */
+
 typedef struct PointNote {
+
     Point pos;
     int note;
+
 } PointNote;
 
-/** \struct Joueur
- *
- * \brief Stocke les infos relatives à un joueur
- *
- */
+/*  Structure pour pile de points */
 
- typedef struct ElemPoint {
+typedef struct ElemPoint {
+
     Point pos;
     struct ElemPoint *suivant;
+
 } ElemPoint;
+
+
+/*  Stocke les infos relatives à un joueur */
 
 typedef struct Joueur {
 
-    ElemPoint *pion; /**< Les pions du joueur */
-    int score; /**< Score actuel */
-    int blocage; /**< Permet de savoir si le joueur doit passer son tour */
-    int id;
-    int estBot; /**< Permet de savoir si le joueur est géré par l'ia */
-    char nom[TAILLE_NOM]; /**< Le nom du joueur */
+    ElemPoint *pion; /* Les pions du joueur */
+    int score; /* Score actuel */
+    int blocage; /* Permet de savoir si le joueur doit passer son tour */
+    int id; /* Identifiant du joueurr */
+    int estBot; /* Permet de savoir si le joueur est géré par l'ia */
+    char nom[TAILLE_NOM]; /* Le nom du joueur */
 
 } Joueur;
 

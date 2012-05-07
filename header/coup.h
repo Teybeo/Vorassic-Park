@@ -12,7 +12,7 @@
  */
 
 
-void faireCoup(char **plateau, int taille, int mode, Joueur *depart);
+void faireCoup(char **plateau, int taille, int mode, Joueur *depart, int humain, int nbJoueurs);
 
 void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur);
 int existeCoupsPossibles(char **plateau, int taille, int mode, Point depart);

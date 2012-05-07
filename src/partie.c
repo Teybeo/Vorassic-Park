@@ -4,15 +4,17 @@ void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int prof, in
 
     int continuer = VRAI;
     int tour = 1, i;
+    int joueurActuel;
     char **plateau;
     Joueur *tabJoueur;
-    int joueurActuel;
+    float debut, temps;
 
     tabJoueur = initJoueurs(nbJoueurs, nbBots, noms, taille);
 
     plateau = initPlateau(taille, aleatoire, tabJoueur, nbJoueurs);
-    float debut, temps;
+
     debut = clock();
+
     do {
 
         joueurActuel = (tour-1) % nbJoueurs;
@@ -22,7 +24,7 @@ void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int prof, in
         if (tabJoueur[joueurActuel].estBot)
             botCoup(plateau, taille, mode, prof, tabJoueur, joueurActuel);
         else
-            faireCoup(plateau, taille, mode, &tabJoueur[joueurActuel]);
+            faireCoup(plateau, taille, mode, tabJoueur, joueurActuel, nbJoueurs);
 
         tour++;
 
@@ -30,8 +32,9 @@ void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int prof, in
 
     } while (continuer);
 
+    affichage(plateau, taille, tour, mode, nbJoueurs, tabJoueur, joueurActuel);
     temps = (clock() - debut)/CLOCKS_PER_SEC;
-    printf("Temps de calcul: %f\n", temps);
+    printf("Temps total: %f\n", temps);
 
     resultat(tabJoueur, nbJoueurs);
 

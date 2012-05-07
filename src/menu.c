@@ -3,7 +3,7 @@
 void menu() {
 
     int continuer = 1;
-    int taille = 6, mode = 0, prof = 30, aleatoire = 0, nbJoueurs = 2, nbBots = 2, i;
+    int taille = 6, mode = 0, prof = 30, aleatoire = 0, nbJoueurs = 2, nbBots = 1, i;
     char choix, tmp;
     char nomsDefault[4][TAILLE_NOM] = {"Cyan", "Rouge", "Vert", "Bleu"};
     char **noms;
@@ -13,7 +13,6 @@ void menu() {
         noms[i] = calloc(sizeof(char), TAILLE_NOM);
         strcpy(noms[i], nomsDefault[i]);
     }
-
 
     do {
 

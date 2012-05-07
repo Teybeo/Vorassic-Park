@@ -1,24 +1,15 @@
 #include "header/coup.h"
 
-/** \fn void faireCoup(char **plateau, int taille, int mode, Joueur *joueur)
- * \brief Effectue la saisie, l'analyse et l'application d'un coup
- *
- * \param plateau Le plateau de jeu
- * \param taille La taille du plateau
- * \param mode Le mode de jeu (Pieuvre/Serpent)
- * \param joueur Le joueur actuellement en train de jouer
- *
- *
- */
+/* Effectue la saisie, l'analyse et l'application d'un coup */
 
-void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
+void faireCoup(char **plateau, int taille, int mode, Joueur *tabJoueur, int humain, int nbJoueurs) {
 
     Point caseDepart, caseArrivee;
     int erreurArrivee, erreurDepart;
 
-    chercheBlocage(plateau, taille, mode, joueur);
+    chercheBlocage(plateau, taille, mode, &tabJoueur[humain]);
 
-    if (joueur->blocage == FAUX) {
+    if (tabJoueur[humain].blocage == FAUX) {
 
         printf("\nEntrez un coup : ");
 
@@ -31,7 +22,7 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
                     erreurDepart = 1;
                     caseDepart = saisieCoup(taille);
 
-                    if (plateau[caseDepart.y][caseDepart.x] == joueur->id)
+                    if (plateau[caseDepart.y][caseDepart.x] == tabJoueur[humain].id)
                         erreurDepart = 0;
                     else
                         printf("Case de depart incorrecte\n");
@@ -44,7 +35,8 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
             } else {
 
                 caseArrivee = saisieCoup(taille);
-                erreurArrivee = verifieCoup(plateau, mode, joueur->pion->pos, caseArrivee);
+                erreurArrivee = verifieCoup(plateau, mode, tabJoueur[humain].pion->pos, caseArrivee);
+
             }
 
             switch (erreurArrivee) {
@@ -64,7 +56,11 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
 
         } while (erreurArrivee);
 
-        appliqueCoup(plateau, joueur, caseArrivee, mode);
+        appliqueCoup(plateau, &tabJoueur[humain], caseArrivee, mode);
+        int i;
+        for (i=0;i<nbJoueurs;i++)
+            chercheBlocage(plateau, taille, mode, &tabJoueur[i]);
+
 
     } else {
 
@@ -74,19 +70,13 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *joueur) {
     }
 }
 
-/** \fn void chercheBlocage(char **plateau, int mode, Joueur *joueur, ElemPoint *coupsPossibles)
-    \brief Cherche si un joueur est bloqué
+/*  Cherche si un joueur est bloqué
 
     Parcours la pile des cases adjacentes à la case du joueur.
 	Si la case est libre, la fonctionne s'achève immédiatement.
 	Sinon on recommence sur les suivantes jusqu'à la fin de la pile
 	Si aucune case libre n'a été trouvée, la variable blocage du joueur est mise à VRAI.
 	En mode Pieuvre, on effectue ce meme traitement mais sur toutes les cases que le joueur possède.
-
-    \param plateau Le plateau de jeu
-    \param mode Le mode de jeu (Pieuvre/Serpent)
-    \param joueur Le joueur concerné
-    \param coupsPossibles Une pile des cases proches
 */
 void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur) {
 
@@ -94,7 +84,6 @@ void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur) {
 
     if (joueur->blocage == FAUX)
     {
-
         joueur->blocage = VRAI;
 
         do {
@@ -114,7 +103,7 @@ void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur) {
 
 int existeCoupsPossibles(char **plateau, int taille, int mode, Point depart) {
 
-    static Point tab[8] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+    Point tab[8] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
     int i;
     Point pos;
 
@@ -177,19 +166,11 @@ ElemPoint* creerPileCoupsPossibles(ElemPoint *pile, char **plateau, int taille, 
     return pile;
 }
 
-/** \fn int verifieCoup(char **plateau, int mode, Point depart, Point arrivee)
- *\brief  Vérifie la validité d'un coup
+/*   Vérifie la validité d'un coup
 
-  *  Analyse la distance du coup joué, la disponibilité de la case et la
+    Analyse la distance du coup joué, la disponibilité de la case et la
     conformité avec le mode de jeu actuel
- *
- * \param Le plateau de jeu
- * \param Le mode de jeu
-  * \param Un point de départ
-  *\param Un point d'arrivée
- * \return 0 si le coup est valide, sinon un code d'erreur
- *
- */
+*/
 int verifieCoup(char **plateau, int mode, Point depart, Point arrivee) {
 
     int deltaX = arrivee.x - depart.x;
@@ -219,9 +200,7 @@ int verifieCoup(char **plateau, int mode, Point depart, Point arrivee) {
 
 }
 
-/* Applique le coup au plateau et met a jour la position du joueur
-    Attend :
-        Un plateau, un point de départ et d'arrivée */
+/* Applique le coup au plateau et met a jour le score et la position du joueur */
 
 void appliqueCoup(char **plateau, Joueur *depart, Point arrivee, int mode) {
 
@@ -236,13 +215,9 @@ void appliqueCoup(char **plateau, Joueur *depart, Point arrivee, int mode) {
 
 }
 
-/* Demande une saisie à l'utilisateur et l'analyse. Affiche un message indiquant
-    si la saisie n'a pas pu etre interprete ou si elle est hors du plateau
-    Attend :
-        La taille du plateau
-    Retourne :
-        Le point saisi par l'utilisateur */
-
+/* Demande une saisie à l'utilisateur et l'analyse.
+    Affiche un message indiquant si la saisie n'a pas pu etre interprete ou si elle est hors du plateau
+*/
 Point saisieCoup(int taille) {
 
     Point coup;

@@ -9,7 +9,7 @@
 			<notes>
 				<![CDATA[Optimisations:
 	Garder en mémoire les blocages de chaque pions pour ne pas les rechercher a chaque fois.
-	Il semble que la moitié des chercheBlocage soient inutiles, test rapide montrent gain de temps mais certaines modifications de comportement... a approfondir
+	En mode pieuvre, garder la trace des coups en exploration solitaire pour eviter de faire la meme chose par plusieurs chemins
 	Utiliser des char pour les coordonées, test rapide a montré 15% de gain avec des short. Pour être cohérent et peut-etre encore plus  efficace, passer toutes les variables qui sy'rapportent (arguments de fonctions, etc) dans le meme type.
 
 Idées:

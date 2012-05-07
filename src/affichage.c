@@ -12,9 +12,10 @@ void affichage(char **plateau, int taille, int tour, int mode, int nbJoueurs, Jo
     for (i=0;i<nbJoueurs;i++) {
         couleurs(tabJoueur[i].id);
         printf("\n    %s %d", tabJoueur[i].nom, tabJoueur[i].score);
-        if (i == joueurActuel)
+        if (i == joueurActuel && !tabJoueur[i].blocage)
             printf(" <- A ton tour");
     }
+
     textcolor(LIGHTGRAY);
 
     affichePlateau(plateau, taille, mode, tabJoueur, nbJoueurs);

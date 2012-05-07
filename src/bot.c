@@ -4,78 +4,79 @@ void botCoup(char **plateau, int taille, int mode, int profMax, Joueur *tabJoueu
 
     float debut, temps;
     char valeurCoup;
-    int blocageTmpBot;
-    int blocageTmpAdv;
-    int i;
+    int i, blocageTmpBot, blocageTmpAdv;
     char **plateauTemp = NULL;
-    PointNote maxActuel;
+    PointNote maxActuel, coupNote;
     ElemPoint *coups = NULL;
     ElemPoint *pionTemp = NULL;
-    PointNote coupNote = {{-1, -1}, 0};
 
-    debut = clock();
+    if (tabJoueur[bot].blocage == FAUX) {
 
-    maxActuel.note = EVAL_MIN;
-    if (mode == SERPENT) {
-        pionTemp = empiler(pionTemp, tabJoueur[bot].pion->pos);
-        plateauTemp = plateau;
-    }
-    else if (mode == PIEUVRE) {
-        pionTemp = tabJoueur[bot].pion;
-        plateauTemp = malloc(taille * sizeof(char*));
-        for (i=0; i< taille ;i++ ) {
-            plateauTemp[i] = malloc(taille * sizeof(char));
-            memcpy(plateauTemp[i], plateau[i], taille * sizeof(char));
+        debut = clock();
+
+        if (mode == SERPENT) {
+
+            pionTemp = empiler(pionTemp, tabJoueur[bot].pion->pos);
+            plateauTemp = plateau;
         }
-    }
+        else if (mode == PIEUVRE) {
 
-    blocageTmpBot = tabJoueur[MAX].blocage;
-    blocageTmpAdv = tabJoueur[MIN].blocage;
-
-    do {
-
-        coups = creerPileCoupsPossibles(coups, plateauTemp, taille, mode, pionTemp->pos);
-
-        while (coups != NULL) {
-
-            DEBUG_DEBUT_1(DEBUG);
-
-            effectueCoup(plateau, plateauTemp, mode, tabJoueur, bot, coups->pos, &valeurCoup);
-
-            chercheBlocage(plateau, taille, mode, &tabJoueur[bot]);
-            chercheBlocage(plateau, taille, mode, &tabJoueur[!bot]);
-
-            if (tabJoueur[!bot].blocage == VRAI) // Si le joueur adverse bloqué, on continue solo
-                coupNote.note = AlphaBeta(plateau, taille, mode, 1, profMax, tabJoueur, bot, bot, MAX, maxActuel.note, EVAL_MAX);
-            else
-                coupNote.note = AlphaBeta(plateau, taille, mode, 1, profMax, tabJoueur, bot, !bot, MIN, maxActuel.note, EVAL_MAX);
-
-            coupNote.pos = coups->pos;
-
-            maxActuel = maxPointNote(maxActuel, coupNote);
-
-            annuleCoup(plateau, mode, tabJoueur, bot, blocageTmpBot, blocageTmpAdv, coups->pos, valeurCoup, pionTemp->pos);
-
-            DEBUG_FIN_1(DEBUG);
-
-            coups = depiler(coups);
-
+            pionTemp = tabJoueur[bot].pion;
+            plateauTemp = malloc(taille * sizeof(char*));
+            for (i=0; i< taille ;i++ ) {
+                plateauTemp[i] = malloc(taille * sizeof(char));
+                memcpy(plateauTemp[i], plateau[i], taille * sizeof(char));
+            }
         }
 
-        pionTemp = pionTemp->suivant;
+        maxActuel.note = EVAL_MIN;
+        blocageTmpBot = tabJoueur[MAX].blocage;
+        blocageTmpAdv = tabJoueur[MIN].blocage;
 
-    } while (pionTemp != NULL);
+        do {
 
-    if (coupNote.pos.x != -1 && coupNote.pos.y != -1)
+            coups = creerPileCoupsPossibles(coups, plateauTemp, taille, mode, pionTemp->pos);
+
+            while (coups != NULL) {
+
+                DEBUG_DEBUT_1(DEBUG);
+
+                effectueCoup(plateau, plateauTemp, mode, tabJoueur, bot, coups->pos, &valeurCoup);
+
+                chercheBlocage(plateau, taille, mode, &tabJoueur[bot]);
+                chercheBlocage(plateau, taille, mode, &tabJoueur[!bot]);
+
+                if (tabJoueur[!bot].blocage == VRAI) // Si le joueur adverse bloqué, on continue solo
+                    coupNote.note = AlphaBeta(plateau, taille, mode, 1, profMax, tabJoueur, bot, bot, MAX, maxActuel.note, EVAL_MAX);
+                else
+                    coupNote.note = AlphaBeta(plateau, taille, mode, 1, profMax, tabJoueur, bot, !bot, MIN, maxActuel.note, EVAL_MAX);
+
+                coupNote.pos = coups->pos;
+
+                maxActuel = maxPointNote(maxActuel, coupNote);
+
+                annuleCoup(plateau, mode, tabJoueur, bot, blocageTmpBot, blocageTmpAdv, coups->pos, valeurCoup, pionTemp->pos);
+
+                DEBUG_FIN_1(DEBUG);
+
+                coups = depiler(coups);
+
+            }
+
+            pionTemp = pionTemp->suivant;
+
+        } while (pionTemp != NULL);
+
         appliqueCoup(plateau, &tabJoueur[bot], maxActuel.pos, mode);
-    else
-    {
-        printf("\nLe bot est bloque, il passe son tour\n");
-        tabJoueur[bot].blocage = 1;
+
+        chercheBlocage(plateau, taille, mode, &tabJoueur[bot]);
+        chercheBlocage(plateau, taille, mode, &tabJoueur[!bot]);
+
+        temps = (clock() - debut)/CLOCKS_PER_SEC;
+        printf("Temps de calcul: %f\n", temps);
+
     }
 
-    temps = (clock() - debut)/CLOCKS_PER_SEC;
-    printf("Temps de calcul: %f\n", temps);
     //getchar();
 
 }
@@ -85,8 +86,7 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
 
     ElemPoint *coups = NULL, *pionTemp = NULL;
     char valeurCoup;
-    int blocageTmpBot;
-    int blocageTmpAdv;
+    int blocageTmpBot, blocageTmpAdv;
     char **plateauTemp = NULL;
     int note, i;
 
@@ -146,28 +146,14 @@ int AlphaBeta(char **plateau, int taille, int mode, int prof, int profMax, Joueu
 
                     maxActuel = max(maxActuel, note);
                     if (maxActuel > minActuel) { // Si le max actuel est déja supérieur au min actuel de l'étage supérieur, on coupe
-                        liberePile(coups);
-                        if (mode == SERPENT)
-                            free(pionTemp);
-                        else  {
-                            for (i=0; i< taille;i++ )
-                                free(plateauTemp[i]);
-                            free(plateauTemp);
-                        }
+                        LIBERATION;
                         return maxActuel;
                     }
                 } else if (etage == MIN) {
 
                     minActuel = min(minActuel, note);
                     if (minActuel < maxActuel) { // Si le min actuel est déja inférieur au max de l'étage supérieur, on coupe
-                        liberePile(coups);
-                        if (mode == SERPENT)
-                            free(pionTemp);
-                        else  {
-                            for (i=0; i< taille;i++ )
-                                free(plateauTemp[i]);
-                            free(plateauTemp);
-                        }
+                        LIBERATION;
                         return minActuel;
                     }
                 }
