@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <conio2.h>
 
 #include "header/pile.h"
 #include "header/general.h"
@@ -11,7 +12,7 @@
  * \brief Gestion des déplacements
  */
 
-
+void faireCoup2(char **plateau, int taille, int mode, Joueur *tabJoueur, int humain, int nbJoueurs);
 void faireCoup(char **plateau, int taille, int mode, Joueur *depart, int humain, int nbJoueurs);
 
 void chercheBlocage(char **plateau, int taille, int mode, Joueur *joueur);
@@ -21,6 +22,7 @@ ElemPoint* creerPileCoupsPossibles(ElemPoint *pile, char **plateau, int taille, 
 
 Point saisieCoup(int taille);
 
+int caseAtteignable(char **plateau, int taille, Joueur joueur, Point arrivee);
 int verifieCoup(char **plateau, int mode, Point depart, Point arrivee);
 
 void appliqueCoup(char **plateau, Joueur *depart, Point arrivee, int mode);

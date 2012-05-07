@@ -12,6 +12,9 @@
 #define CASEVIDE(x) \
     (x < 100 || x > 103)
 
+#define EXISTE_CASE(pos, taille) \
+    (pos.x >= 0 && pos.x < taille && pos.y >= 0 && pos.y < taille)
+
 /*  Taille du tableau de caractères d'un nom de joueur
     On doit rajouter 2 au nombre de caractères car le tableau doit contenir '\0' et .. ?
 */

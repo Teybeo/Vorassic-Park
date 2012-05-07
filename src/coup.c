@@ -1,5 +1,102 @@
 #include "header/coup.h"
 
+#define HAUT 72
+#define GAUCHE 75
+#define DROITE 77
+#define BAS 80
+#define ENTER 13
+
+void faireCoup2(char **plateau, int taille, int mode, Joueur *tabJoueur, int humain, int nbJoueurs) {
+
+    Point caseArrivee, caseCible, curseurTmp, curseurTexte;
+    int erreurArrivee = 1, touche;
+
+    if (tabJoueur[humain].blocage == VRAI)
+    {
+        printf("\nVous etes bloque, vous passez votre tour");
+        getchar();
+
+    } else {
+
+        printf("\nEntrez une direction : ");
+
+        curseurTexte = (Point){wherex(), wherey()};
+
+        caseCible = tabJoueur[humain].pion->pos;
+
+        do {
+
+            touche = getch();
+
+            if (touche == 224)
+                touche = getch();
+
+            gotoxy(6 + (3*caseCible.x), 9+caseCible.y);
+            textcolor(LIGHTGRAY);
+            if (CASEVIDE(plateau[caseCible.y][caseCible.x]))
+                printf("%d", plateau[caseCible.y][caseCible.x]);
+            else {
+                couleurs(plateau[caseCible.y][caseCible.x]);
+                printf("%c", 254);
+            }
+
+            switch (touche) {
+            case HAUT:
+                if (caseCible.y - 1 >= 0)
+                    caseCible.y--;
+                break;
+            case GAUCHE:
+                if (caseCible.x - 1 >= 0)
+                    caseCible.x--;
+                break;
+            case DROITE:
+                if (caseCible.x + 1 < taille)
+                    caseCible.x++;
+                break;
+            case BAS:
+                if (caseCible.y + 1 < taille)
+                    caseCible.y++;
+                break;
+            }
+
+            if (mode == SERPENT) {
+                if (CASEVIDE(plateau[caseCible.y][caseCible.x])) {
+                    caseArrivee = caseCible;
+                    erreurArrivee = 0;
+                }
+                else
+                    caseCible = tabJoueur[humain].pion->pos;
+
+
+            } else {
+
+                if (touche == ENTER)
+                    if (EXISTE_CASE(caseCible, taille) && CASEVIDE(plateau[caseCible.y][caseCible.x]) && caseAtteignable(plateau, taille, tabJoueur[humain], caseCible)) {
+                        caseArrivee = caseCible;
+                        erreurArrivee = 0;
+                    }
+
+                gotoxy(6 + (3*caseCible.x), 9+caseCible.y);
+                couleurs(tabJoueur[humain].id);
+                putchar('x');
+
+            }
+
+        } while (erreurArrivee);
+
+        gotoxy(curseurTexte.x, curseurTexte.y);
+        textcolor(LIGHTGRAY);
+
+        appliqueCoup(plateau, &tabJoueur[humain], caseArrivee, mode);
+        int i;
+        for (i=0;i<nbJoueurs;i++)
+            chercheBlocage(plateau, taille, mode, &tabJoueur[i]);
+
+
+    }
+
+}
+
 /* Effectue la saisie, l'analyse et l'application d'un coup */
 
 void faireCoup(char **plateau, int taille, int mode, Joueur *tabJoueur, int humain, int nbJoueurs) {
@@ -7,9 +104,12 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *tabJoueur, int huma
     Point caseDepart, caseArrivee;
     int erreurArrivee, erreurDepart;
 
-    chercheBlocage(plateau, taille, mode, &tabJoueur[humain]);
+    if (tabJoueur[humain].blocage == VRAI)
+    {
+        printf("\nVous etes bloque, vous passez votre tour");
+        getchar();
 
-    if (tabJoueur[humain].blocage == FAUX) {
+    } else {
 
         printf("\nEntrez un coup : ");
 
@@ -61,13 +161,8 @@ void faireCoup(char **plateau, int taille, int mode, Joueur *tabJoueur, int huma
         for (i=0;i<nbJoueurs;i++)
             chercheBlocage(plateau, taille, mode, &tabJoueur[i]);
 
-
-    } else {
-
-        printf("\nVous etes bloque, vous passez votre tour");
-        getchar();
-
     }
+
 }
 
 /*  Cherche si un joueur est bloqué
@@ -213,6 +308,23 @@ void appliqueCoup(char **plateau, Joueur *depart, Point arrivee, int mode) {
     else
         depart->pion = empiler(depart->pion, arrivee);
 
+}
+
+int caseAtteignable(char **plateau, int taille, Joueur joueur, Point arrivee) {
+
+    int i;
+    Point tab[8] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
+    Point depart;
+
+    for (i=0; i < 8; i++) {
+
+        depart = (Point){arrivee.x + tab[i].x, arrivee.y + tab[i].y};
+
+        if (EXISTE_CASE(depart, taille) && plateau[depart.y][depart.x] == joueur.id)
+            return VRAI;
+    }
+
+    return FAUX;
 }
 
 /* Demande une saisie à l'utilisateur et l'analyse.

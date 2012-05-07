@@ -24,7 +24,7 @@ void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int prof, in
         if (tabJoueur[joueurActuel].estBot)
             botCoup(plateau, taille, mode, prof, tabJoueur, joueurActuel);
         else
-            faireCoup(plateau, taille, mode, tabJoueur, joueurActuel, nbJoueurs);
+            faireCoup2(plateau, taille, mode, tabJoueur, joueurActuel, nbJoueurs);
 
         tour++;
 
