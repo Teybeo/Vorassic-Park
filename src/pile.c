@@ -1,17 +1,5 @@
 #include "header/pile.h"
 
-void affichagePile(ElemPoint *pile) {
-
-    ElemPoint *temp = pile;
-
-    while (temp != NULL) {
-
-        printf("(%d, %d) ", temp->pos.x, temp->pos.y);
-        temp = temp->suivant;
-    }
-
-}
-
 ElemPoint* empiler(ElemPoint *tetepile, Point point) {
 
     ElemPoint *nouveau = malloc(sizeof(ElemPoint));

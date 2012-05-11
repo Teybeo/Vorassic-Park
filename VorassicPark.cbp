@@ -81,9 +81,10 @@ Interface + souris]]>
 		</Linker>
 		<Unit filename="header\affichage.h" />
 		<Unit filename="header\bot.h" />
-		<Unit filename="header\coup.h" />
+		<Unit filename="header\entree.h" />
 		<Unit filename="header\general.h" />
 		<Unit filename="header\menu.h" />
+		<Unit filename="header\moteur.h" />
 		<Unit filename="header\partie.h" />
 		<Unit filename="header\pile.h" />
 		<Unit filename="src\affichage.c">
@@ -92,13 +93,16 @@ Interface + souris]]>
 		<Unit filename="src\bot.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="src\coup.c">
+		<Unit filename="src\entree.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src\main.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src\menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src\moteur.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src\partie.c">

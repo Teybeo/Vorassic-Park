@@ -4,10 +4,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include "general.h"
 
 #include "header/affichage.h"
-#include "header/coup.h"
+#include "header/pile.h"
 #include "header/bot.h"
+#include "header/entree.h"
 
 void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int prof, int aleatoire, char **noms, Config debug);
 

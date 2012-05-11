@@ -126,7 +126,7 @@ int AlphaBeta(char **plateau, int taille, int mode, Config debug, int prof, int 
 
             while (coups != NULL) {
 
-                DEBUG_DEBUT(DEBUG);
+                DEBUG_DEBUT(debug.vue);
 
                 effectueCoup(plateau, plateauTemp, mode, tabJoueur, jActuel, coups->pos, &valeurCoup);
 
@@ -239,116 +239,4 @@ inline PointNote maxPointNote(PointNote a, PointNote b) {
      return (a.note > b.note) ? a : b;
 }
 
-void affichePlateauDebug(char **plateau, int taille, int mode, int prof, Point bot, Point adv, Point actuel, Point arrivee, int id) {
 
-    int i, j;
-    int nb_espaces = 8;
-    char *decalage = malloc(sizeof(char) * 1 + (nb_espaces * prof) );
-    memset(decalage, ' ', sizeof(char) * 1 + (nb_espaces * prof) );
-    decalage[nb_espaces*prof] = '\0';
-
-    printf("\n");
-
-    printf("%s", decalage);
-    printf("   |");
-
-    for (i=0 ; i < taille ; i++)
-        printf("%2c ", 'A' + i);
-    printf("\n");
-
-    printf("%s", decalage);
-
-    for (i=0 ; i < taille+1 ; i++)
-        printf("---");
-    printf("\n");
-
-    for (i=0 ; i < taille ; i++)
-    {
-        printf("%s", decalage);
-
-        for (j=0 ; j < taille ; j++)
-        {
-            if (j == 0)
-                printf("%2d |", i);
-
-
-            if (CASEVIDE(plateau[i][j]) == FAUX) {
-
-                if (mode == PIEUVRE && (i == actuel.y && j == actuel.x)) { // Position du pion qui s'apprete a jouer
-
-                    couleurs(plateau[actuel.y][actuel.x]);
-                    printf("%2c ", 254);
-
-                } else if ((i == bot.y && j == bot.x) || (i == adv.y && j == adv.x)) { // Position des tetes des joueurs
-
-                    couleurs(plateau[i][j]);
-                    printf("%2c ", 254);
-
-                } else { // Anciennes positions
-
-                    couleurs(plateau[i][j]);
-                    lowvideo();
-                    printf("%2c ", 254);
-                }
-
-            } else if (i == arrivee.y && j == arrivee.x) { // Position d'arrivée
-
-                couleurs(id);
-                printf("%2c ", 'x');
-
-            } else
-                printf("%2d ", plateau[i][j]);
-                //printf("   ");
-
-            textcolor(LIGHTGRAY);
-        }
-
-        printf("\n");
-    }
-
-    free(decalage);
-}
-
-void debugDebut(char **plateau, int taille, int mode, int prof, int profMax, Point bot, Point adv, Point depart, Point arrive, int id) {
-
-    int i;
-    for (i=0;i<prof;i++)
-        printf("        ");
-
-    couleurs(id);
-    printf("%C ", 254);
-    textcolor(LIGHTGRAY);
-
-    afficheDirection(depart, arrive);
-    printf(" prof %d/%d", prof, profMax-1);
-
-    affichePlateauDebug(plateau, taille, mode, prof, bot, adv, depart, arrive, id);
-
-}
-
-void debugFin(int prof, int note, int profMax, int maxActuel, int minActuel, int etage, ElemPoint *coup) {
-
-    int i;
-    for (i=0;i<prof;i++)
-        printf("        ");
-
-    printf("Ce coup valait = %d\n", note);
-    if (coup->suivant != NULL && prof != profMax-1) {
-
-        if (etage == MAX && max(maxActuel, note) >= minActuel) {  // Si le max actuel est déja supérieur au min actuel de l'étage supérieur, on coupe
-            for (i=0;i<prof;i++)
-                printf("        ");
-            printf("Elagage maxActuel %d >= minActuel %d, cette branche est deja plus haute ou egale au min precedent", max(maxActuel, note), minActuel);
-            getchar();
-        }
-        else if (etage == MIN && min(minActuel, note) < maxActuel) { // Si le min actuel est déja inférieur au max de l'étage supérieur, on coupe
-            for (i=0;i<prof;i++)
-                printf("        ");
-            printf("Elagage minActuel %d < maxActuel %d, cette branche est deja plus basse ou egale au sup precedent", min(minActuel, note), maxActuel);
-            getchar();
-        }
-    }
-
-    printf("\n");
-
-}
