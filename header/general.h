@@ -48,6 +48,14 @@ typedef struct ElemPoint {
 
 } ElemPoint;
 
+/*  Paramètres pour l'ia */
+
+typedef struct Config {
+
+    char pause;
+    char vue;
+
+} Config;
 
 /*  Stocke les infos relatives à un joueur */
 

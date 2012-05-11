@@ -8,14 +8,10 @@
 		<Option show_notes="1">
 			<notes>
 				<![CDATA[Optimisations:
-	Garder en mémoire les blocages de chaque pions pour ne pas les rechercher a chaque fois.
+
 	En mode pieuvre, garder la trace des coups en exploration solitaire pour eviter de faire la meme chose par plusieurs chemins
 	Utiliser des char pour les coordonées, test rapide a montré 15% de gain avec des short. Pour être cohérent et peut-etre encore plus  efficace, passer toutes les variables qui sy'rapportent (arguments de fonctions, etc) dans le meme type.
 
-Idées:
-Sélection clavier ?
-	Curseur déplacable sur la grille, maintien d'une touche puis déplacement sur la case d'arrivée et relachement pour jouer un coup ?
-Ou sans maintien, activation du mode sélec par touche, désactivation par une autre
 
 Interface + souris]]>
 			</notes>

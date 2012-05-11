@@ -1,15 +1,9 @@
 #include "header/coup.h"
 
-#define HAUT 72
-#define GAUCHE 75
-#define DROITE 77
-#define BAS 80
-#define ENTER 13
+int faireCoupVisuel(char **plateau, int taille, int mode, Joueur *tabJoueur, int humain, int nbJoueurs) {
 
-void faireCoup2(char **plateau, int taille, int mode, Joueur *tabJoueur, int humain, int nbJoueurs) {
-
-    Point caseArrivee, caseCible, curseurTmp, curseurTexte;
-    int erreurArrivee = 1, touche;
+    Point caseArrivee = {0, 0}, caseCible, curseurTexte;
+    int erreurArrivee = 1, touche, i;
 
     if (tabJoueur[humain].blocage == VRAI)
     {
@@ -17,6 +11,8 @@ void faireCoup2(char **plateau, int taille, int mode, Joueur *tabJoueur, int hum
         getchar();
 
     } else {
+
+        fflush(stdin);
 
         printf("\nEntrez une direction : ");
 
@@ -31,13 +27,17 @@ void faireCoup2(char **plateau, int taille, int mode, Joueur *tabJoueur, int hum
             if (touche == 224)
                 touche = getch();
 
-            gotoxy(6 + (3*caseCible.x), 9+caseCible.y);
-            textcolor(LIGHTGRAY);
-            if (CASEVIDE(plateau[caseCible.y][caseCible.x]))
-                printf("%d", plateau[caseCible.y][caseCible.x]);
-            else {
-                couleurs(plateau[caseCible.y][caseCible.x]);
-                printf("%c", 254);
+            if (mode == PIEUVRE)
+            {
+                gotoxy(6 + (3*caseCible.x), 9+caseCible.y);
+                textcolor(LIGHTGRAY);
+                if (CASEVIDE(plateau[caseCible.y][caseCible.x]))
+                    printf("%d", plateau[caseCible.y][caseCible.x]);
+                else {
+                    couleurs(plateau[caseCible.y][caseCible.x]);
+                    lowvideo();
+                    printf("%c", 254);
+                }
             }
 
             switch (touche) {
@@ -57,16 +57,20 @@ void faireCoup2(char **plateau, int taille, int mode, Joueur *tabJoueur, int hum
                 if (caseCible.y + 1 < taille)
                     caseCible.y++;
                 break;
+            case ECHAP:
+                textcolor(LIGHTGRAY);
+                return 1;
+                break;
             }
 
             if (mode == SERPENT) {
+
                 if (CASEVIDE(plateau[caseCible.y][caseCible.x])) {
                     caseArrivee = caseCible;
                     erreurArrivee = 0;
                 }
                 else
                     caseCible = tabJoueur[humain].pion->pos;
-
 
             } else {
 
@@ -88,18 +92,20 @@ void faireCoup2(char **plateau, int taille, int mode, Joueur *tabJoueur, int hum
         textcolor(LIGHTGRAY);
 
         appliqueCoup(plateau, &tabJoueur[humain], caseArrivee, mode);
-        int i;
+
         for (i=0;i<nbJoueurs;i++)
             chercheBlocage(plateau, taille, mode, &tabJoueur[i]);
 
 
     }
 
+    return 0;
+
 }
 
 /* Effectue la saisie, l'analyse et l'application d'un coup */
 
-void faireCoup(char **plateau, int taille, int mode, Joueur *tabJoueur, int humain, int nbJoueurs) {
+void faireCoupTextuel(char **plateau, int taille, int mode, Joueur *tabJoueur, int humain, int nbJoueurs) {
 
     Point caseDepart, caseArrivee;
     int erreurArrivee, erreurDepart;

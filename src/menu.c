@@ -3,10 +3,11 @@
 void menu() {
 
     int continuer = 1;
-    int taille = 6, mode = 0, prof = 30, aleatoire = 0, nbJoueurs = 2, nbBots = 1, i;
+    int taille = 6, mode = 0, prof = 5, aleatoire = 0, nbJoueurs = 2, nbBots = 1, i;
     char choix, tmp;
     char nomsDefault[4][TAILLE_NOM] = {"Cyan", "Rouge", "Vert", "Bleu"};
     char **noms;
+    Config debug = {0, 0};
 
     noms = calloc(sizeof(char*), nbJoueurs);
     for (i=0;i<nbJoueurs;i++) {
@@ -31,11 +32,11 @@ void menu() {
 
         if (choix == '1')
 
-            executePartie(nbJoueurs, nbBots, taille, mode, prof, aleatoire, noms);
+            executePartie(nbJoueurs, nbBots, taille, mode, prof, aleatoire, noms, debug);
 
         else if (choix == '2')
 
-            options(&taille, &mode, &prof, &aleatoire, &nbJoueurs, &nbBots, &noms);
+            options(&taille, &mode, &prof, &aleatoire, &nbJoueurs, &nbBots, &noms, &debug);
 
         else if (choix == '3')
 
@@ -45,11 +46,11 @@ void menu() {
 
 }
 
-void options(int *taille, int *mode, int *prof, int *aleatoire, int *nbJoueurs, int *nbBots, char ***noms) {
+void options(int *taille, int *mode, int *prof, int *aleatoire, int *nbJoueurs, int *nbBots, char ***noms, Config *debug) {
 
     int continuer = 1, retour, i;
-    int tmp = *taille;
-    char choix, tampon;
+    int choix, tmp = *taille, *cible = NULL, nbMin, nbMax;
+    char tampon;
     char chaine[TAILLE_NOM] = {0};
     char modeJeu[10] = {0}, chaineIA[4] = {0};
     char plateauAleatoire[10] = {0};
@@ -78,21 +79,32 @@ void options(int *taille, int *mode, int *prof, int *aleatoire, int *nbJoueurs, 
         printf("    3. Generation plateau = %s\n", plateauAleatoire);
         printf("    4. IA active = %s\n", chaineIA);
         printf("    5. Changer nombre de tours cherches a l'avance = %d\n", *prof);
+
         if (*nbBots > 0)
             printf("    6. Changer nombre de bots = %d\n", *nbBots);
         else
             printf("    6. Changer nombre de joueurs = %d\n", *nbJoueurs);
 
+        printf("    7. Mettre en pause apres un coup de l'ia = %d\n", debug->pause);
+        printf("    8. Niveau d'affichage des calculs de l'ia = %d\n", debug->vue);
+
         for (i=0;i<*nbJoueurs;i++)
-            printf("    %d. Changer nom joueur %d = %s\n", 7+i, i+1, (*noms)[i]);
+            printf("    %d. Changer nom joueur %d = %s\n", 9+i, i+1, (*noms)[i]);
+
         printf("\n    0. Retour\n");
         printf("\n    Que voulez-vous faire ?\n ");
-        scanf("%c", &choix);
+        scanf("%d", &choix);
 
-        if (choix != '\n')
-            while ( (tampon = getchar()) != '\n' && tampon != EOF);
+        while ( (tampon = getchar()) != '\n' && tampon != EOF);
 
-        if (choix == '1') {
+        switch (choix) {
+
+        case 0:
+
+            continuer = 0;
+            break;
+
+        case 1:
 
             printf("Entrez une taille entre 3 et 26\n");
 
@@ -116,23 +128,23 @@ void options(int *taille, int *mode, int *prof, int *aleatoire, int *nbJoueurs, 
 
             } while (retour != 1);
 
-        }
-        else if (choix == '2') {
+            break;
+
+        case 2:
 
             *mode = !*mode;
+            break;
 
-        }
-        else if (choix == '3') {
+        case 3:
 
             *aleatoire = !*aleatoire;
+            break;
 
-        }
-        else if (choix == '4')
-        {
+        case 4:
                 *nbJoueurs = 2;
                 *nbBots = !*nbBots;
-        }
-        else if (choix == '5') {
+                break;
+        case 5:
 
             printf("Entrez un nombre positif\n");
 
@@ -156,10 +168,10 @@ void options(int *taille, int *mode, int *prof, int *aleatoire, int *nbJoueurs, 
 
             } while (retour != 1);
 
-        }
-        else if (choix == '6') {
+            break;
 
-            int nbMin, nbMax, *cible = NULL;
+        case 6:
+
             if (*nbBots) {
                 nbMin = NB_BOTS_MIN;
                 nbMax = NB_BOTS_MAX;
@@ -202,8 +214,40 @@ void options(int *taille, int *mode, int *prof, int *aleatoire, int *nbJoueurs, 
 
             } while (retour != 1);
 
-        }
-        else if (choix >= '7' && choix < '7' + *nbJoueurs) {
+            break;
+
+        case 7:
+
+            debug->pause = !debug->pause;
+            break;
+
+        case 8:
+
+            printf("Entrez un nombre entre 0 et 2\n");
+
+            do {
+
+                retour = scanf("%d", &tmp);
+
+                while ( (tampon = getchar()) != '\n' && tampon != EOF);
+
+                if (retour) {
+                    if (tmp >= 0 && tmp <= 2)
+                        debug->vue = tmp;
+                    else {
+                        printf("Valeur invalide, reesayez\n");
+                        retour = 0;
+                    }
+                }
+                else {
+                    printf("Erreur de saisie, entrez un nombre\n");
+                }
+
+            } while (retour != 1);
+
+            break;
+
+        case 9: case 10: case 11: case 12:
 
             printf("Entrez un nom de %d lettres max\n", TAILLE_NOM-2);
 
@@ -226,12 +270,14 @@ void options(int *taille, int *mode, int *prof, int *aleatoire, int *nbJoueurs, 
 
             } while (1);
 
-            strcpy((*noms)[choix - '7'], chaine);
+            strcpy((*noms)[choix - 9], chaine);
+
+            break;
+
+        default:
+            break;
 
         }
-        else if (choix == '0')
-
-            continuer = 0;
 
     } while (continuer);
 

@@ -1,6 +1,8 @@
 #ifndef H_MENU
 #define H_MENU
 
+/* --- Menus du programme --- */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -14,12 +16,8 @@
 #define NB_BOTS_MAX 2
 #define NB_BOTS_MIN 1
 
-/** \file menu.c
- * \brief Menus
- *
- */
 
 void menu();
-void options(int *taille, int *mode, int *prof, int *aleatoire, int *nbJoueurs, int *nbBots, char ***noms);
+void options(int *taille, int *mode, int *prof, int *aleatoire, int *nbJoueurs, int *nbBots, char ***noms, Config *debug);
 
 #endif

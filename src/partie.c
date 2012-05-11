@@ -1,9 +1,9 @@
 #include "header/partie.h"
 
-void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int prof, int aleatoire, char **noms) {
+void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int prof, int aleatoire, char **noms, Config debug) {
 
     int continuer = VRAI;
-    int tour = 1, i;
+    int tour = 1, i, forcerArret = FAUX;
     int joueurActuel;
     char **plateau;
     Joueur *tabJoueur;
@@ -22,21 +22,24 @@ void executePartie(int nbJoueurs, int nbBots, int taille, int mode, int prof, in
         affichage(plateau, taille, tour, mode, nbJoueurs, tabJoueur, joueurActuel);
 
         if (tabJoueur[joueurActuel].estBot)
-            botCoup(plateau, taille, mode, prof, tabJoueur, joueurActuel);
+            botCoup(plateau, taille, mode, debug, prof, tabJoueur, joueurActuel);
         else
-            faireCoup2(plateau, taille, mode, tabJoueur, joueurActuel, nbJoueurs);
+            forcerArret = faireCoupVisuel(plateau, taille, mode, tabJoueur, joueurActuel, nbJoueurs);
 
         tour++;
 
         continuer = finPartie(tabJoueur, nbJoueurs);
 
-    } while (continuer);
+    } while (continuer && !forcerArret);
 
-    affichage(plateau, taille, tour, mode, nbJoueurs, tabJoueur, joueurActuel);
-    temps = (clock() - debut)/CLOCKS_PER_SEC;
-    printf("Temps total: %f\n", temps);
+    if (!forcerArret) {
 
-    resultat(tabJoueur, nbJoueurs);
+        affichage(plateau, taille, tour, mode, nbJoueurs, tabJoueur, joueurActuel);
+        temps = (clock() - debut)/CLOCKS_PER_SEC;
+        printf("Temps total: %f\n", temps);
+
+        resultat(tabJoueur, nbJoueurs);
+    }
 
     for (i=0;i<taille;i++)
         free(plateau[i]);
@@ -48,6 +51,7 @@ char** initPlateau(int taille, int aleatoire, Joueur *joueur, int nbJoueurs) {
 
     int i, j;
     char **plateau;
+    srand(time(NULL));
 
     plateau = calloc(taille, sizeof(char*));
 
@@ -57,7 +61,6 @@ char** initPlateau(int taille, int aleatoire, Joueur *joueur, int nbJoueurs) {
     if (aleatoire)
     {
 
-        srand(time(NULL));
 
         for (i=0 ; i < taille ; i++)
 
@@ -68,7 +71,6 @@ char** initPlateau(int taille, int aleatoire, Joueur *joueur, int nbJoueurs) {
     }
     else
     {
-
         for (i=0 ; i < taille ; i++)
 
             for (j=0 ; j < taille - i ; j++)
